@@ -1,0 +1,9 @@
+### Atualizar os dados de um cão
+PUT http://localhost:3000/api/v1/dogs
+Content-Type: application/json
+
+{
+  "ID": "a2ddeda7-18c6-4029-b9ff-399376597784",
+  "name": "Rex Atualizado"
+
+}

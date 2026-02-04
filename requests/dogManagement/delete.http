@@ -1,0 +1,4 @@
+### DELETE request to DOG
+DELETE http://localhost:3000/api/v1/dogs/dcc5baaf-67b1-486c-b2d2-7626cb6292f0
+
+###

@@ -1,0 +1,15 @@
+### GET request to example server
+POST http://localhost:3000/api/v1/dogs
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Lili",
+  "age": 2,
+  "race": "Labrador",
+  "sex": "F",
+  "status": "ADAPTACAO"
+
+}
+
+###
