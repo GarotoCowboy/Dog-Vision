@@ -11,11 +11,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,18 +35,22 @@ public class Dog {
     @Enumerated(EnumType.STRING)
     private DogRace race;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "the dogs status is mandatory")
     private DogStatus status;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "the dog sex is mandatory")
     private Character sex;
 
     @Min(value = 0, message = "the dogs age cannot be negative")
     private int age;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/mm/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    @Column(updatable = false)
+    @CreatedDate
     private Timestamp createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/mm/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    @Column
     private Timestamp updatedAt;
 }
