@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: dog-health
+
+  Jackson:
+    time-zone: America/Sao_Paulo
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+  docker:
+    compose:
+      enabled: false
+
+server:
+  address: 0.0.0.0
+  port: 3004
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}
+
+---
+
+#PROFILE LOCAL PARA RODAR VIA INTELLIJ
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${BD_DOG_HEALTH_PORT}/${BD_DOG_HEALTH_NAME}
+    password: ${BD_DOG_HEALTH_PASSWORD}
+    username: ${BD_DOG_HEALTH_USER}
+    driver-class-name: org.postgresql.Driver
+  config:
+    activate:
+      on-profile: local
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:3002/eureka
+  instance:
+    prefer-ip-address: true
+
+---
+
+#PROFILE DOCKER PARA RODAR NO DOCKER
+spring:
+  datasource:
+    url: jdbc:postgresql://${BD_DOG_HEALTH_HOST}:5432/${BD_DOG_HEALTH_NAME}
+    password: ${BD_DOG_HEALTH_PASSWORD}
+    username: ${BD_DOG_HEALTH_USER}
+    driver-class-name: org.postgresql.Driver
+  config:
+    activate:
+      on-profile: docker
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:3002/eureka
+  instance:
+    prefer-ip-address: true

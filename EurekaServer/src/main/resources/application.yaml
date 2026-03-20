@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: eureka-server
+
+  Jackson:
+    time-zone: America/Sao_Paulo
+
+server:
+  port: 3002
+
+eureka:
+  instance:
+    hostname: eureka-server
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://eureka-server:3002/eureka
+
