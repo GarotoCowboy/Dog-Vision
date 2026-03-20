@@ -1,0 +1,59 @@
+server:
+  port: ${SERVER_PORT:3003}
+
+spring:
+
+  application:
+    name: cloud-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
+          routes:
+            - id: auth-login
+              uri: lb://user-management
+              predicates:
+                - Path=/api/v1/auth/login
+
+            - id: employees-service
+              uri: lb://user-management
+              predicates:
+                - Path=/api/v1/employees/**
+              filters:
+                - JwtAuthenticationFilter
+
+            - id: dog-management-service
+              uri: lb://dog-management
+              predicates:
+                - Path=/api/v1/dogs/**
+              filters:
+                - JwtAuthenticationFilter
+
+            - id: dog-health-service
+              uri: lb://dog-health
+              predicates:
+                - Path=/api/v1/doghealth/**
+              filters:
+                - JwtAuthenticationFilter
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:3002/eureka
+  instance:
+    prefer-ip-address: true
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
