@@ -76,3 +76,11 @@ eureka:
       defaultZone: http://eureka-server:3002/eureka
   instance:
     prefer-ip-address: true
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    csrf:
+      enabled: true
