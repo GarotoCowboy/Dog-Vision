@@ -30,7 +30,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             if(!login.isEmpty()){
                 List<String> roles = tokenService.getRolesFromToken(token);
 
-                // ← conversão para SimpleGrantedAuthority
                 var authorities = roles.stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());

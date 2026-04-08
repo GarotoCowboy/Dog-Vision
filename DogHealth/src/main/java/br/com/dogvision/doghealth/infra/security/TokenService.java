@@ -29,7 +29,6 @@ public class TokenService {
         }
     }
 
-    // NOVO: Método para extrair as Roles do Token
     public List<String> getRolesFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -50,7 +49,7 @@ public class TokenService {
                     .withIssuer("auth-api")
                     .build()
                     .verify(String.valueOf(token))
-                    .getClaim("userId").asString();
+                    .getClaim("employeeId").asString();
         }catch (JWTVerificationException exception){
             return "";
         }
