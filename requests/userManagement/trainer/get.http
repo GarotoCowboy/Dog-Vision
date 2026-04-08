@@ -1,0 +1,4 @@
+### GET busca um treinador pelo ID
+GET http://localhost:3003/api/v1/employees/trainers/a4d86417-41fc-4be7-bdc0-4acfbd7e5346
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzczMTYwMjQyfQ.wNx5MDJqM_6iq6CQxDdzwFmdg2dVGjpT71xNS5g-rF8

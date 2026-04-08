@@ -1,0 +1,5 @@
+### GET busca um coordenador pelo ID
+GET http://localhost:3003/api/v1/employees/coordinators/d4c11d39-025f-4a7b-8de4-f9f68bba599c
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzc1MTQ4NTcxfQ.XE1EYVmDP02oqaCHB7L3mlK5k3DpCXoI48RZWXIVqEA
+

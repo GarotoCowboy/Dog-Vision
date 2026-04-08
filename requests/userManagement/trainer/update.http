@@ -1,0 +1,12 @@
+### PUT atualiza os dados de um treinador
+PUT http://localhost:3003/api/v1/employees/trainers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImV4cCI6MTc3MTg1NjExNX0.Pt38Njus31uMHVdcQ1vAN0Xr-4QzI8M7UN-wIWv7f10
+
+
+{
+  "ID": "6899b00b-444e-4577-94c9-1176778de235",
+  "name": "Joao Pinto Marques",
+  "phone": null,
+  "email": null
+}

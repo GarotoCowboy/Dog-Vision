@@ -1,0 +1,4 @@
+### GET busca uma consulta pelo ID
+GET http://localhost:3003/api/v1/doghealth/consultation/f74508bd-cd1e-438a-9995-ff01bc582f02
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IlZFVC0wMDEiLCJ1c2VySWQiOiJjMmNjOWRiMS05OTgyLTQyZWYtOWZjNS1lODcyYzg0MjRlMmYiLCJyb2xlcyI6WyJST0xFX1ZFVEVSSU5BUklBTiJdLCJleHAiOjE3NzM5NDIwODd9.Av-uCrIQQyE2OfKNyOpZWStp-uPI6g2RIKq2cwVBz30

@@ -1,0 +1,4 @@
+### GET busca um veterinário pelo ID
+GET http://localhost:3003/api/v1/employees/veterinarians/bdd4dbab-a594-4d38-8df5-ecb97a431c91
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzczMTYwMjQyfQ.wNx5MDJqM_6iq6CQxDdzwFmdg2dVGjpT71xNS5g-rF8

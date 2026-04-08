@@ -1,0 +1,4 @@
+### GET busca um monitor pelo ID
+GET http://localhost:3003/api/v1/employees/monitors/533de015-16bf-478b-bc2a-6ac9e603a588
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ik1PTi0wMDUiLCJ1c2VySWQiOiJkNjE3ZjgxZS04ZGY4LTQ5YTMtODJmZC0yMTQyY2JkODIzOGMiLCJyb2xlcyI6WyJST0xFX01PTklUT1IiXSwiZXhwIjoxNzczOTQzODUwfQ.invHsL5U7b7x59CHVyCL2FFsr-b7jGUPO3FyZXIINbA

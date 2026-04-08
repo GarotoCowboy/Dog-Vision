@@ -1,0 +1,12 @@
+### PUT atualiza os dados de um monitor
+PUT http://localhost:3003/api/v1/employees/monitors
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzczODUxODY3fQ.ReUviKbuEE-JfWj4_6oiFjgxlQ3Ao7ZYTWAtzpdq_z4
+
+
+{
+  "ID": "0ef405a0-9784-466a-95ed-7141256a9594",
+  "name": "Joao Pinto Pereira",
+  "phone": 61993425234543,
+  "email": "teste@teste.com"
+}

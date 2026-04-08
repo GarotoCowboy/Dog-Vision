@@ -1,0 +1,18 @@
+### POST cadastra um novo coordenador
+POST http://localhost:3003/api/v1/employees/coordinators
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzc1MTUxNDAyfQ.gg36rl2PwcQbeoRh1ZO9Cm6G-HtwP17JcoXYvH-RyqE
+
+{
+  "email": "coord6@dogvision.com",
+  "name": "Ana Coordenadora",
+  "cpf": "44077777020",
+  "phone": "61999999999",
+  "registration": "COORD-006",
+  "password": "12345678",
+  "codAdmin": 1006
+}
+
+
+###

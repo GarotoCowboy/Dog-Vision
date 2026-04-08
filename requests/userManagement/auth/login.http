@@ -1,0 +1,11 @@
+### POST realiza login do usuário
+POST localhost:3003/api/v1/auth/login
+    ?generated-in=IntelliJ IDEA
+Content-Type: application/json
+Accept: application/json
+
+{
+  "password": "12345678",
+  "registration": "COORD-001"
+}
+###

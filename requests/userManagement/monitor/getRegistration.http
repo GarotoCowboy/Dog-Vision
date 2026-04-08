@@ -1,0 +1,4 @@
+### GET busca um monitor pela matrícula
+GET http://localhost:3003/api/v1/employees/monitors/registration/MON-005
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzczNDYzNzk2fQ.nK6EHe8hdnZMaTz59yeuPPO1IFV0INicULwgIOLA9Z8

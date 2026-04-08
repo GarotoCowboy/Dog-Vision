@@ -1,0 +1,12 @@
+### POST salva uma pesagem de um cão
+POST http://localhost:3003/api/v1/doghealth/weight
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ik1PTi0wMDUiLCJ1c2VySWQiOiJkNjE3ZjgxZS04ZGY4LTQ5YTMtODJmZC0yMTQyY2JkODIzOGMiLCJyb2xlcyI6WyJST0xFX01PTklUT1IiXSwiZXhwIjoxNzczOTQzODUwfQ.invHsL5U7b7x59CHVyCL2FFsr-b7jGUPO3FyZXIINbA
+
+{
+  "dogId": "4621482c-a7c8-4231-85f3-88737d8093b3",
+  "weight": 200
+}
+
+###

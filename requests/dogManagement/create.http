@@ -1,7 +1,8 @@
-### GET request to example server
-POST http://localhost:3000/api/v1/dogs
+### POST cadastra um novo cão
+POST http://localhost:3003/api/v1/dogs
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
 {
   "name": "Lili",

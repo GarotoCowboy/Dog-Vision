@@ -1,0 +1,2 @@
+### GET lista as rotas registradas no gateway
+GET http://localhost:3003/actuator/gateway/routes

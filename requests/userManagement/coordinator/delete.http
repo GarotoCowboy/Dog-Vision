@@ -1,0 +1,5 @@
+### DELETE remove um coordenador pelo ID
+DELETE http://localhost:3003/api/v1/employees/coordinators/5fed3299-38fc-4bf1-a77c-8075f5521b38
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImV4cCI6MTc3MTg1NjExNX0.Pt38Njus31uMHVdcQ1vAN0Xr-4QzI8M7UN-wIWv7f10
+
+###

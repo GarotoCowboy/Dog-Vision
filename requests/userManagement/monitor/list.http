@@ -1,0 +1,4 @@
+### GET busca todos os monitores
+GET http://localhost:3003/api/v1/employees/monitors
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImVtcGxveWVlSWQiOiI1ZmVkMzI5OS0zOGZjLTRiZjEtYTc3Yy04MDc1ZjU1MjFiMzgiLCJyb2xlcyI6WyJST0xFX0NPT1JESU5BVE9SIl0sImV4cCI6MTc3NTY3MzU1NH0.c7o25GkdPn7yVpDr9zelf3HHT23RNgZyBIgrT6d8610

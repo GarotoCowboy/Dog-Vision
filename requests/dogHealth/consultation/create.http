@@ -1,0 +1,16 @@
+### POST salva uma consulta de um cão
+POST http://localhost:3003/api/v1/doghealth/consultation
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IlZFVC0wMDEiLCJ1c2VySWQiOiJjMmNjOWRiMS05OTgyLTQyZWYtOWZjNS1lODcyYzg0MjRlMmYiLCJyb2xlcyI6WyJST0xFX1ZFVEVSSU5BUklBTiJdLCJleHAiOjE3NzM5NDIwODd9.Av-uCrIQQyE2OfKNyOpZWStp-uPI6g2RIKq2cwVBz30
+
+{
+  "dogId": "321956d9-8e0b-4269-9809-cc7e9909fe83",
+  "dogsBreed": "blablavbla",
+  "dogsName": "blablabla",
+  "diagnosis": "aids",
+  "treatment": "nao ter aids",
+  "date": "2026-07-13"
+}
+
+###

@@ -1,0 +1,4 @@
+### GET busca um coordenador pela matrícula
+GET http://localhost:3003/api/v1/employees/coordinators/registration/COORD-006
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzc0Mjg5NTg2fQ.woex9CWRTy4HMTjRXWYbXHE_iRv026WaL9X-lN4cmzw

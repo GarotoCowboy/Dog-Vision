@@ -1,0 +1,4 @@
+### GET busca um veterinário pela matrícula
+GET http://localhost:3003/api/v1/employees/veterinarians/registration/vtn-002
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImV4cCI6MTc3MTg2NDk1OX0.cKf44lbNV-nJY3_qSEdgOgyxWQk6nU95WExN1VyJBJA

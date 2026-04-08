@@ -1,0 +1,20 @@
+### POST cadastra um novo veterinário
+POST http://localhost:3003/api/v1/employees/veterinarians
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImV4cCI6MTc3MTg1NjExNX0.Pt38Njus31uMHVdcQ1vAN0Xr-4QzI8M7UN-wIWv7f10
+
+
+{
+  "email": "vet1@dogvision.com",
+  "name": "Diego Veterinário",
+  "cpf": "12345678904",
+  "phone": "61999999996",
+  "registration": "VET-001",
+  "password": "12345678",
+  "crmv": "12345-DF",
+  "areaOfExpertise": "Cirurgia"
+}
+
+
+###

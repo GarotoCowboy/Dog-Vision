@@ -1,0 +1,5 @@
+### DELETE remove uma consulta pelo ID
+DELETE http://localhost:3003/api/v1/doghealth/consultation/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsImV4cCI6MTc3MTg1NjExNX0.Pt38Njus31uMHVdcQ1vAN0Xr-4QzI8M7UN-wIWv7f10
+
+###
