@@ -23,6 +23,11 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
 
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers("/api/v1/dogs/**").hasAnyAuthority("ROLE_TRAINER", "ROLE_MONITOR", "ROLE_COORDINATOR","ROLE_VETERINARIAN")
 
                         .anyRequest().authenticated()

@@ -21,7 +21,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String validateToken(String token){
+    public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -29,7 +29,7 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject(); // Retorna o registration (subject)
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
             return "";
         }
     }
@@ -47,4 +47,18 @@ public class TokenService {
             return Collections.emptyList();
         }
     }
+
+    public String getIdFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(String.valueOf(token))
+                    .getClaim("employeeId").asString();
+        } catch (JWTVerificationException exception) {
+            return "";
+        }
+    }
+
 }
