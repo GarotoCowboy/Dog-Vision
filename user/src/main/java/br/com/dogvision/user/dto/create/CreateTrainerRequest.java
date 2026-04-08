@@ -2,6 +2,7 @@ package br.com.dogvision.user.dto.create;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Schema(description = "Dados para cadastro de um novo treinador")
 public record CreateTrainerRequest(
@@ -12,6 +13,7 @@ public record CreateTrainerRequest(
         @Schema(description = "Nome completo do treinador", example = "Pedro Almeida")
         @NotBlank String name,
 
+        @CPF
         @Schema(description = "CPF do treinador (apenas números, 11 dígitos)", example = "12345678901")
         @NotBlank @Size(min = 11, max = 11) String cpf,
 

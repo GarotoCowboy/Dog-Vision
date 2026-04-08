@@ -40,6 +40,9 @@ public class User implements Serializable, UserDetails {
     @Column(nullable = false)
     private String passwordHash;
 
+    @OneToOne(mappedBy = "user")
+    private Employee employee;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

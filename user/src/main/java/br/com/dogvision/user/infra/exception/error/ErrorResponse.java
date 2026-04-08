@@ -1,6 +1,5 @@
 package br.com.dogvision.user.infra.exception.error;
 
-import org.springframework.validation.FieldError;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +16,7 @@ public record ErrorResponse(
     ) {}
 
     public ErrorResponse(int status, String message) {
-        this(status, message, LocalDateTime.now(), null);
+        this(status, message, LocalDateTime.now(), List.of());
     }
 
     public ErrorResponse(int status, String message, List<FieldError> errors) {

@@ -10,18 +10,19 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "coordinators")
-public class Coordinator {
+@EqualsAndHashCode(callSuper = true)
+public class Coordinator extends Employee {
 
-    @Id
-    @Column(name = "employee_id")
-    private UUID id;
+//    @Id
+//    @Column(name = "employee_id")
+//    private UUID id;
 
-    @MapsId
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+//    @MapsId
+//    @OneToOne(optional = false, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "employee_id", nullable = false)
+//    private Employee employee;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private Integer codAdmin;
 }

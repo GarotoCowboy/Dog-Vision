@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,9 +31,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        ex.printStackTrace();
-        log.error("Erro não tratado: ", ex);
+        log.error("Unhandled error: ", ex);
+        var details = List.of(new ErrorResponse.FieldError("server", "An unexpected error occurred in the system."));
         return ResponseEntity.internalServerError()
-                .body(new ErrorResponse(500, "Erro interno do servidor"));
+                .body(new ErrorResponse(500, "Internal Server Error",details));
     }
 }
