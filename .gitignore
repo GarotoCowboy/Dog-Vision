@@ -1,3 +1,18 @@
 .env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+
+# Build outputs
+target/
+
+# Local archives/backups
+*.zip
+*.bak
+*.backup
+*.backup-*
+
 .xml
 
