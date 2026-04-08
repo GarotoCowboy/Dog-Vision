@@ -5,6 +5,7 @@ import br.com.dogvision.doghealth.dto.mapper.DogWeightMapper;
 import br.com.dogvision.doghealth.dto.response.DogWeightResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateDogWeightRequest;
 import br.com.dogvision.doghealth.infra.exception.ResourceNotFoundException;
+import br.com.dogvision.doghealth.infra.exception.WeightNotFoundException;
 import br.com.dogvision.doghealth.model.DogBirth;
 import br.com.dogvision.doghealth.model.DogWeight;
 import br.com.dogvision.doghealth.repository.DogWeightRepository;
@@ -84,7 +85,7 @@ public class DogWeightServiceImp implements DogWeightService {
     public DogWeightResponse update(UUID id, UpdateDogWeightRequest dto) {
 
         DogWeight dogWeight = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("DogWeight", id));
+                .orElseThrow(() -> new WeightNotFoundException(id));
 
         mapper.updateFromDto(dto, dogWeight);
 
@@ -97,7 +98,7 @@ public class DogWeightServiceImp implements DogWeightService {
     @Override
     public void delete(UUID id) {
         DogWeight dogWeight = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Weight not found"));
+                .orElseThrow(() -> new WeightNotFoundException(id));
 
         repository.delete(dogWeight);
     }

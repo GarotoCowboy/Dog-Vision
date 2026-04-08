@@ -4,6 +4,7 @@ import br.com.dogvision.doghealth.dto.create.CreateDogBirthRequest;
 import br.com.dogvision.doghealth.dto.mapper.DogBirthMapper;
 import br.com.dogvision.doghealth.dto.response.DogBirthResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateDogBirthRequest;
+import br.com.dogvision.doghealth.infra.exception.BirthNotFoundException;
 import br.com.dogvision.doghealth.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.doghealth.model.DogBirth;
 import br.com.dogvision.doghealth.repository.DogBirthRepository;
@@ -27,7 +28,7 @@ public class DogBirthServiceImp implements DogsBirthService {
 
     @Override
     public DogBirthResponse getById(UUID id) {
-        DogBirth d = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DogBirth", id));
+        DogBirth d = repository.findById(id).orElseThrow(() -> new BirthNotFoundException(id));
 
         return mapper.toResponse(d);
     }
@@ -53,7 +54,7 @@ public class DogBirthServiceImp implements DogsBirthService {
     @Override
     public DogBirthResponse update(UUID id, UpdateDogBirthRequest dto) {
         DogBirth dogBirth = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("DogBirth", id));
+                .orElseThrow(() -> new BirthNotFoundException(id));
 
         mapper.updateFromDto(dto, dogBirth);
 
@@ -64,7 +65,7 @@ public class DogBirthServiceImp implements DogsBirthService {
     @Override
     public void delete(UUID id) {
         DogBirth dogBirth = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parto não encontrado"));
+                .orElseThrow(() -> new BirthNotFoundException(id));
 
         repository.delete(dogBirth);
     }

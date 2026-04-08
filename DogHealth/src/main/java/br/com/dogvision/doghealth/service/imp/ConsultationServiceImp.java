@@ -4,6 +4,7 @@ import br.com.dogvision.doghealth.dto.create.CreateConsultationRequest;
 import br.com.dogvision.doghealth.dto.mapper.ConsultationMapper;
 import br.com.dogvision.doghealth.dto.response.ConsultationResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateConsultationRequest;
+import br.com.dogvision.doghealth.infra.exception.ConsultationNotFoundException;
 import br.com.dogvision.doghealth.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.doghealth.model.Consultation;
 import br.com.dogvision.doghealth.repository.ConsultationRepository;
@@ -26,7 +27,7 @@ public class ConsultationServiceImp implements ConsultationService {
 
     @Override
     public ConsultationResponse getById(UUID id) {
-        Consultation c = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Consultation", id));
+        Consultation c = repository.findById(id).orElseThrow(() -> new ConsultationNotFoundException(id));
 
         return mapper.toResponse(c);
     }
@@ -53,7 +54,7 @@ public class ConsultationServiceImp implements ConsultationService {
     @Override
     public ConsultationResponse update(UUID id, UpdateConsultationRequest dto) {
         Consultation consultation = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("consultation", id));
+                .orElseThrow(() -> new ConsultationNotFoundException(id));
 
         mapper.updateFromDto(dto, consultation);
 
@@ -64,7 +65,7 @@ public class ConsultationServiceImp implements ConsultationService {
     @Override
     public void delete(UUID id) {
         Consultation consultation = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Consulta não encontrada"));
+                .orElseThrow(() -> new ConsultationNotFoundException(id));
 
         repository.delete(consultation);
     }
