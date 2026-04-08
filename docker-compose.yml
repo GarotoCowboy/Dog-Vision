@@ -1,37 +1,196 @@
 services:
-  db:
-    image: postgres:latest
-    container_name: postgres-db
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  eureka-server:
+    build:
+      context: ./EurekaServer
+      dockerfile: Dockerfile
+    container_name: eureka-server
     ports:
-      - "5432:5432"
+      - "${EUREKA_SERVER_PORT}:3002"
+    restart: always
+    environment:
+      - SERVER_PORT=3002
+
+  cloud-gateway:
+    build:
+      context: ./CloudGateway
+      dockerfile: Dockerfile
+    container_name: cloud-gateway
+    depends_on:
+      - eureka-server
+      - auditory_bd
+      - rabbitmq
+    ports:
+      - ${CLOUD_GATEWAY_SERVER_PORT}:3003
+    restart: always
+    environment:
+      SERVER_PORT: 3003
+      JWT_SECRET: ${JWT_SECRET}
+      BD_AUDITORY_PORT: ${BD_AUDITORY_PORT}
+      BD_AUDITORY_NAME: ${BD_AUDITORY_NAME}
+      BD_AUDITORY_HOST: auditory_db
+      BD_AUDITORY_PASSWORD: ${BD_AUDITORY_PASSWORD}
+      BD_AUDITORY_USER: ${BD_AUDITORY_USER}
+      SPRING_RABBITMQ_PORT: ${RABBIT_AMQP_PORT}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBIT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
+
+  rabbitmq:
+    image: rabbitmq:4.2.5-management
+    container_name: rabbitmq-broker
+    ports:
+      - ${RABBIT_AMQP_PORT}:5672
+      - ${RABBITMQ_MANAGEMENT_PORT}:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASSWORD: ${RABBIT_PASSWORD}
+
+  dog_management_db:
+    image: postgres:16
+    container_name: ${BD_DOG_MANAGEMENT_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_DOG_MANAGEMENT_USER}
+      POSTGRES_PASSWORD: ${BD_DOG_MANAGEMENT_PASSWORD}
+      POSTGRES_DB: ${BD_DOG_MANAGEMENT_NAME}
+    ports:
+      - "${BD_DOG_MANAGEMENT_PORT}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql  # Mudou aqui - removeu /data
+      - postgres_data_dog_management:/var/lib/postgresql/data
+
+  ms_dog_management:
+    build:
+      context: ./DogManagement
+      dockerfile: Dockerfile
+    container_name: ms_dog_management
+    depends_on:
+      - dog_management_db
+      - eureka-server
+    ports:
+      - ${SERVICE_PORT_DOG_MANAGEMENT}:${SERVICE_PORT_DOG_MANAGEMENT}
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BD_DOG_MANAGEMENT_HOST: ${BD_DOG_MANAGEMENT_HOST}
+      BD_DOG_MANAGEMENT_PORT: ${BD_DOG_MANAGEMENT_PORT}
+      BD_DOG_MANAGEMENT_NAME: ${BD_DOG_MANAGEMENT_NAME}
+      BD_DOG_MANAGEMENT_USER: ${BD_DOG_MANAGEMENT_USER}
+      BD_DOG_MANAGEMENT_PASSWORD: ${BD_DOG_MANAGEMENT_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always
+
+  user_management_db:
+    image: postgres:16
+    container_name: ${BD_USER_MANAGEMENT_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_USER_MANAGEMENT_USER}
+      POSTGRES_PASSWORD: ${BD_USER_MANAGEMENT_PASSWORD}
+      POSTGRES_DB: ${BD_USER_MANAGEMENT_NAME}
+    ports:
+      - "${BD_USER_MANAGEMENT_PORT}:5432"
+    volumes:
+      - postgres_data_user_management:/var/lib/postgresql/data
+
+  dog_health_db:
+    image: postgres:16
+    container_name: ${BD_DOG_HEALTH_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_DOG_HEALTH_USER}
+      POSTGRES_PASSWORD: ${BD_DOG_HEALTH_PASSWORD}
+      POSTGRES_DB: ${BD_DOG_HEALTH_NAME}
+    ports:
+      - "${BD_DOG_HEALTH_PORT}:5432"
+    volumes:
+      - postgres_data_dog_health:/var/lib/postgresql/data
+
+  auditory_bd:
+    image: postgres:16
+    container_name: ${BD_AUDITORY_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_AUDITORY_USER}
+      POSTGRES_PASSWORD: ${BD_AUDITORY_PASSWORD}
+      POSTGRES_DB: ${BD_AUDITORY_NAME}
+    ports:
+      - "${BD_AUDITORY_PORT}:5432"
+    volumes:
+      - postgres_data_auditory:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${BD_AUDITORY_USER} -d ${BD_AUDITORY_NAME}" ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
-  dog-management:
+  ms_user_management:
     build:
-      context: ./DogManagement/
+      context: ./user
       dockerfile: Dockerfile
-    container_name: dog-management-service
-    ports:
-      - "${PORT_DOG_MANAGEMENT}:3000"
+    container_name: ms_user_management
     depends_on:
-      db:
-        condition: service_healthy
+      - user_management_db
+      - eureka-server
+    ports:
+      - ${SERVICE_PORT_USER_MANAGEMENT}:${SERVICE_PORT_USER_MANAGEMENT}
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=${DB_NAME}
-      - SPRING_DATASOURCE_USERNAME=${DB_USER}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
+      BD_USER_MANAGEMENT_HOST: ${BD_USER_MANAGEMENT_HOST}
+      BD_USER_MANAGEMENT_NAME: ${BD_USER_MANAGEMENT_NAME}
+      BD_USER_MANAGEMENT_PORT: ${BD_USER_MANAGEMENT_PORT}
+      BD_USER_MANAGEMENT_USER: ${BD_USER_MANAGEMENT_USER}
+      BD_USER_MANAGEMENT_PASSWORD: ${BD_USER_MANAGEMENT_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always
+
+  ms_dog_health:
+    build:
+      context: ./DogHealth
+      dockerfile: Dockerfile
+    container_name: ms_dog_health
+    depends_on:
+      - dog_health_db
+      - eureka-server
+    ports:
+      - ${PORT_DOG_HEALTH}:${PORT_DOG_HEALTH}
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BD_DOG_HEALTH_PORT: ${BD_DOG_HEALTH_PORT}
+      BD_DOG_HEALTH_NAME: ${BD_DOG_HEALTH_NAME}
+      BD_DOG_HEALTH_HOST: ${BD_DOG_HEALTH_HOST}
+      BD_DOG_HEALTH_PASSWORD: ${BD_DOG_HEALTH_PASSWORD}
+      BD_DOG_HEALTH_USER: ${BD_DOG_HEALTH_USER}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always
+
+  auditory:
+    build:
+      context: ./audit
+      dockerfile: Dockerfile
+    container_name: auditory
+    depends_on:
+      - auditory_bd
+      - rabbitmq
+      - eureka-server
+    ports:
+      - "${AUDITORY_PORT}:3005"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 3005
+
+      BD_AUDITORY_HOST: ${BD_AUDITORY_HOST}
+      BD_AUDITORY_NAME: ${BD_AUDITORY_NAME}
+      BD_AUDITORY_USER: ${BD_AUDITORY_USER}
+      BD_AUDITORY_PASSWORD: ${BD_AUDITORY_PASSWORD}
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: ${RABBIT_AMQP_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBIT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
+    restart: always
 
 volumes:
-  postgres_data:
+  postgres_data_dog_management:
+  postgres_data_user_management:
+  postgres_data_dog_health:
+  postgres_data_auditory:

@@ -1,0 +1,80 @@
+server:
+  port: ${AUDITORY_PORT:3003}
+
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: ${RABBIT_AMQP_PORT}
+  application:
+    name: auditory
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  cloud:
+    function:
+      definition: auditIn
+    stream:
+      bindings:
+        auditIn-in-0:
+          destination: audit-exchange
+          group: audit-group
+          content-type: application/json
+      rabbit:
+        bindings:
+          auditIn-in-0:
+            consumer:
+              binding-routing-key: audit-key
+              exchange-type: direct
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:3002/eureka
+  instance:
+    prefer-ip-address: true
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}
+
+---
+#PROFILE LOCAL PARA RODAR VIA INTELLIJ
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${BD_AUDITORY_PORT}/${BD_AUDITORY_NAME}
+    password: ${BD_AUDITORY_PASSWORD}
+    username: ${BD_AUDITORY_USER}
+    driver-class-name: org.postgresql.Driver
+  config:
+    activate:
+      on-profile: local
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:3002/eureka
+  instance:
+    prefer-ip-address: true
+
+---
+
+#PROFILE DOCKER PARA RODAR NO DOCKER
+spring:
+  datasource:
+    url: jdbc:postgresql://${BD_AUDITORY_HOST}:5432/${BD_AUDITORY_NAME}
+    password: ${BD_AUDITORY_PASSWORD}
+    username: ${BD_AUDITORY_USER}
+    driver-class-name: org.postgresql.Driver
+  config:
+    activate:
+      on-profile: docker
+
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

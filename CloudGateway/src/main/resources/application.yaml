@@ -2,11 +2,25 @@ server:
   port: ${SERVER_PORT:3003}
 
 spring:
-
+  rabbitmq:
+    host: rabbitmq
+    port: ${RABBIT_AMQP_PORT}
   application:
     name: cloud-gateway
 
   cloud:
+    stream:
+      bindings:
+        audit-out-0:
+          destination: audit-exchange
+      rabbit:
+        bindings:
+          audit-out-0:
+            producer:
+              routing-key-expression: "'audit-key'"
+              exchange-type: direct
+
+
     gateway:
       server:
         webflux:
