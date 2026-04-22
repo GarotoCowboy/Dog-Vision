@@ -25,9 +25,9 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/v3/api-docs/**",
+                                "/swagger-ui",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                                "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/doghealth/consultation", "/api/v1/doghealth/consultation/**").authenticated() //all can get
                         .requestMatchers("/api/v1/doghealth/consultation", "/api/v1/doghealth/consultation/**").hasAuthority("ROLE_VETERINARIAN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/doghealth/weight/**","/api/v1/doghealth/weight").authenticated() //all can get
