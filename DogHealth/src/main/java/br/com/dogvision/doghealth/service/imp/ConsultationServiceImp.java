@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +38,20 @@ public class ConsultationServiceImp implements ConsultationService {
     public List<ConsultationResponse> getAll() {
 
         return repository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ConsultationResponse> getByMonth(UUID id, int month, int year) {
+
+        LocalDateTime startsAt = LocalDateTime.of(year,month,1,0,0,0);
+        LocalDateTime endsAt = YearMonth.of(year,month)
+                .atEndOfMonth()
+                .atTime(23,59,59);
+
+        return repository.findAllByDogIdAndCreatedAtBetween(id,startsAt,endsAt)
                 .stream()
                 .map(mapper::toResponse)
                 .toList();

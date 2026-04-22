@@ -2,6 +2,7 @@ package br.com.dogvision.doghealth.controller;
 
 import br.com.dogvision.doghealth.dto.create.CreateConsultationRequest;
 import br.com.dogvision.doghealth.dto.response.ConsultationResponse;
+import br.com.dogvision.doghealth.dto.response.DogWeightResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateConsultationRequest;
 import br.com.dogvision.doghealth.infra.exception.error.ErrorResponse;
 import br.com.dogvision.doghealth.infra.security.TokenService;
@@ -50,8 +51,8 @@ public class ConsultationController {
     @PostMapping
     @Transactional
     public ResponseEntity<ConsultationResponse> save(@RequestBody @Valid CreateConsultationRequest dto,
-                                             @RequestHeader("Authorization") String authHeader){
-        String token = authHeader.replace("Bearer ","");
+                                                     @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         UUID veterinarianId = UUID.fromString(tokenService.getIdFromToken(token));
         ConsultationResponse response = service.save(dto, veterinarianId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -67,9 +68,9 @@ public class ConsultationController {
     @GetMapping("/{id}")
     public ResponseEntity<ConsultationResponse> get(
             @Parameter(description = "UUID da consulta", required = true)
-            @PathVariable UUID id){
-    ConsultationResponse response = service.getById(id);
-    return ResponseEntity.ok(response);
+            @PathVariable UUID id) {
+        ConsultationResponse response = service.getById(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Listar todas as consultas")
@@ -79,8 +80,30 @@ public class ConsultationController {
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<ConsultationResponse>> list(){
+    public ResponseEntity<List<ConsultationResponse>> list() {
         List<ConsultationResponse> responses = service.getAll();
+        return ResponseEntity.ok(responses);
+    }
+
+
+
+    @Operation(summary = "Listar consultas mensais de um cao")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogWeightResponse.class)))),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
+    })
+    @GetMapping("/{id}/month")
+    public ResponseEntity<List<ConsultationResponse>> listWeightByMonth(
+            @Parameter(description = "UUID do cao", required = true)
+            @PathVariable UUID id,
+            @Parameter(description = "Mes da consulta, de 1 a 12", required = true, example = "4")
+            @RequestParam int month,
+            @Parameter(description = "Ano da consulta", required = true, example = "2026")
+            @RequestParam int year
+    ){
+        List<ConsultationResponse> responses = service.getByMonth(id,month,year);
         return ResponseEntity.ok(responses);
     }
 
@@ -97,8 +120,8 @@ public class ConsultationController {
     public ResponseEntity<ConsultationResponse> update(
             @Parameter(description = "UUID da consulta", required = true)
             @PathVariable UUID id,
-            @RequestBody @Valid UpdateConsultationRequest dto){
-        ConsultationResponse consultationResponse = service.update(id,dto);
+            @RequestBody @Valid UpdateConsultationRequest dto) {
+        ConsultationResponse consultationResponse = service.update(id, dto);
         return ResponseEntity.ok(consultationResponse);
     }
 
@@ -113,7 +136,7 @@ public class ConsultationController {
     @Transactional
     public ResponseEntity<Void> delete(
             @Parameter(description = "UUID da consulta", required = true)
-            @PathVariable UUID id){
+            @PathVariable UUID id) {
         service.delete(id);
 
         return ResponseEntity.noContent().build();
