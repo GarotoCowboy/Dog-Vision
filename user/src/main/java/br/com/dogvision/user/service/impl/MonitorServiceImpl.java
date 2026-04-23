@@ -40,7 +40,7 @@ public class MonitorServiceImpl implements MonitorService {
 
     @Override
     public MonitorResponse getById(UUID id) {
-        Monitor monitor = monitorRepository.findByIdWithEmployeeAndUser(id)
+        Monitor monitor = monitorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Monitor",id
                 ));
@@ -50,7 +50,7 @@ public class MonitorServiceImpl implements MonitorService {
 
     @Override
     public List<MonitorResponse> getAll() {
-        return monitorRepository.findAllWithEmployeeAndUser()
+        return monitorRepository.findAllWithUser()
                 .stream()
                 .map(monitorMapper::toResponse)
                 .toList();
@@ -76,30 +76,24 @@ public class MonitorServiceImpl implements MonitorService {
                 dto.name(),
                 dto.cpf(),
                 dto.phone(),
+                dto.shift(),
                 EmployeeType.MONITOR,
                 Role.ROLE_MONITOR
         );
 
-        // 2) cria Monitor (subtipo)
-        Monitor monitor = new Monitor();
-        monitor.setEmployee(employee);
-        monitor.setShift(dto.shift());
-
-        Monitor saved = monitorRepository.save(monitor);
-
-        return monitorMapper.toResponse(saved);
+        return monitorMapper.toResponse(employee);
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
 
-        Monitor monitor = monitorRepository.findByIdWithEmployeeAndUser(id)
+        Monitor monitor = monitorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Monitor não encontrado"
                 ));
 
         // Soft delete da conta
-        userRepository.delete(monitor.getEmployee().getUser());
+        userRepository.delete(monitor.getUser());
     }
 }

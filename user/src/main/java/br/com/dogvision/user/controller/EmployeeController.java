@@ -1,6 +1,7 @@
 package br.com.dogvision.user.controller;
 
 import br.com.dogvision.user.dto.response.EmployeeResponse;
+import br.com.dogvision.user.dto.create.CreateEmployeeRequest;
 import br.com.dogvision.user.dto.update.UpdateEmployeeRequest;
 import br.com.dogvision.user.infra.exception.error.ErrorResponse;
 import br.com.dogvision.user.service.EmployeeService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,39 @@ import java.util.UUID;
 public class EmployeeController {
 
     private final EmployeeService service;
+
+    @Operation(summary = "Buscar funcionário por ID")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Funcionário encontrado",
+                    content = @Content(schema = @Schema(implementation = EmployeeResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeResponse> getById(
+            @Parameter(description = "UUID do funcionário", required = true)
+            @PathVariable UUID id
+    ) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @Operation(summary = "Cadastrar novo funcionário")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Funcionário criado com sucesso",
+                    content = @Content(schema = @Schema(implementation = EmployeeResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou ausentes", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+    })
+    @PostMapping
+    public ResponseEntity<EmployeeResponse> save(@RequestBody @Valid CreateEmployeeRequest dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    }
 
     @Operation(summary = "Atualizar dados de um funcionário")
     @ApiResponses({
@@ -69,5 +104,20 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> list() {
         return ResponseEntity.ok(service.getAll());
+    }
+
+    @Operation(summary = "Deletar funcionário por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Funcionário deletado com sucesso", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "UUID do funcionário", required = true)
+            @PathVariable UUID id
+    ) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

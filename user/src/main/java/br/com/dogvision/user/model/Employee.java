@@ -17,17 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "employees")
 @EntityListeners(AuditingEntityListener.class)
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Employee {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "employee_id")
-    private UUID id;
-
-    @OneToOne(optional = false, fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+public class Employee extends Monitor {
 
     @Email
     @NotNull @NotBlank
@@ -62,4 +52,17 @@ public class Employee {
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime updatedAt;
+
+
+
+    public Employee(Employee employee) {
+        super(employee);
+        this.name = employee.name;
+        this.cpf = employee.cpf;
+        this.email = employee.email;
+        this.phone = employee.phone;
+        this.type = employee.type;
+        this.createdAt = employee.createdAt;
+        this.updatedAt = employee.updatedAt;
+    }
 }

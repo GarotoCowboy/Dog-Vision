@@ -26,7 +26,7 @@ import java.util.*;
 public class User implements Serializable, UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
 
@@ -41,7 +41,7 @@ public class User implements Serializable, UserDetails {
     private String passwordHash;
 
     @OneToOne(mappedBy = "user")
-    private Employee employee;
+    private Monitor monitor;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -69,6 +69,7 @@ public class User implements Serializable, UserDetails {
     public String getPassword() {
         return passwordHash;
     }
+
 
     @Override
     public String getUsername() {

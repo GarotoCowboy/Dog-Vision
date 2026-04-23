@@ -38,6 +38,7 @@ public class EmployeeCreationServiceImpl implements EmployeeCreationService {
             String name,
             String cpf,
             String phone,
+            ShiftEnum shift,
             EmployeeType type,
             Role role
     ) {
@@ -76,6 +77,7 @@ public class EmployeeCreationServiceImpl implements EmployeeCreationService {
         employee.setName(name);
         employee.setCpf(cpf);
         employee.setPhone(phone);
+        employee.setShift(shift);
         employee.setType(type);
 
         return employeeRepository.save(employee);

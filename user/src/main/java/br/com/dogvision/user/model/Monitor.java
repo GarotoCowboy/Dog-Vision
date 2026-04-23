@@ -11,18 +11,26 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "monitors")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Monitor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "employee_id")
     private UUID id;
 
-    @MapsId
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
     @NotNull @NotBlank
     @Column(nullable = false)
-    private String shift;
+    @Enumerated(EnumType.STRING)
+    private ShiftEnum shift;
+
+    public Monitor(Monitor monitor) {
+        this.id = monitor.id;
+        this.user = monitor.user;
+        this.shift = monitor.shift;
+    }
 }

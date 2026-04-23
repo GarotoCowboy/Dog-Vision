@@ -1,5 +1,6 @@
 package br.com.dogvision.user.dto.create;
 
+import br.com.dogvision.user.model.ShiftEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -27,6 +28,6 @@ public record CreateMonitorRequest(
         @NotBlank @Size(min = 8, max = 60) String password,
 
         @Schema(description = "Turno de trabalho do monitor", example = "MORNING")
-        @NotBlank String shift
+        @NotBlank ShiftEnum shift
 
 ) {}

@@ -20,6 +20,8 @@ public record EmployeeResponse(
         String cpf,
         @Schema(description = "Telefone do funcionário", example = "11987654321")
         String phone,
+        @Schema(description = "Turno de trabalho do funcionário", example = "MORNING")
+        String shift,
         @Schema(description = "Tipo do funcionário", example = "VETERINARIAN")
         EmployeeType type
 ) {}

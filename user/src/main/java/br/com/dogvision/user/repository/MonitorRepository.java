@@ -15,25 +15,22 @@ public interface MonitorRepository extends JpaRepository<Monitor, UUID> {
     @Query("""
            select m
            from Monitor m
-           join fetch m.employee e
-           join fetch e.user u
+           join fetch m.user u
            """)
-    List<Monitor> findAllWithEmployeeAndUser();
+    List<Monitor> findAllWithUser();
 
     @Query("""
            select m
            from Monitor m
-           join fetch m.employee e
-           join fetch e.user u
+           join fetch m.user u
            where m.id = :id
            """)
-    Optional<Monitor> findByIdWithEmployeeAndUser(UUID id);
+    Optional<Monitor> findByIdWithUser(UUID id);
 
     @Query("""
             select m 
             from Monitor m 
-            join fetch m.employee e
-            join fetch e.user u
+            join fetch m.user u
             where u.registration = :registration            
             """)
     Optional<Monitor> findByRegistration(@Param("registration") String registration);

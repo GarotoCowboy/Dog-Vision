@@ -1,6 +1,7 @@
 package br.com.dogvision.user.dto.create;
 
 import br.com.dogvision.user.model.EmployeeType;
+import br.com.dogvision.user.model.ShiftEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -25,6 +26,9 @@ public record CreateEmployeeRequest(
 
         @Schema(description = "Senha de acesso (mínimo 8, máximo 60 caracteres)", example = "senha@123")
         @NotBlank @Size(min = 8, max = 60) String password,
+
+        @Schema(description = "Turno de trabalho do funcionário", example = "MORNING")
+        @NotBlank ShiftEnum shift,
 
         @Schema(description = "Tipo do funcionário", example = "VETERINARIAN")
         @NotNull EmployeeType type

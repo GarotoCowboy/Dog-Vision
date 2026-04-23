@@ -1,5 +1,6 @@
 package br.com.dogvision.user.dto.update;
 
+import br.com.dogvision.user.model.ShiftEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -14,6 +15,9 @@ public record UpdateEmployeeRequest(
         String name,
 
         @Schema(description = "Novo telefone do funcionário (9 a 11 dígitos)", example = "11987654321")
-        @Size(min = 9, max = 11) String phone
+        @Size(min = 9, max = 11) String phone,
+
+        @Schema(description = "Novo turno de trabalho do funcionário", example = "AFTERNOON")
+        ShiftEnum shift
 
 ) {}

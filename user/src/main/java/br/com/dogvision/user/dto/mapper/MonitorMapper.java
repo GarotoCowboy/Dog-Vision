@@ -9,15 +9,14 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface MonitorMapper {
 
-    @Mapping(target = "employeeId", source = "employee.id")
-    @Mapping(target = "userId", source = "employee.user.userId")
-    @Mapping(target = "registration", source = "employee.user.registration")
-
-    @Mapping(target = "email", source = "employee.email")
-    @Mapping(target = "name", source = "employee.name")
-    @Mapping(target = "cpf", source = "employee.cpf")
-    @Mapping(target = "phone", source = "employee.phone")
-    @Mapping(target = "type", source = "employee.type")
+    @Mapping(target = "employeeId", source = "id")
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "registration", source = "user.registration")
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "cpf", ignore = true)
+    @Mapping(target = "phone", ignore = true)
+    @Mapping(target = "type", ignore = true)
 
     @Mapping(target = "shift", source = "shift")
     MonitorResponse toResponse(Monitor monitor);

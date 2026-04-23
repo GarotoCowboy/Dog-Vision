@@ -9,6 +9,7 @@ import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
 import br.com.dogvision.user.model.Employee;
+import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.Role;
 import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.EmployeeRepository;
@@ -66,6 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         User user = new User();
         user.setRegistration(dto.registration());
         user.setPasswordHash(passwordEncoder.encode(dto.password()));
+        user.setRoles(Set.of(resolveRole(dto.type())));
         User savedUser = userRepository.save(user);
 
         Employee employee = mapper.toEntity(dto);
@@ -100,18 +102,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         userRepository.delete(employee.getUser());
     }
 
-    // ---------------- helpers ----------------
 
-    private EmployeeResponse toResponse(Employee e) {
-        return new EmployeeResponse(
-                e.getId(),
-                e.getUser().getUserId(),
-                e.getUser().getRegistration(),
-                e.getEmail(),
-                e.getName(),
-                e.getCpf(),
-                e.getPhone(),
-                e.getType()
-        );
+    private Role resolveRole(EmployeeType type) {
+        return switch (type) {
+            case MONITOR -> Role.ROLE_MONITOR;
+            case TRAINER -> Role.ROLE_TRAINER;
+            case COORDINATOR -> Role.ROLE_COORDINATOR;
+            case VETERINARIAN -> Role.ROLE_VETERINARIAN;
+        };
     }
 }
