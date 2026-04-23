@@ -3,22 +3,22 @@ package br.com.dogvision.user.service.impl;
 import br.com.dogvision.user.dto.create.CreateCoordinatorRequest;
 import br.com.dogvision.user.dto.mapper.CoordinatorMapper;
 import br.com.dogvision.user.dto.response.CoordinatorResponse;
-import br.com.dogvision.user.dto.response.MonitorResponse;
+import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.CoordinatorNotFoundException;
-import br.com.dogvision.user.infra.exception.MonitorNotFoundException;
+import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
-import br.com.dogvision.user.infra.security.SpringSecurityConfig;
-import br.com.dogvision.user.model.*;
+import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
+import br.com.dogvision.user.model.Coordinator;
+import br.com.dogvision.user.model.EmployeeType;
+import br.com.dogvision.user.model.Role;
+import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.CoordinatorRepository;
+import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.service.CoordinatorService;
-import br.com.dogvision.user.service.EmployeeCreationService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
@@ -110,17 +110,20 @@ public class CoordinatorServiceImpl implements CoordinatorService {
 //    }
 
     private final CoordinatorRepository coordinatorRepository;
+    private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
     private final CoordinatorMapper coordinatorMapper;
     private final PasswordEncoder passwordEncoder;
 
     public CoordinatorServiceImpl(
             CoordinatorRepository coordinatorRepository,
+            EmployeeRepository employeeRepository,
             UserRepository userRepository,
             CoordinatorMapper coordinatorMapper,
             PasswordEncoder passwordEncoder
     ) {
         this.coordinatorRepository = coordinatorRepository;
+        this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
         this.coordinatorMapper = coordinatorMapper;
         this.passwordEncoder = passwordEncoder;
@@ -154,12 +157,15 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     @Override
     @Transactional
     public CoordinatorResponse save(CreateCoordinatorRequest dto) {
+        validateEmployeeConflicts(dto.registration(), dto.email(), dto.cpf());
+
         Coordinator coordinator = coordinatorMapper.toEntity(dto);
         User user = coordinator.getUser();
         user.setRoles(Set.of(Role.ROLE_COORDINATOR));
 
 
         user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        coordinator.setType(EmployeeType.COORDINATOR);
 
         Coordinator saved = coordinatorRepository.save(coordinator);
 
@@ -170,11 +176,23 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     @Transactional
     public void delete(UUID id) {
         Coordinator coordinator = coordinatorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Coordenador não encontrado"
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException("Coordinator", id));
 
         userRepository.delete(coordinator.getUser());
+    }
+
+    private void validateEmployeeConflicts(String registration, String email, String cpf) {
+        if (userRepository.existsByRegistration(registration)) {
+            throw new UserAlreadyExistsException(registration);
+        }
+
+        if (employeeRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
+
+        if (employeeRepository.existsByCpf(cpf)) {
+            throw new CpfAlreadyExistsException(cpf);
+        }
     }
 
 }

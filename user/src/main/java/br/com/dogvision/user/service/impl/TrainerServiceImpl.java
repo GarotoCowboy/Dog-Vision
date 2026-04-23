@@ -2,47 +2,53 @@ package br.com.dogvision.user.service.impl;
 
 import br.com.dogvision.user.dto.create.CreateTrainerRequest;
 import br.com.dogvision.user.dto.mapper.TrainerMapper;
-import br.com.dogvision.user.dto.response.CoordinatorResponse;
 import br.com.dogvision.user.dto.response.TrainerResponse;
-import br.com.dogvision.user.infra.exception.MonitorNotFoundException;
+import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
+import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.TrainerNotFoundException;
-import br.com.dogvision.user.model.*;
+import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
+import br.com.dogvision.user.model.Role;
+import br.com.dogvision.user.model.Trainer;
+import br.com.dogvision.user.model.User;
+import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.TrainerRepository;
 import br.com.dogvision.user.repository.UserRepository;
-import br.com.dogvision.user.service.EmployeeCreationService;
 import br.com.dogvision.user.service.TrainerService;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
+    private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
-    private final EmployeeCreationService employeeCreationService;
     private final TrainerMapper trainerMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public TrainerServiceImpl(
             TrainerRepository trainerRepository,
+            EmployeeRepository employeeRepository,
             UserRepository userRepository,
-            EmployeeCreationService employeeCreationService,
-            TrainerMapper trainerMapper
+            TrainerMapper trainerMapper,
+            PasswordEncoder passwordEncoder
     ) {
         this.trainerRepository = trainerRepository;
+        this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
-        this.employeeCreationService = employeeCreationService;
         this.trainerMapper = trainerMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public TrainerResponse getById(UUID id) {
-        Trainer trainer = trainerRepository.findByIdWithEmployeeAndUser(id)
+        Trainer trainer = trainerRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trainer",id
                 ));
@@ -60,7 +66,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public List<TrainerResponse> getAll() {
-        return trainerRepository.findAllWithEmployeeAndUser()
+        return trainerRepository.findAllWithUser()
                 .stream()
                 .map(trainerMapper::toResponse)
                 .toList();
@@ -69,39 +75,37 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public TrainerResponse save(CreateTrainerRequest dto) {
+        validateEmployeeConflicts(dto.registration(), dto.email(), dto.cpf());
 
-        // 1) cria User + Employee
-        Employee employee = employeeCreationService.createEmployee(
-                dto.registration(),
-                dto.password(),
-                dto.email(),
-                dto.name(),
-                dto.cpf(),
-                dto.phone(),
-                EmployeeType.TRAINER,
-                Role.ROLE_TRAINER
-        );
+        Trainer trainer = trainerMapper.toEntity(dto);
+        User user = trainer.getUser();
+        user.setRoles(Set.of(Role.ROLE_TRAINER));
+        user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
 
-        // 2) cria Trainer (subtipo)
-        Trainer trainer = new Trainer();
-        trainer.setEmployee(employee);
-        trainer.setAreaOfExpertise(dto.areaOfExpertise());
-
-        Trainer saved = trainerRepository.save(trainer);
-
-        return trainerMapper.toResponse(saved);
+        return trainerMapper.toResponse(trainerRepository.save(trainer));
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
 
-        Trainer trainer = trainerRepository.findByIdWithEmployeeAndUser(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Trainer não encontrado"
-                ));
+        Trainer trainer = trainerRepository.findByIdWithUser(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trainer", id));
 
-        // Soft delete da conta
-        userRepository.delete(trainer.getEmployee().getUser());
+        userRepository.delete(trainer.getUser());
+    }
+
+    private void validateEmployeeConflicts(String registration, String email, String cpf) {
+        if (userRepository.existsByRegistration(registration)) {
+            throw new UserAlreadyExistsException(registration);
+        }
+
+        if (employeeRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
+
+        if (employeeRepository.existsByCpf(cpf)) {
+            throw new CpfAlreadyExistsException(cpf);
+        }
     }
 }

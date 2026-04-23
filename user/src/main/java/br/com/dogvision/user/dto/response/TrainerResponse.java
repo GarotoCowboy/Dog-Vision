@@ -20,6 +20,8 @@ public record TrainerResponse(
         String cpf,
         @Schema(description = "Telefone do treinador", example = "11987654321")
         String phone,
+        @Schema(description = "Turno de trabalho do treinador", example = "MORNING")
+        String shift,
         @Schema(description = "Tipo do funcionário", example = "TRAINER")
         EmployeeType type,
         @Schema(description = "Área de especialização do treinador", example = "Adestramento comportamental")

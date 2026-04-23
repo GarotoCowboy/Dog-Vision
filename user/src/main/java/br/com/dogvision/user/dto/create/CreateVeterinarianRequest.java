@@ -27,6 +27,9 @@ public record CreateVeterinarianRequest(
         @Schema(description = "Senha de acesso (mínimo 8, máximo 60 caracteres)", example = "senha@123")
         @NotBlank @Size(min = 8, max = 60) String password,
 
+        @Schema(description = "Turno de trabalho do veterinário", example = "MORNING")
+        @NotBlank String shift,
+
         @Schema(description = "Número do CRMV do veterinário", example = "SP-12345")
         @NotBlank String crmv,
 

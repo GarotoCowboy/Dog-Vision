@@ -20,6 +20,8 @@ public record VeterinarianResponse(
         String cpf,
         @Schema(description = "Telefone do veterinário", example = "11987654321")
         String phone,
+        @Schema(description = "Turno de trabalho do veterinário", example = "MORNING")
+        String shift,
         @Schema(description = "Tipo do funcionário", example = "VETERINARIAN")
         EmployeeType type,
         @Schema(description = "Número do CRMV do veterinário", example = "SP-12345")

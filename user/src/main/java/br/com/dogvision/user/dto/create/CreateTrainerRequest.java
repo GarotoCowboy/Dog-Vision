@@ -26,6 +26,9 @@ public record CreateTrainerRequest(
         @Schema(description = "Senha de acesso (mínimo 8, máximo 60 caracteres)", example = "senha@123")
         @NotBlank @Size(min = 8, max = 60) String password,
 
+        @Schema(description = "Turno de trabalho do treinador", example = "MORNING")
+        @NotBlank String shift,
+
         @Schema(description = "Área de especialização do treinador", example = "Adestramento comportamental")
         @NotBlank String areaOfExpertise
 

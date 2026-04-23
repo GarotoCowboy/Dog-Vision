@@ -5,24 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "trainers")
-public class Trainer {
-
-    @Id
-    @Column(name = "employee_id")
-    private UUID id;
-
-    @MapsId
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+@EqualsAndHashCode(callSuper = true)
+public class Trainer extends Employee {
 
     @NotBlank @NotNull
     @Column(nullable = false)
     private String areaOfExpertise;
+
+    public Trainer(Employee employee) {
+        super(employee);
+    }
 }

@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public class ResourceNotFoundException extends BusinessException {
     public ResourceNotFoundException(String resource, UUID id) {
-        super(resource + "not found with id: " + id, HttpStatus.NOT_FOUND);
+        super(resource + " not found with id: " + id, HttpStatus.NOT_FOUND);
     }
 }

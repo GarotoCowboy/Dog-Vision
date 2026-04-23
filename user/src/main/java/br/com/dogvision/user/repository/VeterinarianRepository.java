@@ -1,6 +1,5 @@
 package br.com.dogvision.user.repository;
 
-import br.com.dogvision.user.dto.response.MonitorResponse;
 import br.com.dogvision.user.model.Veterinarian;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,26 +16,23 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID
     @Query("""
            select v
            from Veterinarian v
-           join fetch v.employee e
-           join fetch e.user u
+           join fetch v.user u
            """)
-    List<Veterinarian> findAllWithEmployeeAndUser();
+    List<Veterinarian> findAllWithUser();
 
     @Query("""
            select v
            from Veterinarian v
-           join fetch v.employee e
-           join fetch e.user u
+           join fetch v.user u
            where v.id = :id
            """)
-    Optional<Veterinarian> findByIdWithEmployeeAndUser(UUID id);
+    Optional<Veterinarian> findByIdWithUser(UUID id);
 
     @Query("""
-            select v 
-            from Veterinarian v 
-            join fetch v.employee e
-            join fetch e.user u
-            where u.registration = :registration            
+            select v
+            from Veterinarian v
+            join fetch v.user u
+            where u.registration = :registration
             """)
     Optional<Veterinarian> findByRegistration(@Param("registration") String registration);
 }

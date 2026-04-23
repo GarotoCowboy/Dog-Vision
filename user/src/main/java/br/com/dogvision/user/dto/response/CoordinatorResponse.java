@@ -20,6 +20,8 @@ public record CoordinatorResponse(
         String cpf,
         @Schema(description = "Telefone do coordenador", example = "11987654321")
         String phone,
+        @Schema(description = "Turno de trabalho do coordenador", example = "MORNING")
+        String shift,
         @Schema(description = "Tipo do funcionário", example = "COORDINATOR")
         EmployeeType type,
         @Schema(description = "Código administrativo do coordenador", example = "1")

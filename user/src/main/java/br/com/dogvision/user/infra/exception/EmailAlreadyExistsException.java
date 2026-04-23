@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class EmailAlreadyExistsException extends BusinessException {
     public EmailAlreadyExistsException(String email) {
-        super("CPF already exists: " + email, HttpStatus.CONFLICT);
+        super("Email already exists: " + email, HttpStatus.CONFLICT);
 
     }
 }

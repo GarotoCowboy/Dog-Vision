@@ -1,6 +1,5 @@
 package br.com.dogvision.user.repository;
 
-import br.com.dogvision.user.dto.response.MonitorResponse;
 import br.com.dogvision.user.model.Trainer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,26 +14,23 @@ public interface TrainerRepository extends JpaRepository<Trainer, UUID> {
     @Query("""
            select t
            from Trainer t
-           join fetch t.employee e
-           join fetch e.user u
+           join fetch t.user u
            """)
-    List<Trainer> findAllWithEmployeeAndUser();
+    List<Trainer> findAllWithUser();
 
     @Query("""
            select t
            from Trainer t
-           join fetch t.employee e
-           join fetch e.user u
+           join fetch t.user u
            where t.id = :id
            """)
-    Optional<Trainer> findByIdWithEmployeeAndUser(UUID id);
+    Optional<Trainer> findByIdWithUser(UUID id);
 
     @Query("""
-            select t 
-            from Trainer t 
-            join fetch t.employee e
-            join fetch e.user u
-            where u.registration = :registration            
+            select t
+            from Trainer t
+            join fetch t.user u
+            where u.registration = :registration
             """)
     Optional<Trainer> findByRegistration(@Param("registration") String registration);
 }

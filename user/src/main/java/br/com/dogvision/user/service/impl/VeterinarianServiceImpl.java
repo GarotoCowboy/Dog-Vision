@@ -3,44 +3,53 @@ package br.com.dogvision.user.service.impl;
 import br.com.dogvision.user.dto.create.CreateVeterinarianRequest;
 import br.com.dogvision.user.dto.mapper.VeterinarianMapper;
 import br.com.dogvision.user.dto.response.VeterinarianResponse;
+import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
+import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
+import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
+import br.com.dogvision.user.infra.exception.VeterinarianCrmvAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.VeterinarianNotFoundException;
-import br.com.dogvision.user.model.*;
+import br.com.dogvision.user.model.Role;
+import br.com.dogvision.user.model.User;
+import br.com.dogvision.user.model.Veterinarian;
+import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.repository.VeterinarianRepository;
-import br.com.dogvision.user.service.EmployeeCreationService;
 import br.com.dogvision.user.service.VeterinarianService;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class VeterinarianServiceImpl implements VeterinarianService {
 
     private final VeterinarianRepository veterinarianRepository;
+    private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
-    private final EmployeeCreationService employeeCreationService;
     private final VeterinarianMapper veterinarianMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public VeterinarianServiceImpl(
             VeterinarianRepository veterinarianRepository,
+            EmployeeRepository employeeRepository,
             UserRepository userRepository,
-            EmployeeCreationService employeeCreationService,
-            VeterinarianMapper veterinarianMapper
+            VeterinarianMapper veterinarianMapper,
+            PasswordEncoder passwordEncoder
     ) {
         this.veterinarianRepository = veterinarianRepository;
+        this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
-        this.employeeCreationService = employeeCreationService;
         this.veterinarianMapper = veterinarianMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public VeterinarianResponse getById(UUID id) {
-        Veterinarian vet = veterinarianRepository.findByIdWithEmployeeAndUser(id)
+        Veterinarian vet = veterinarianRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Veterinarian",id
                 ));
@@ -58,7 +67,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
 
     @Override
     public List<VeterinarianResponse> getAll() {
-        return veterinarianRepository.findAllWithEmployeeAndUser()
+        return veterinarianRepository.findAllWithUser()
                 .stream()
                 .map(veterinarianMapper::toResponse)
                 .toList();
@@ -67,49 +76,41 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     @Override
     @Transactional
     public VeterinarianResponse save(CreateVeterinarianRequest dto) {
+        validateEmployeeConflicts(dto.registration(), dto.email(), dto.cpf());
 
-        // Subtipo unique
         if (veterinarianRepository.existsByCrmv(dto.crmv())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "CRMV já existe");
+            throw new VeterinarianCrmvAlreadyExistsException(dto.crmv());
         }
 
-        // 1) cria User + Employee (valida registration/email/cpf)
-        Employee employee = employeeCreationService.createEmployee(
-                dto.registration(),
-                dto.password(),
-                dto.email(),
-                dto.name(),
-                dto.cpf(),
-                dto.phone(),
-                EmployeeType.VETERINARIAN,
-                Role.ROLE_VETERINARIAN
-        );
+        Veterinarian veterinarian = veterinarianMapper.toEntity(dto);
+        User user = veterinarian.getUser();
+        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+        user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
 
-        // 2) cria o Veterinarian (PK compartilhada via @MapsId)
-        Veterinarian vet = new Veterinarian();
-        vet.setEmployee(employee);
-        vet.setCrmv(dto.crmv());
-        vet.setAreaOfExpertise(dto.areaOfExpertise());
-
-        Veterinarian saved = veterinarianRepository.save(vet);
-
-        // dentro da transação, o mapper acessa employee/user sem LazyException
-        return veterinarianMapper.toResponse(saved);
+        return veterinarianMapper.toResponse(veterinarianRepository.save(veterinarian));
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
 
-        Veterinarian vet = veterinarianRepository.findByIdWithEmployeeAndUser(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Veterinário não encontrado"
-                ));
+        Veterinarian vet = veterinarianRepository.findByIdWithUser(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian", id));
 
-        // "deletar veterinário" = desativar a conta (soft delete)
-        userRepository.delete(vet.getEmployee().getUser());
+        userRepository.delete(vet.getUser());
+    }
 
-        // (opcional) se quiser remover só o subtipo hard delete:
-        // veterinarianRepository.delete(vet);
+    private void validateEmployeeConflicts(String registration, String email, String cpf) {
+        if (userRepository.existsByRegistration(registration)) {
+            throw new UserAlreadyExistsException(registration);
+        }
+
+        if (employeeRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
+
+        if (employeeRepository.existsByCpf(cpf)) {
+            throw new CpfAlreadyExistsException(cpf);
+        }
     }
 }
