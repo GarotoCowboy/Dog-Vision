@@ -16,8 +16,8 @@ public record DogResponse(
                           DogStatus status,
                           @Schema(description = "Sexo do cão", example = "M")
                           Character sex,
-                          @Schema(description = "Idade do cão", example = "2")
-                          int age,
+                          @Schema(description = "Data de nascimento do cão", example = "14/04/2026")
+                          Timestamp dateOfBirth,
                           @Schema(description = "Data de criação do registro")
                           Timestamp createdAt,
                           @Schema(description = "Data da última atualização do registro")

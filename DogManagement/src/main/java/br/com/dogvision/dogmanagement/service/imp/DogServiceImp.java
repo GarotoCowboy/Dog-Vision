@@ -11,7 +11,9 @@ import br.com.dogvision.dogmanagement.service.DogService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -38,7 +40,6 @@ public class DogServiceImp implements DogService {
 
     @Override
     public List<DogResponse> getAll() {
-
         return dogRepository.findAll()
                 .stream()
                 .map(mapper::toResponse).toList();
@@ -70,7 +71,8 @@ public class DogServiceImp implements DogService {
     @Override
     public void delete(UUID id) {
 
-       Dog dog = findById(id);
+       Dog dog = dogRepository.findById(id)
+               .orElseThrow(() -> new DogNotFoundException(id));
 
         dogRepository.delete(dog);
     }

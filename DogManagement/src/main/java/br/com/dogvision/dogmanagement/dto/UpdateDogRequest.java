@@ -14,17 +14,7 @@ public record UpdateDogRequest(
         @NotNull
         UUID ID,
 
-        @Schema(description = "Nome do cão", example = "Thor")
-        String name,
-        @Schema(description = "Raça do cão", example = "Labrador")
-        DogRace race,
         @Schema(description = "Status atual do cão no programa", example = "TREINAMENTO")
-        DogStatus status,
-        @Schema(description = "Sexo do cão", example = "M")
-        Character sex,
-
-        @Schema(description = "Idade do cão", example = "3", minimum = "0")
-        @Min(value = 0, message = "the dogs age cannot be negative")
-        Integer age
+        DogStatus status
 ) {
 }
