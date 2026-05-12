@@ -73,9 +73,9 @@ public class DogWeightServiceImp implements DogWeightService {
     }
 
     @Override
-    public DogWeightResponse save(CreateDogWeightRequest dto, UUID monitorId) {
+    public DogWeightResponse save(CreateDogWeightRequest dto, UUID collaboratorId) {
         DogWeight dogWeight = mapper.toEntity(dto);
-        dogWeight.setMonitorId(monitorId);
+        dogWeight.setCollaboratorId(collaboratorId);
 
         DogWeight savedDogWeight = repository.save(dogWeight);
         return mapper.toResponse(savedDogWeight);

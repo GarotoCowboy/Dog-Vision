@@ -28,6 +28,9 @@ public record DogBirthResponse(
         @Schema(description = "Quantidade de filhotes")
         int numberOfPuppies,
 
+        @Schema(description = "Observaçoes do parto")
+        String observations,
+
         @Schema(description = "Inicio do parto")
         LocalDateTime startTime,
 

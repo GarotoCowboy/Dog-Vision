@@ -3,6 +3,7 @@ package br.com.dogvision.doghealth.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Schema(description = "Resposta com os dados de uma consulta veterinaria")
@@ -29,7 +30,11 @@ public record ConsultationResponse(
         @Schema(description = "Diagnostico da consulta")
         String diagnosis,
 
-        @Schema(description = "Data da consulta")
-        LocalDate date
+        @Schema(description = "Data de criacao do registro")
+        LocalDateTime createdAt,
+
+        @Schema(description = "Data da ultima atualizacao do registro")
+        LocalDateTime updatedAt
+
 ) {
 }

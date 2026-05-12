@@ -1,11 +1,11 @@
 package br.com.dogvision.doghealth.controller;
 
-import br.com.dogvision.doghealth.dto.create.CreateDogWeightRequest;
-import br.com.dogvision.doghealth.dto.response.DogWeightResponse;
-import br.com.dogvision.doghealth.dto.update.UpdateDogWeightRequest;
+import br.com.dogvision.doghealth.dto.create.CreateDogMassageRequest;
+import br.com.dogvision.doghealth.dto.response.DogMassageResponse;
+import br.com.dogvision.doghealth.dto.update.UpdateDogMassageRequest;
 import br.com.dogvision.doghealth.infra.exception.error.ErrorResponse;
 import br.com.dogvision.doghealth.infra.security.TokenService;
-import br.com.dogvision.doghealth.service.DogWeightService;
+import br.com.dogvision.doghealth.service.DogMassageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -32,57 +32,58 @@ import java.util.UUID;
         description = "Erro interno do servidor - Falha inesperada no DogVision",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
 )
+
 @RestController
-@RequestMapping("/api/v1/doghealth/weight")
+@RequestMapping("/api/v1/doghealth/massage")
 @AllArgsConstructor
-@Tag(name = "Weights", description = "Endpoints de gerenciamento de pesagens de caes")
+@Tag(name = "Massages", description = "Endpoints de gerenciamento de massagens de caes")
 @SecurityRequirement(name = "bearerAuth")
-public class DogWeightController {
-    public final DogWeightService service;
+public class DogMassageController {
+
     public final TokenService tokenService;
+    public final DogMassageService service;
 
 
-
-    @Operation(summary = "Cadastrar nova pesagem")
+    @Operation(summary = "Cadastrar nova massagem")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Pesagem criada com sucesso", content = @Content(schema = @Schema(implementation = DogWeightResponse.class))),
+            @ApiResponse(responseCode = "201", description = "massagem criada com sucesso", content = @Content(schema = @Schema(implementation = DogMassageResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados invalidos ou ausentes", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @PostMapping
     @Transactional
-    public ResponseEntity<DogWeightResponse> save(@RequestBody @Valid CreateDogWeightRequest dto,
+    public ResponseEntity<DogMassageResponse> save(@RequestBody @Valid CreateDogMassageRequest dto,
                                                   @RequestHeader("Authorization") String authHeader){
         String token = authHeader.replace("Bearer ","");
         UUID collaboratorId = UUID.fromString(tokenService.getIdFromToken(token));
-        DogWeightResponse response = service.save(dto, collaboratorId);
+        DogMassageResponse response = service.save(dto, collaboratorId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "Listar pesagens de um cao")
+    @Operation(summary = "Listar massagens de um cao")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogWeightResponse.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogMassageResponse.class)))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<List<DogWeightResponse>> listWeightByDogId(
+    public ResponseEntity<List<DogMassageResponse>> listMassagesByDogId(
             @Parameter(description = "UUID do cao", required = true)
             @PathVariable UUID id){
-        List<DogWeightResponse> response = service.listByDogId(id);
+        List<DogMassageResponse> response = service.listByDogId(id);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Listar pesagens mensais de um cao")
+    @Operation(summary = "Listar massagens mensais de um cao")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogWeightResponse.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogMassageResponse.class)))),
             @ApiResponse(responseCode = "400", description = "Parametros invalidos", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping("/{id}/month")
-    public ResponseEntity<List<DogWeightResponse>> listWeightByMonth(
+    public ResponseEntity<List<DogMassageResponse>> listMassageByMonth(
             @Parameter(description = "UUID do cao", required = true)
             @PathVariable UUID id,
             @Parameter(description = "Mes da consulta, de 1 a 12", required = true, example = "4")
@@ -90,71 +91,71 @@ public class DogWeightController {
             @Parameter(description = "Ano da consulta", required = true, example = "2026")
             @RequestParam int year
     ){
-        List<DogWeightResponse> responses = service.getByMonth(id,month,year);
+        List<DogMassageResponse> responses = service.getByMonth(id,month,year);
         return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Listar pesagens semanais de um cao")
+    @Operation(summary = "Listar massagens semanais de um cao")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogWeightResponse.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogMassageResponse.class)))),
             @ApiResponse(responseCode = "400", description = "Parametros invalidos", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping("/{id}/week")
-    public ResponseEntity<List<DogWeightResponse>> listWeightByWeek(
+    public ResponseEntity<List<DogMassageResponse>> listMassagesByWeek(
             @Parameter(description = "UUID do cao", required = true)
             @PathVariable UUID id,
             @Parameter(description = "Data de referencia da semana", required = true, example = "2026-04-08")
             @RequestParam LocalDate date
     ){
-        List<DogWeightResponse> responses = service.getByWeek(id,date);
+        List<DogMassageResponse> responses = service.getByWeek(id,date);
         return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Buscar ultima pesagem de um cao")
+    @Operation(summary = "Buscar ultima massagem de um cao")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ultima pesagem retornada com sucesso", content = @Content(schema = @Schema(implementation = DogWeightResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Ultima massagem retornada com sucesso", content = @Content(schema = @Schema(implementation = DogMassageResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping("/{id}/lastWeight")
-    public ResponseEntity<Optional<DogWeightResponse>> getLastWeightById(
+    public ResponseEntity<Optional<DogMassageResponse>> getLastMassageById(
             @Parameter(description = "UUID do cao", required = true)
             @PathVariable UUID id){
-        Optional<DogWeightResponse>response = service.getLastWeight(id);
+        Optional<DogMassageResponse>response = service.getLastMassage(id);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Atualizar uma pesagem")
+    @Operation(summary = "Atualizar uma massagem")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pesagem atualizada com sucesso", content = @Content(schema = @Schema(implementation = DogWeightResponse.class))),
+            @ApiResponse(responseCode = "200", description = "massagem atualizada com sucesso", content = @Content(schema = @Schema(implementation = DogMassageResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados invalidos ou ausentes", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pesagem nao encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "massagem nao encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @PatchMapping("/update/{id}")
     @Transactional
-    public ResponseEntity<DogWeightResponse> update(
-            @Parameter(description = "UUID da pesagem", required = true)
+    public ResponseEntity<DogMassageResponse> update(
+            @Parameter(description = "UUID da massagem", required = true)
             @PathVariable UUID id,
-            @RequestBody @Valid UpdateDogWeightRequest dto){
-        DogWeightResponse response = service.update(id,dto);
+            @RequestBody @Valid UpdateDogMassageRequest dto){
+        DogMassageResponse response = service.update(id,dto);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Deletar pesagem por ID")
+    @Operation(summary = "Deletar massagem por ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Pesagem deletada com sucesso", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Pesagem nao encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "massagem deletada com sucesso", content = @Content),
+            @ApiResponse(responseCode = "404", description = "massagem nao encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> delete(
-            @Parameter(description = "UUID da pesagem", required = true)
+            @Parameter(description = "UUID da massagem", required = true)
             @PathVariable UUID id){
         service.delete(id);
 
