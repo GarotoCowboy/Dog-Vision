@@ -1,5 +1,5 @@
-### PUT atualiza os dados de um monitor
-PUT http://localhost:3003/api/v1/employees/monitors
+### PUT atualiza os dados de um collaborator
+PUT http://localhost:3003/api/v1/employees/collaborators
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInVzZXJJZCI6ImJkZDRkYmFiLWE1OTQtNGQzOC04ZGY1LWVjYjk3YTQzMWM5MSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzczODUxODY3fQ.ReUviKbuEE-JfWj4_6oiFjgxlQ3Ao7ZYTWAtzpdq_z4
 

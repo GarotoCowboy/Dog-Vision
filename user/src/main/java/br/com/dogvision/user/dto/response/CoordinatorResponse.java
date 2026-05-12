@@ -4,26 +4,24 @@ import br.com.dogvision.user.model.EmployeeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
-@Schema(description = "Dados de resposta de um coordenador")
+@Schema(description = "Coordinator response data")
 public record CoordinatorResponse(
-        @Schema(description = "ID do funcionário", example = "550e8400-e29b-41d4-a716-446655440000")
+        @Schema(description = "Employee ID", example = "550e8400-e29b-41d4-a716-446655440000")
         UUID employeeId,
-        @Schema(description = "ID do usuário", example = "550e8400-e29b-41d4-a716-446655440001")
+        @Schema(description = "User ID", example = "550e8400-e29b-41d4-a716-446655440001")
         UUID userId,
-        @Schema(description = "Matrícula de acesso ao sistema", example = "COORD001")
+        @Schema(description = "System access registration", example = "COORD001")
         String registration,
-        @Schema(description = "E-mail do coordenador", example = "coordenador@dogvision.com")
+        @Schema(description = "Coordinator email", example = "coordinator@dogvision.com")
         String email,
-        @Schema(description = "Nome completo do coordenador", example = "João da Silva")
+        @Schema(description = "Coordinator full name", example = "John Silva")
         String name,
-        @Schema(description = "CPF do coordenador", example = "12345678901")
-        String cpf,
-        @Schema(description = "Telefone do coordenador", example = "11987654321")
+        @Schema(description = "Coordinator phone", example = "11987654321")
         String phone,
-        @Schema(description = "Turno de trabalho do coordenador", example = "MORNING")
+        @Schema(description = "Coordinator work shift", example = "MORNING")
         String shift,
-        @Schema(description = "Tipo do funcionário", example = "COORDINATOR")
-        EmployeeType type,
-        @Schema(description = "Código administrativo do coordenador", example = "1")
-        Integer codAdmin
+        @Schema(description = "Employee type", example = "COORDINATOR")
+        EmployeeType type
 ) {}
+
+

@@ -22,12 +22,12 @@ import java.util.UUID;
 
 @ApiResponse(
         responseCode = "500",
-        description = "Erro interno do servidor - Falha inesperada no DogVision",
+        description = "Internal server error - Unexpected DogVision failure",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
 )
 @RestController
 @RequestMapping("/api/v1/employees/veterinarians")
-@Tag(name = "Veterinarians", description = "Endpoints de gerenciamento de veterinários")
+@Tag(name = "Veterinarians", description = "Veterinarian management endpoints")
 @SecurityRequirement(name = "bearerAuth")
 public class VeterinarianController {
 
@@ -37,65 +37,65 @@ public class VeterinarianController {
         this.service = service;
     }
 
-    @Operation(summary = "Buscar veterinário por ID")
+    @Operation(summary = "Find veterinarian by ID")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Veterinário encontrado",
+                    description = "Veterinarian found",
                     content = @Content(schema = @Schema(implementation = VeterinarianResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Veterinário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Veterinarian not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping("/{id}")
     public VeterinarianResponse getById(
-            @Parameter(description = "UUID do veterinário", required = true)
+            @Parameter(description = "Veterinarian UUID", required = true)
             @PathVariable UUID id
     ) {
         return service.getById(id);
     }
 
-    @Operation(summary = "Buscar veterinário por matrícula")
+    @Operation(summary = "Find veterinarian by registration")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Veterinário encontrado",
+                    description = "Veterinarian found",
                     content = @Content(schema = @Schema(implementation = VeterinarianResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Veterinário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Veterinarian not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping("/registration/{registration}")
     public VeterinarianResponse getByRegistration(
-            @Parameter(description = "Matrícula do veterinário", required = true)
+            @Parameter(description = "Veterinarian registration", required = true)
             @PathVariable String registration
     ) {
         return service.getByRegistration(registration);
     }
 
-    @Operation(summary = "Listar todos os veterinários")
+    @Operation(summary = "List all veterinarians")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Lista retornada com sucesso",
+                    description = "List returned successfully",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = VeterinarianResponse.class)))
             ),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping
     public List<VeterinarianResponse> getAll() {
         return service.getAll();
     }
 
-    @Operation(summary = "Cadastrar novo veterinário")
+    @Operation(summary = "Create new veterinarian")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Veterinário criado com sucesso",
+                    description = "Veterinarian created successfully",
                     content = @Content(schema = @Schema(implementation = VeterinarianResponse.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou ausentes", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid or missing data", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -103,18 +103,19 @@ public class VeterinarianController {
         return service.save(dto);
     }
 
-    @Operation(summary = "Deletar veterinário por ID")
+    @Operation(summary = "Delete veterinarian by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Veterinário deletado com sucesso", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Veterinário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Veterinarian deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Veterinarian not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @Parameter(description = "UUID do veterinário", required = true)
+            @Parameter(description = "Veterinarian UUID", required = true)
             @PathVariable UUID id
     ) {
         service.delete(id);
     }
 }
+

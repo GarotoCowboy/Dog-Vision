@@ -10,9 +10,9 @@ import java.util.UUID;
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@Table(name = "monitors")
+@Table(name = "collaborators")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Monitor {
+public class Collaborator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,14 +23,17 @@ public class Monitor {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @NotNull @NotBlank
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ShiftEnum shift;
 
-    public Monitor(Monitor monitor) {
-        this.id = monitor.id;
-        this.user = monitor.user;
-        this.shift = monitor.shift;
+    public Collaborator(Collaborator collaborator) {
+        this.id = collaborator.id;
+        this.user = collaborator.user;
+        this.name = collaborator.name;
+        this.shift = collaborator.shift;
     }
 }

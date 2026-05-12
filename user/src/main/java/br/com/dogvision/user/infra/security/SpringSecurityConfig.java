@@ -36,25 +36,27 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/employees/trainers",
                                 "/api/v1/employees/coordinators",
-                                "/api/v1/employees/monitors",
+                                "/api/v1/employees/collaborators",
                                 "/api/v1/employees/veterinarians").hasAuthority("ROLE_COORDINATOR")
                         .requestMatchers(HttpMethod.DELETE,
                                 "/api/v1/employees/trainers/*",
                                 "/api/v1/employees/coordinators/*",
-                                "/api/v1/employees/monitors/*",
+                                "/api/v1/employees/collaborators/*",
+                                "/api/v1/employees/veterinarians/*").hasAuthority("ROLE_COORDINATOR")
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/v1/employees/trainers/*",
+                                "/api/v1/employees/coordinators/*",
+                                "/api/v1/employees/collaborators/*",
                                 "/api/v1/employees/veterinarians/*").hasAuthority("ROLE_COORDINATOR")
                         .requestMatchers(
                                 "/api/v1/employees/veterinarians",
-                                "/api/v1/employees/veterinarians/**").hasAnyAuthority("ROLE_VETERINARIAN","ROLE_COORDINATOR")
-                        .requestMatchers(
+                                "/api/v1/employees/veterinarians/**",
                                 "/api/v1/employees/trainers",
-                                "/api/v1/employees/trainers/**").hasAnyAuthority("ROLE_TRAINER","ROLE_COORDINATOR")
-                        .requestMatchers(
-                                "/api/v1/employees/monitors",
-                                "/api/v1/employees/monitors/**").hasAnyAuthority("ROLE_MONITOR","ROLE_COORDINATOR")
-                        .requestMatchers(
+                                "/api/v1/employees/trainers/**",
+                                "/api/v1/employees/collaborators",
+                                "/api/v1/employees/collaborators/**",
                                 "/api/v1/employees/coordinators",
-                                "/api/v1/employees/coordinators/**").hasAuthority("ROLE_COORDINATOR")
+                                "/api/v1/employees/coordinators/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -4,7 +4,5 @@ public enum EmployeeType {
     COORDINATOR,
     VETERINARIAN,
     TRAINER,
-    MONITOR
-
-
+    COLLABORATOR
 }

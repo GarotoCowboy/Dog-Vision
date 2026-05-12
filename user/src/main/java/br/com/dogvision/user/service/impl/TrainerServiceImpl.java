@@ -3,7 +3,6 @@ package br.com.dogvision.user.service.impl;
 import br.com.dogvision.user.dto.create.CreateTrainerRequest;
 import br.com.dogvision.user.dto.mapper.TrainerMapper;
 import br.com.dogvision.user.dto.response.TrainerResponse;
-import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.TrainerNotFoundException;
@@ -75,7 +74,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public TrainerResponse save(CreateTrainerRequest dto) {
-        validateEmployeeConflicts(dto.registration(), dto.email(), dto.cpf());
+        validateEmployeeConflicts(dto.registration(), dto.email());
 
         Trainer trainer = trainerMapper.toEntity(dto);
         User user = trainer.getUser();
@@ -95,17 +94,13 @@ public class TrainerServiceImpl implements TrainerService {
         userRepository.delete(trainer.getUser());
     }
 
-    private void validateEmployeeConflicts(String registration, String email, String cpf) {
+    private void validateEmployeeConflicts(String registration, String email) {
         if (userRepository.existsByRegistration(registration)) {
             throw new UserAlreadyExistsException(registration);
         }
 
         if (employeeRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException(email);
-        }
-
-        if (employeeRepository.existsByCpf(cpf)) {
-            throw new CpfAlreadyExistsException(cpf);
         }
     }
 }

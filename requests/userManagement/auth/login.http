@@ -5,7 +5,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "password": "12345678",
-  "registration": "COORD-001"
+  "password": "123456",
+  "registration": "COORD_NEW_01"
 }
 ###

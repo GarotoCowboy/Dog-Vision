@@ -4,24 +4,24 @@ import br.com.dogvision.user.model.EmployeeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
-@Schema(description = "Dados de resposta de um funcionário")
+@Schema(description = "Employee response data")
 public record EmployeeResponse(
-        @Schema(description = "ID do funcionário", example = "550e8400-e29b-41d4-a716-446655440000")
+        @Schema(description = "Employee ID", example = "550e8400-e29b-41d4-a716-446655440000")
         UUID employeeId,
-        @Schema(description = "ID do usuário", example = "550e8400-e29b-41d4-a716-446655440001")
+        @Schema(description = "User ID", example = "550e8400-e29b-41d4-a716-446655440001")
         UUID userId,
-        @Schema(description = "Matrícula de acesso ao sistema", example = "FUNC001")
+        @Schema(description = "System access registration", example = "FUNC001")
         String registration,
-        @Schema(description = "E-mail do funcionário", example = "funcionario@dogvision.com")
+        @Schema(description = "Employee email", example = "employee@dogvision.com")
         String email,
-        @Schema(description = "Nome completo do funcionário", example = "Maria Oliveira")
+        @Schema(description = "Employee full name", example = "Maria Oliveira")
         String name,
-        @Schema(description = "CPF do funcionário", example = "12345678901")
-        String cpf,
-        @Schema(description = "Telefone do funcionário", example = "11987654321")
+        @Schema(description = "Employee phone", example = "11987654321")
         String phone,
-        @Schema(description = "Turno de trabalho do funcionário", example = "MORNING")
+        @Schema(description = "Employee work shift", example = "MORNING")
         String shift,
-        @Schema(description = "Tipo do funcionário", example = "VETERINARIAN")
+        @Schema(description = "Employee type", example = "VETERINARIAN")
         EmployeeType type
 ) {}
+
+

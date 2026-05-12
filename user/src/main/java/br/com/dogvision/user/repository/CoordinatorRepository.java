@@ -1,6 +1,6 @@
 package br.com.dogvision.user.repository;
 
-import br.com.dogvision.user.dto.response.MonitorResponse;
+import br.com.dogvision.user.dto.response.CollaboratorResponse;
 import br.com.dogvision.user.model.Coordinator;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

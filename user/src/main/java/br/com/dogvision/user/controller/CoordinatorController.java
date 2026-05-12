@@ -22,12 +22,12 @@ import java.util.UUID;
 
 @ApiResponse(
         responseCode = "500",
-        description = "Erro interno do servidor - Falha inesperada no DogVision",
+        description = "Internal server error - Unexpected DogVision failure",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
 )
 @RestController
 @RequestMapping("/api/v1/employees/coordinators")
-@Tag(name = "Coordinators", description = "Endpoints de gerenciamento de coordenadores")
+@Tag(name = "Coordinators", description = "Coordinator management endpoints")
 @SecurityRequirement(name = "bearerAuth")
 public class CoordinatorController {
 
@@ -37,50 +37,50 @@ public class CoordinatorController {
         this.service = service;
     }
 
-    @Operation(summary = "Buscar coordenador por ID")
+    @Operation(summary = "Find coordinator by ID")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Coordenador encontrado",
+                    description = "Coordinator found",
                     content = @Content(schema = @Schema(implementation = CoordinatorResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Coordenador não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Coordinator not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping("/{id}")
     public CoordinatorResponse getById(
-            @Parameter(description = "UUID do coordenador", required = true)
+            @Parameter(description = "Coordinator UUID", required = true)
             @PathVariable UUID id
     ) {
         return service.getById(id);
     }
 
-    @Operation(summary = "Buscar coordenador por matrícula")
+    @Operation(summary = "Find coordinator by registration")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Coordenador encontrado",
+                    description = "Coordinator found",
                     content = @Content(schema = @Schema(implementation = CoordinatorResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Coordenador não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Coordinator not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
     })
     @GetMapping("/registration/{registration}")
     public CoordinatorResponse getByRegistration(
-            @Parameter(description = "Matrícula do coordenador", required = true)
+            @Parameter(description = "Coordinator registration", required = true)
             @PathVariable String registration
     ) {
         return service.getByRegistration(registration);
     }
 
-    @Operation(summary = "Listar todos os coordenadores")
+    @Operation(summary = "List all coordinators")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Lista retornada com sucesso",
+                    description = "List returned successfully",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = CoordinatorResponse.class)))
             ),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
 
     })
     @GetMapping
@@ -88,15 +88,15 @@ public class CoordinatorController {
         return service.getAll();
     }
 
-    @Operation(summary = "Cadastrar novo coordenador")
+    @Operation(summary = "Create new coordinator")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Coordenador criado com sucesso",
+                    description = "Coordinator created successfully",
                     content = @Content(schema = @Schema(implementation = CoordinatorResponse.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou ausentes", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid or missing data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
 
     })
     @PostMapping
@@ -105,19 +105,20 @@ public class CoordinatorController {
         return service.save(dto);
     }
 
-    @Operation(summary = "Deletar coordenador por ID")
+    @Operation(summary = "Delete coordinator by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Coordenador deletado com sucesso", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Coordenador não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "204", description = "Coordinator deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Coordinator not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
 
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @Parameter(description = "UUID do coordenador", required = true)
+            @Parameter(description = "Coordinator UUID", required = true)
             @PathVariable UUID id
     ) {
         service.delete(id);
     }
 }
+

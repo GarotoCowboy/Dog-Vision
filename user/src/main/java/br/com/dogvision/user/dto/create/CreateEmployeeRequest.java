@@ -4,33 +4,31 @@ import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.ShiftEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.br.CPF;
 
-@Schema(description = "Dados para cadastro de um novo funcionário")
+@Schema(description = "Data for creating a new employee")
 public record CreateEmployeeRequest(
 
-        @Schema(description = "E-mail do funcionário", example = "funcionario@dogvision.com")
+        @Schema(description = "Employee email", example = "employee@dogvision.com")
         @NotBlank @Email String email,
 
-        @Schema(description = "Nome completo do funcionário", example = "Maria Oliveira")
+        @Schema(description = "Employee full name", example = "Maria Oliveira")
         @NotBlank String name,
 
-        @Schema(description = "CPF do funcionário (apenas números, 11 dígitos)", example = "12345678901")
-        @NotBlank @CPF @Size(min = 11, max = 11) String cpf,
-
-        @Schema(description = "Telefone do funcionário (9 a 11 dígitos)", example = "11987654321")
+        @Schema(description = "Employee phone (9 to 11 digits)", example = "11987654321")
         @NotBlank @Size(min = 9, max = 11) String phone,
 
-        @Schema(description = "Matrícula de acesso ao sistema", example = "FUNC001")
+        @Schema(description = "System access registration", example = "FUNC001")
         @NotBlank String registration,
 
-        @Schema(description = "Senha de acesso (mínimo 8, máximo 60 caracteres)", example = "senha@123")
+        @Schema(description = "Access password (minimum 8, maximum 60 characters)", example = "password@123")
         @NotBlank @Size(min = 8, max = 60) String password,
 
-        @Schema(description = "Turno de trabalho do funcionário", example = "MORNING")
-        @NotBlank ShiftEnum shift,
+        @Schema(description = "Employee work shift", example = "MORNING")
+        @NotNull ShiftEnum shift,
 
-        @Schema(description = "Tipo do funcionário", example = "VETERINARIAN")
+        @Schema(description = "Employee type", example = "VETERINARIAN")
         @NotNull EmployeeType type
 
 ) {}
+
+

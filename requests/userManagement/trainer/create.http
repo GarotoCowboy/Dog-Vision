@@ -2,16 +2,16 @@
 POST http://localhost:3003/api/v1/employees/trainers
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JELTAwMSIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzcyNTY0NDM3fQ.QGZfRo0vyhbPh2apeRIrDNBgGRruvKlbkokJN_dVWoU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JEMDAxIiwiZW1wbG95ZWVJZCI6IjIyMjIyMjIyLTIyMjItMjIyMi0yMjIyLTIyMjIyMjIyMjIyMiIsInJvbGVzIjpbIlJPTEVfQ09PUkRJTkFUT1IiXSwiZXhwIjoxNzc2OTY4ODM2fQ.QV876wDmIYgFTe_ON9k1HDekYTOhKPerCLIUIgYAIj0
 
 {
   "email": "trainer2@dogvision.com",
   "name": "Carla Treinadora",
-  "cpf": "12345678922",
   "phone": "61999999997",
   "registration": "TRN-003",
   "password": "12345678",
-  "areaOfExpertise": "Obediência Canina"
+  "areaOfExpertise": "Obediência Canina",
+  "shift": "manhã"
 }
 
 

@@ -10,7 +10,6 @@ import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
-    boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
 
     @Query("""

@@ -8,7 +8,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwa
 {
   "email": "vet1@dogvision.com",
   "name": "Diego Veterinário",
-  "cpf": "12345678904",
   "phone": "61999999996",
   "registration": "VET-001",
   "password": "12345678",

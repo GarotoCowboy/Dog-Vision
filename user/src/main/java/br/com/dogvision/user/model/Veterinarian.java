@@ -12,15 +12,9 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class Veterinarian extends Employee {
 
-    @NotBlank @NotNull
     @Column(nullable = false, unique = true)
     private String crmv;
 
-    @NotBlank @NotNull
     @Column(nullable = false)
     private String areaOfExpertise;
-
-    public Veterinarian(Employee employee) {
-        super(employee);
-    }
 }
