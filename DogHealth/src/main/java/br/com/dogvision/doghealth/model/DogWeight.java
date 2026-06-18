@@ -21,7 +21,7 @@ public class DogWeight {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID monitorId;
+    private UUID collaboratorId;
 
     private UUID dogId;
 

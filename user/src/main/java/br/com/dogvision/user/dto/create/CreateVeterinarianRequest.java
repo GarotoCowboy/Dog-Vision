@@ -1,39 +1,36 @@
 package br.com.dogvision.user.dto.create;
 
+import br.com.dogvision.user.model.ShiftEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.br.CPF;
 
-@Schema(description = "Dados para cadastro de um novo veterinário")
+@Schema(description = "Data for creating a new veterinarian")
 public record CreateVeterinarianRequest(
 
-        @Schema(description = "E-mail do veterinário", example = "veterinario@dogvision.com")
+        @Schema(description = "Veterinarian email", example = "veterinarian@dogvision.com")
         @NotBlank @Email String email,
 
-        @Schema(description = "Nome completo do veterinário", example = "Ana Costa")
+        @Schema(description = "Veterinarian full name", example = "Anna Costa")
         @NotBlank String name,
 
-
-        @CPF
-        @Schema(description = "CPF do veterinário (apenas números, 11 dígitos)", example = "12345678901")
-        @NotBlank @Size(min = 11, max = 11) String cpf,
-
-        @Schema(description = "Telefone do veterinário (9 a 11 dígitos)", example = "11987654321")
+        @Schema(description = "Veterinarian phone (9 to 11 digits)", example = "11987654321")
         @NotBlank @Size(min = 9, max = 11) String phone,
 
-        @Schema(description = "Matrícula de acesso ao sistema", example = "VET001")
+        @Schema(description = "System access registration", example = "VET001")
         @NotBlank String registration,
 
-        @Schema(description = "Senha de acesso (mínimo 8, máximo 60 caracteres)", example = "senha@123")
+        @Schema(description = "Access password (minimum 8, maximum 60 characters)", example = "password@123")
         @NotBlank @Size(min = 8, max = 60) String password,
 
-        @Schema(description = "Turno de trabalho do veterinário", example = "MORNING")
-        @NotBlank String shift,
+        @Schema(description = "Veterinarian work shift", example = "MORNING")
+        @NotNull ShiftEnum shift,
 
-        @Schema(description = "Número do CRMV do veterinário", example = "SP-12345")
+        @Schema(description = "Veterinarian CRMV number", example = "SP-12345")
         @NotBlank String crmv,
 
-        @Schema(description = "Área de especialização do veterinário", example = "Clínica geral")
+        @Schema(description = "Veterinarian area of expertise", example = "General practice")
         @NotBlank String areaOfExpertise
 
 ) {}
+
+

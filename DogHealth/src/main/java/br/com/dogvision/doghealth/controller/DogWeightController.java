@@ -55,8 +55,8 @@ public class DogWeightController {
     public ResponseEntity<DogWeightResponse> save(@RequestBody @Valid CreateDogWeightRequest dto,
                                                   @RequestHeader("Authorization") String authHeader){
         String token = authHeader.replace("Bearer ","");
-        UUID monitorId = UUID.fromString(tokenService.getIdFromToken(token));
-        DogWeightResponse response = service.save(dto, monitorId);
+        UUID collaboratorId = UUID.fromString(tokenService.getIdFromToken(token));
+        DogWeightResponse response = service.save(dto, collaboratorId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

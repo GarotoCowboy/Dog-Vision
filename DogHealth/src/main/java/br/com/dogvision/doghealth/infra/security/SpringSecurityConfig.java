@@ -31,11 +31,13 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/v1/doghealth/consultation", "/api/v1/doghealth/consultation/**").authenticated() //all can get
                         .requestMatchers("/api/v1/doghealth/consultation", "/api/v1/doghealth/consultation/**").hasAuthority("ROLE_VETERINARIAN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/doghealth/weight/**","/api/v1/doghealth/weight").authenticated() //all can get
-                        .requestMatchers("/api/v1/doghealth/weight", "/api/v1/doghealth/weight/**").hasAnyAuthority("ROLE_MONITOR","ROLE_VETERINARIAN")
-                        .requestMatchers(HttpMethod.GET,"/api/v1/doghealth/birth", "/api/v1/doghealth/birth/**").authenticated()
-                        .requestMatchers("/api/v1/doghealth/birth", "/api/v1/doghealth/birth/**").hasAuthority("ROLE_VETERINARIAN") //all can get
-
-                        //.requestMatchers("/api/v1/doghealth/**").hasAnyAuthority("ROLE_MONITOR", "ROLE_COORDINATOR","ROLE_VETERINARIAN","")
+                        .requestMatchers("/api/v1/doghealth/weight", "/api/v1/doghealth/weight/**").hasAnyAuthority("ROLE_COLLABORATOR","ROLE_VETERINARIAN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/doghealth/birth", "/api/v1/doghealth/birth/**").authenticated() //all can get
+                        .requestMatchers("/api/v1/doghealth/birth", "/api/v1/doghealth/birth/**").hasAuthority("ROLE_VETERINARIAN")
+                        .requestMatchers("/api/v1/doghealth/massage","/api/v1/doghealth/massage/**").hasAnyAuthority("ROLE_COLLABORATOR","ROLE_VETERINARIAN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/doghealth/massage/**").authenticated() //all can get
+                        .requestMatchers("/api/v1/doghealth/massage/**").hasAnyAuthority("ROLE_COLLABORATOR","ROLE_VETERINARIAN")
+                        //.requestMatchers("/api/v1/doghealth/**").hasAnyAuthority("ROLE_COLLABORATOR", "ROLE_COORDINATOR","ROLE_VETERINARIAN","")
 
                         .anyRequest().authenticated()
                 )

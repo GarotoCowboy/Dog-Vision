@@ -36,33 +36,26 @@ public class EmployeeCreationServiceImpl implements EmployeeCreationService {
             String rawPassword,
             String email,
             String name,
-            String cpf,
             String phone,
             ShiftEnum shift,
             EmployeeType type,
             Role role
     ) {
 
-        // 🔎 Validações de conflito
+        // Conflict validations
         if (userRepository.existsByRegistration(registration)) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "registration já existe"
+                    HttpStatus.CONFLICT, "registration already exists"
             );
         }
 
         if (employeeRepository.existsByEmail(email)) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "email já existe"
+                    HttpStatus.CONFLICT, "email already exists"
             );
         }
 
-        if (employeeRepository.existsByCpf(cpf)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "cpf já existe"
-            );
-        }
-
-        // 🧾 1) Criar User
+        // 1) Create User
         User user = new User();
         user.setRegistration(registration);
         user.setPasswordHash(passwordEncoder.encode(rawPassword));
@@ -70,12 +63,11 @@ public class EmployeeCreationServiceImpl implements EmployeeCreationService {
 
         User savedUser = userRepository.save(user);
 
-        // 👤 2) Criar Employee
+        // 2) Create Employee
         Employee employee = new Employee();
         employee.setUser(savedUser);
         employee.setEmail(email);
         employee.setName(name);
-        employee.setCpf(cpf);
         employee.setPhone(phone);
         employee.setShift(shift);
         employee.setType(type);
@@ -83,3 +75,5 @@ public class EmployeeCreationServiceImpl implements EmployeeCreationService {
         return employeeRepository.save(employee);
     }
 }
+
+

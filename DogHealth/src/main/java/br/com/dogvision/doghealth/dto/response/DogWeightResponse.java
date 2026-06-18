@@ -13,8 +13,8 @@ public record DogWeightResponse(
         @Schema(description = "UUID do cao pesado")
         UUID dogId,
 
-        @Schema(description = "UUID do monitor responsavel")
-        UUID monitorId,
+        @Schema(description = "UUID do collaborator responsavel")
+        UUID collaboratorId,
 
         @Schema(description = "Peso em quilogramas")
         Double weight,

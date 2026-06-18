@@ -7,6 +7,7 @@
 
 # Build outputs
 target/
+**/.m2-local/
 
 # Local archives/backups
 *.zip

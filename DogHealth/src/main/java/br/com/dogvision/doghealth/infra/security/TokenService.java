@@ -49,7 +49,7 @@ public class TokenService {
                     .withIssuer("auth-api")
                     .build()
                     .verify(String.valueOf(token))
-                    .getClaim("employeeId").asString();
+                    .getClaim("collaboratorId").asString();
         }catch (JWTVerificationException exception){
             return "";
         }

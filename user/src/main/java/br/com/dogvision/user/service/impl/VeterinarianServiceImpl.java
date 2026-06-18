@@ -3,7 +3,6 @@ package br.com.dogvision.user.service.impl;
 import br.com.dogvision.user.dto.create.CreateVeterinarianRequest;
 import br.com.dogvision.user.dto.mapper.VeterinarianMapper;
 import br.com.dogvision.user.dto.response.VeterinarianResponse;
-import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
@@ -76,7 +75,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     @Override
     @Transactional
     public VeterinarianResponse save(CreateVeterinarianRequest dto) {
-        validateEmployeeConflicts(dto.registration(), dto.email(), dto.cpf());
+        validateEmployeeConflicts(dto.registration(), dto.email());
 
         if (veterinarianRepository.existsByCrmv(dto.crmv())) {
             throw new VeterinarianCrmvAlreadyExistsException(dto.crmv());
@@ -100,17 +99,13 @@ public class VeterinarianServiceImpl implements VeterinarianService {
         userRepository.delete(vet.getUser());
     }
 
-    private void validateEmployeeConflicts(String registration, String email, String cpf) {
+    private void validateEmployeeConflicts(String registration, String email) {
         if (userRepository.existsByRegistration(registration)) {
             throw new UserAlreadyExistsException(registration);
         }
 
         if (employeeRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistsException(email);
-        }
-
-        if (employeeRepository.existsByCpf(cpf)) {
-            throw new CpfAlreadyExistsException(cpf);
         }
     }
 }

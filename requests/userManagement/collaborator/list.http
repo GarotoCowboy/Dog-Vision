@@ -1,0 +1,4 @@
+### GET busca todos os collaboratores
+GET http://localhost:3003/api/v1/employees/collaborators
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JEX05FV18wMSIsImNvbGxhYm9yYXRvcklkIjoiNTcxNWM5NjAtY2ZjNi00MWVmLWEyZGYtY2UyY2U1Y2FlOWNlIiwicm9sZXMiOlsiUk9MRV9DT09SRElOQVRPUiJdLCJleHAiOjE3Nzg1MjcwNDh9.YCOw2d9xA2_l5BSLGaBEVc8tgIgj-9Apj-_cUT3OiVo

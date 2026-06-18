@@ -28,7 +28,7 @@ public class SpringSecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/api/v1/dogs/**").hasAnyAuthority("ROLE_TRAINER", "ROLE_MONITOR", "ROLE_COORDINATOR","ROLE_VETERINARIAN")
+                        .requestMatchers("/api/v1/dogs/**").hasAnyAuthority("ROLE_TRAINER", "ROLE_COLLABORATOR", "ROLE_COORDINATOR","ROLE_VETERINARIAN")
 
                         .anyRequest().authenticated()
                 )

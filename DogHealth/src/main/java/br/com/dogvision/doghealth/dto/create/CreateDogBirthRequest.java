@@ -31,9 +31,13 @@ public record CreateDogBirthRequest(
         @Min(0)
         int numberOfPuppies,
 
+        @Schema(description = "Observaçoes do parto", example = "Os filhotes necessitam de x remedios")
+        String observations,
+
         @Schema(description = "Inicio do parto", example = "2026-04-08T09:45:00")
         @NotNull(message = "Start time is required")
         LocalDateTime startTime,
+
 
         @Schema(description = "Fim do parto", example = "2026-04-08T11:20:00")
         LocalDateTime endTime

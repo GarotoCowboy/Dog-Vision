@@ -5,19 +5,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "Dados para atualização de um funcionário (todos os campos são opcionais)")
+@Schema(description = "Data for updating an employee (all fields are optional)")
 public record UpdateEmployeeRequest(
 
-        @Schema(description = "Novo e-mail do funcionário", example = "novoemail@dogvision.com")
+        @Schema(description = "New employee email", example = "novoemail@dogvision.com")
         @Email String email,
 
-        @Schema(description = "Novo nome completo do funcionário", example = "Maria Silva Oliveira")
+        @Schema(description = "New employee full name", example = "Maria Silva Oliveira")
         String name,
 
-        @Schema(description = "Novo telefone do funcionário (9 a 11 dígitos)", example = "11987654321")
+        @Schema(description = "New employee phone (9 to 11 digits)", example = "11987654321")
         @Size(min = 9, max = 11) String phone,
 
-        @Schema(description = "Novo turno de trabalho do funcionário", example = "AFTERNOON")
+        @Schema(description = "New employee work shift", example = "AFTERNOON")
         ShiftEnum shift
 
 ) {}
+

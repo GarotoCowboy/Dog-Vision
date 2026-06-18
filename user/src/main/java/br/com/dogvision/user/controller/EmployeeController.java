@@ -25,80 +25,80 @@ import java.util.UUID;
 
 @ApiResponse(
         responseCode = "500",
-        description = "Erro interno do servidor - Falha inesperada no DogVision",
+        description = "Internal server error - Unexpected DogVision failure",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
 )
 @RestController
 @RequestMapping("/api/v1/employees")
 @AllArgsConstructor
-@Tag(name = "Employees", description = "Endpoints de gerenciamento de funcionários")
+@Tag(name = "Employees", description = "Employee management endpoints")
 @SecurityRequirement(name = "bearerAuth")
 public class EmployeeController {
 
     private final EmployeeService service;
 
-    @Operation(summary = "Buscar funcionário por ID")
+    @Operation(summary = "Find employee by ID")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Funcionário encontrado",
+                    description = "Employee found",
                     content = @Content(schema = @Schema(implementation = EmployeeResponse.class))
             ),
-            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeResponse> getById(
-            @Parameter(description = "UUID do funcionário", required = true)
+            @Parameter(description = "Employee UUID", required = true)
             @PathVariable UUID id
     ) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @Operation(summary = "Cadastrar novo funcionário")
+    @Operation(summary = "Create new employee")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Funcionário criado com sucesso",
+                    description = "Employee created successfully",
                     content = @Content(schema = @Schema(implementation = EmployeeResponse.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou ausentes", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid or missing data", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @PostMapping
     public ResponseEntity<EmployeeResponse> save(@RequestBody @Valid CreateEmployeeRequest dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
-    @Operation(summary = "Atualizar dados de um funcionário")
+    @Operation(summary = "Update employee data")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Funcionário atualizado com sucesso",
+                    description = "Employee updated successfully",
                     content = @Content(schema = @Schema(implementation = EmployeeResponse.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou ausentes", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid or missing data", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
 
     })
     @PatchMapping("/{id}")
     public ResponseEntity<EmployeeResponse> update(
-            @Parameter(description = "UUID do funcionário", required = true)
+            @Parameter(description = "Employee UUID", required = true)
             @PathVariable UUID id,
             @RequestBody UpdateEmployeeRequest dto
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(service.update(id, dto));
     }
 
-    @Operation(summary = "Listar todos os funcionários")
+    @Operation(summary = "List all employees")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Lista retornada com sucesso",
+                    description = "List returned successfully",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeResponse.class)))
             ),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
 
     })
     @GetMapping
@@ -106,18 +106,20 @@ public class EmployeeController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @Operation(summary = "Deletar funcionário por ID")
+    @Operation(summary = "Delete employee by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Funcionário deletado com sucesso", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Employee deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "UUID do funcionário", required = true)
+            @Parameter(description = "Employee UUID", required = true)
             @PathVariable UUID id
     ) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
+
+

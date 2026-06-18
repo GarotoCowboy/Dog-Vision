@@ -18,7 +18,7 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("DogVision - Microserviço de Usuários")
+                        .title("DogVision - User Microservice")
                         .version("v0.0.1")
                         .description("API do sistema DogVision desenvolvida por Pedro Henrique e Laila.")
                         .contact(new Contact().name("Pedro & Laila")))
@@ -32,3 +32,4 @@ public class OpenApiConfig {
                                         .bearerFormat("JWT")));
     }
 }
+

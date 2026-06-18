@@ -12,7 +12,6 @@ public interface EmployeeCreationService {
             String rawPassword,
             String email,
             String name,
-            String cpf,
             String phone,
             ShiftEnum shift,
             EmployeeType type,

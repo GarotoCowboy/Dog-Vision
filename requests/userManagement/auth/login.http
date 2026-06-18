@@ -6,6 +6,6 @@ Accept: application/json
 
 {
   "password": "12345678",
-  "registration": "COORD-001"
+  "registration": "VET123"
 }
 ###

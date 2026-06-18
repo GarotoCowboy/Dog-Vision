@@ -32,6 +32,8 @@ public class DogBirth {
 
     private LocalDateTime date;
 
+    private String observations;
+
     private int numberOfPuppies;
 
     private LocalDateTime startTime;

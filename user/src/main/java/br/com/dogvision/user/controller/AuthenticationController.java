@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @ApiResponse(
         responseCode = "500",
-        description = "Erro interno do servidor - Falha inesperada no DogVision",
+        description = "Internal server error - Unexpected DogVision failure",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class))
 )
 @RestController
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
-@Tag(name = "Authentication", description = "Endpoints de autenticação de usuários")
+@Tag(name = "Authentication", description = "User authentication endpoints")
 public class AuthenticationController {
 
     private final TokenService tokenService;
@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     @Operation(
             summary = "Realizar login",
-            description = "Autentica o usuário com matrícula e senha, retornando um token JWT"
+            description = "Authenticates a user with registration and password, returning a JWT token"
     )
     @ApiResponses({
             @ApiResponse(
@@ -47,12 +47,12 @@ public class AuthenticationController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Dados inválidos ou ausentes",
+                    description = "Invalid or missing data",
                     content = @Content
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "Matrícula ou senha incorretos",
+                    description = "Invalid registration or password",
                     content = @Content
             )
     })
@@ -64,3 +64,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponse(token));
     }
 }
+

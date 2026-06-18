@@ -12,11 +12,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class Trainer extends Employee {
 
-    @NotBlank @NotNull
     @Column(nullable = false)
     private String areaOfExpertise;
 
-    public Trainer(Employee employee) {
-        super(employee);
-    }
+
 }

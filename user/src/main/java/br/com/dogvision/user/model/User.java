@@ -30,18 +30,14 @@ public class User implements Serializable, UserDetails {
     @Column(name = "user_id")
     private UUID userId;
 
-    @NotNull
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String registration;
 
-    @NotNull
-    @NotBlank
     @Column(nullable = false)
     private String passwordHash;
 
     @OneToOne(mappedBy = "user")
-    private Monitor monitor;
+    private Collaborator collaborator;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

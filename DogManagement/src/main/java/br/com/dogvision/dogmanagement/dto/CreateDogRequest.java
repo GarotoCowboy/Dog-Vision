@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 
 @Schema(description = "Dados para cadastrar um novo cão")
 public record CreateDogRequest(
+
         @Schema(description = "Nome do cão", example = "Thor")
         @NotNull
         @NotBlank(message="the dogs name is mandatory")
@@ -32,10 +33,13 @@ public record CreateDogRequest(
         @NotNull(message = "the dog sex cannot be null")
         Character sex,
 
-        @Schema(description = "Idade do cão", example = "2", minimum = "0")
-        @NotNull
-        @Min(value = 0, message = "the dogs age cannot be negative")
-        int age){
+        @Schema(description = "O Avatar do Cão", example = "cao-01")
+        @NotNull(message = "the Dog Avatar cannot be null")
+        String avatarKey,
+
+        @Schema(description = "Data de nascimento do cão", example = "21/04/2026")
+       @NotNull(message = "The dog DateOfBirth is mandatory")
+        Timestamp dateOfBirth){
 
     }
 

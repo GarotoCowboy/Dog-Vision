@@ -56,6 +56,13 @@ spring:
               filters:
                 - JwtAuthenticationFilter
 
+            - id: dog-feeding-service
+              uri: lb://dog-feeding
+              predicates:
+                - Path=/api/v1/dogfeeding/**
+              filters:
+                - JwtAuthenticationFilter
+
 eureka:
   client:
     service-url:

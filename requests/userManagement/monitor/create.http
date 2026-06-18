@@ -1,4 +1,4 @@
-### POST cadastra um novo monitor
+### Cria um funcionario do tipo treinador
 POST http://localhost:3003/api/v1/employees/monitors
 Content-Type: application/json
 Accept: application/json

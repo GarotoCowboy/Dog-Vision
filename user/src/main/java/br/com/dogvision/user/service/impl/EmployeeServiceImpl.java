@@ -4,7 +4,6 @@ import br.com.dogvision.user.dto.create.CreateEmployeeRequest;
 import br.com.dogvision.user.dto.mapper.EmployeeMapper;
 import br.com.dogvision.user.dto.response.EmployeeResponse;
 import br.com.dogvision.user.dto.update.UpdateEmployeeRequest;
-import br.com.dogvision.user.infra.exception.CpfAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
@@ -17,10 +16,8 @@ import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
@@ -60,9 +57,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (employeeRepository.existsByEmail(dto.email()))
             throw new EmailAlreadyExistsException(dto.email());
-
-        if (employeeRepository.existsByCpf(dto.cpf()))
-            throw new CpfAlreadyExistsException(dto.cpf());
 
         User user = new User();
         user.setRegistration(dto.registration());
@@ -105,7 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private Role resolveRole(EmployeeType type) {
         return switch (type) {
-            case MONITOR -> Role.ROLE_MONITOR;
+            case COLLABORATOR -> Role.ROLE_COLLABORATOR;
             case TRAINER -> Role.ROLE_TRAINER;
             case COORDINATOR -> Role.ROLE_COORDINATOR;
             case VETERINARIAN -> Role.ROLE_VETERINARIAN;

@@ -19,6 +19,9 @@ public record UpdateDogBirthRequest(
         LocalDateTime startTime,
 
         @Schema(description = "Novo horario de fim", example = "2026-04-08T11:20:00")
-        LocalDateTime endTime
+        LocalDateTime endTime,
+
+        @Schema(description = "Observaçoes do parto", example = "Os filhotes necessitam de x remedios")
+        String observations
 ) {
 }

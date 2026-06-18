@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,29 +16,14 @@ import java.util.UUID;
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "employees")
 @EntityListeners(AuditingEntityListener.class)
-public class Employee extends Monitor {
+public class Employee extends Collaborator {
 
-    @Email
-    @NotNull @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotNull @NotBlank
-    @Column(nullable = false)
-    private String name;
-
-    @NotNull @NotBlank
-    @Size(min = 11, max = 11)
-    @Column(nullable = false, unique = true, length = 11)
-    @CPF(message = "invalid CPF")
-    private String cpf;
-
-    @NotNull @NotBlank
-    @Size(min = 9, max = 11)
     @Column(nullable = false, length = 11)
     private String phone;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeType type;
@@ -57,8 +41,6 @@ public class Employee extends Monitor {
 
     public Employee(Employee employee) {
         super(employee);
-        this.name = employee.name;
-        this.cpf = employee.cpf;
         this.email = employee.email;
         this.phone = employee.phone;
         this.type = employee.type;
