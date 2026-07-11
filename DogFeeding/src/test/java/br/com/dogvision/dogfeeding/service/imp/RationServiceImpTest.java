@@ -1,8 +1,9 @@
 package br.com.dogvision.dogfeeding.service.imp;
 
 import br.com.dogvision.dogfeeding.dto.create.CreateRationRequest;
-import br.com.dogvision.dogfeeding.dto.mapper.RationMapperImpl;
+import br.com.dogvision.dogfeeding.dto.mapper.RationMapper;
 import br.com.dogvision.dogfeeding.infra.exception.InvalidRationStateException;
+import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationEventPublisher;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.model.RationStockStatus;
 import br.com.dogvision.dogfeeding.model.RationType;
@@ -11,8 +12,10 @@ import br.com.dogvision.dogfeeding.repository.RationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,11 +34,18 @@ class RationServiceImpTest {
     @Mock
     private FeedingItemRepository feedingItemRepository;
 
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+
+    @Mock
+    RationEventPublisher rationEventPublisher;
     private RationServiceImp service;
+
+    private final RationMapper rationMapper = Mappers.getMapper(RationMapper.class);
 
     @BeforeEach
     void setUp() {
-        service = new RationServiceImp(rationRepository, feedingItemRepository, new RationMapperImpl());
+        service = new RationServiceImp(rationRepository, feedingItemRepository,rationMapper,rabbitTemplate,rationEventPublisher);
     }
 
     @Test

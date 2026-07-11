@@ -1,6 +1,7 @@
 package br.com.dogvision.dogfeeding.service.imp;
 
 import br.com.dogvision.dogfeeding.dto.create.CreateRationRequest;
+import br.com.dogvision.dogfeeding.dto.events.RationQuantityUpdatedEvent;
 import br.com.dogvision.dogfeeding.dto.mapper.RationMapper;
 import br.com.dogvision.dogfeeding.dto.response.RationAlertResponse;
 import br.com.dogvision.dogfeeding.dto.response.RationResponse;
@@ -8,6 +9,7 @@ import br.com.dogvision.dogfeeding.dto.update.UpdateRationRequest;
 import br.com.dogvision.dogfeeding.infra.exception.InvalidRationStateException;
 import br.com.dogvision.dogfeeding.infra.exception.RationInUseException;
 import br.com.dogvision.dogfeeding.infra.exception.RationNotFoundException;
+import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationEventPublisher;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.model.RationStockStatus;
 import br.com.dogvision.dogfeeding.model.RationType;
@@ -15,6 +17,7 @@ import br.com.dogvision.dogfeeding.repository.FeedingItemRepository;
 import br.com.dogvision.dogfeeding.repository.RationRepository;
 import br.com.dogvision.dogfeeding.service.RationService;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +32,8 @@ public class RationServiceImp implements RationService {
     private final RationRepository repository;
     private final FeedingItemRepository feedingItemRepository;
     private final RationMapper mapper;
+    private final RabbitTemplate rabbitTemplate;
+    private final RationEventPublisher rationEventPublisher;
 
     @Override
     public List<RationResponse> findAll() {
@@ -80,7 +85,12 @@ public class RationServiceImp implements RationService {
         Ration ration = findEntity(id);
         mapper.updateFromDto(dto, ration);
         validateRationState(ration);
-        return toResponse(repository.save(ration));
+
+        Ration saved = repository.save((ration));
+
+        rationEventPublisher.publishQuantityUpdated(saved);
+
+        return toResponse(saved);
     }
 
     @Override

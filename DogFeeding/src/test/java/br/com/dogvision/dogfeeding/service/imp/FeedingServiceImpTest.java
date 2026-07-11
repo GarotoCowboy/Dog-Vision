@@ -2,7 +2,7 @@ package br.com.dogvision.dogfeeding.service.imp;
 
 import br.com.dogvision.dogfeeding.dto.create.CreateFeedingItemRequest;
 import br.com.dogvision.dogfeeding.dto.create.CreateFeedingRequest;
-import br.com.dogvision.dogfeeding.dto.mapper.FeedingMapperImpl;
+import br.com.dogvision.dogfeeding.dto.mapper.FeedingMapper;
 import br.com.dogvision.dogfeeding.infra.exception.InsufficientRationStockException;
 import br.com.dogvision.dogfeeding.model.MealType;
 import br.com.dogvision.dogfeeding.model.MeasurementUnit;
@@ -14,6 +14,7 @@ import br.com.dogvision.dogfeeding.repository.RationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -42,11 +43,13 @@ class FeedingServiceImpTest {
     @Mock
     private RationRepository rationRepository;
 
+    private final FeedingMapper feedingMapper = Mappers.getMapper(FeedingMapper.class);
+
     private FeedingServiceImp service;
 
     @BeforeEach
     void setUp() {
-        service = new FeedingServiceImp(feedingRepository, feedingItemRepository, rationRepository, new FeedingMapperImpl());
+        service = new FeedingServiceImp(feedingRepository, feedingItemRepository, rationRepository,feedingMapper);
     }
 
     @Test

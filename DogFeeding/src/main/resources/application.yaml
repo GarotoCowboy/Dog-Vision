@@ -48,6 +48,11 @@ spring:
   config:
     activate:
       on-profile: local
+  rabbitmq:
+    host: localhost
+    port: ${RABBIT_AMQP_PORT}
+    password: ${RABBIT_PASSWORD}
+    username: ${RABBIT_USER}
 
 eureka:
   client:
@@ -55,6 +60,7 @@ eureka:
       defaultZone: http://localhost:3002/eureka
   instance:
     prefer-ip-address: true
+
 
 ---
 
@@ -68,6 +74,11 @@ spring:
   config:
     activate:
       on-profile: docker
+  rabbitmq:
+    host: localhost
+    port: ${RABBIT_AMQP_PORT}
+    password: ${RABBIT_PASSWORD}
+    username: ${RABBIT_USER}
 
 eureka:
   client:

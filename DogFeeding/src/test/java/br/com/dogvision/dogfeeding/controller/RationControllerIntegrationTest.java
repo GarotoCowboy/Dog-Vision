@@ -1,6 +1,7 @@
 package br.com.dogvision.dogfeeding.controller;
 
 import br.com.dogvision.dogfeeding.infra.security.TokenService;
+import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationQuantityConsumer;
 import br.com.dogvision.dogfeeding.repository.RationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ class RationControllerIntegrationTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private RationQuantityConsumer rationQuantityConsumer;
 
     @Test
     void shouldCreateAndListRation() throws Exception {

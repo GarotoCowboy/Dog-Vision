@@ -1,6 +1,7 @@
 package br.com.dogvision.dogfeeding.controller;
 
 import br.com.dogvision.dogfeeding.infra.security.TokenService;
+import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationQuantityConsumer;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.model.RationType;
 import br.com.dogvision.dogfeeding.repository.FeedingPlanRepository;
@@ -40,6 +41,9 @@ class FeedingPlanControllerIntegrationTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private RationQuantityConsumer rationQuantityConsumer;
 
     @Test
     void shouldCreateAndListFeedingPlanByDog() throws Exception {
