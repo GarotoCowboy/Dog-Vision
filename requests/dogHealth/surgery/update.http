@@ -1,0 +1,15 @@
+### PATCH atualiza uma cirurgia
+PATCH http://localhost:3003/api/v1/doghealth/surgery/update/{{surgeryId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dateTimeOfSurgery": "2026-07-14T09:00:00",
+  "durationExpected": "3 horas",
+  "urgency": "HIGH",
+  "onFasting": true,
+  "observation": "Priorizar exames pre-operatorios"
+}
+
+###

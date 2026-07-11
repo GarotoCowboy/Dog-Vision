@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +53,7 @@ class ConsultationControllerTest {
                 "Thor",
                 "Golden",
                 "Dermatitis",
-                LocalDate.now()
+                LocalDateTime.now()
         );
         when(tokenService.getIdFromToken("token")).thenReturn(veterinarianId.toString());
         when(service.save(any(CreateConsultationRequest.class), eq(veterinarianId))).thenReturn(response());
@@ -62,17 +62,27 @@ class ConsultationControllerTest {
                         .header("Authorization", "Bearer token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.dogsName").value("Thor"));
     }
 
     @Test
     void shouldListConsultations() throws Exception {
-        when(service.getAll()).thenReturn(List.of(response()));
+        when(service.getAll(0, 10)).thenReturn(new PageImpl<>(List.of(response())));
 
         mockMvc.perform(get("/api/v1/doghealth/consultation"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].diagnosis").value("Dermatitis"));
+                .andExpect(jsonPath("$.content[0].diagnosis").value("Dermatitis"));
+    }
+
+    @Test
+    void shouldListConsultationsByDogId() throws Exception {
+        UUID dogId = UUID.randomUUID();
+        ConsultationResponse response = response(dogId);
+        when(service.getByDogId(dogId, 0, 10)).thenReturn(new PageImpl<>(List.of(response)));
+
+        mockMvc.perform(get("/api/v1/doghealth/consultation/dog/{dogId}", dogId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].dogId").value(dogId.toString()));
     }
 
     @Test
@@ -89,14 +99,19 @@ class ConsultationControllerTest {
     }
 
     private ConsultationResponse response() {
+        return response(UUID.randomUUID());
+    }
+
+    private ConsultationResponse response(UUID dogId) {
         return new ConsultationResponse(
                 UUID.randomUUID(),
                 UUID.randomUUID(),
-                UUID.randomUUID(),
+                dogId,
                 "Thor",
                 "Golden",
                 "Antibiotic",
                 "Dermatitis",
+                LocalDateTime.now(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );

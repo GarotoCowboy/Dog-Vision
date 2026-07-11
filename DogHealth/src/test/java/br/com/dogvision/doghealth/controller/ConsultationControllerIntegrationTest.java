@@ -50,7 +50,7 @@ class ConsultationControllerIntegrationTest {
                                   "dogsName": "Thor Integration",
                                   "dogsBreed": "Labrador",
                                   "diagnosis": "Dermatitis",
-                                  "date": "2026-05-12"
+                                  "dateTimeOfConsultation": "2026-05-17T14:30:00"
                                 }
                                 """.formatted(dogId)))
                 .andExpect(status().isCreated())
@@ -61,6 +61,6 @@ class ConsultationControllerIntegrationTest {
 
         mockMvc.perform(get("/api/v1/doghealth/consultation"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].dogsName").value("Thor Integration"));
+                .andExpect(jsonPath("$.content[0].dogsName").value("Thor Integration"));
     }
 }

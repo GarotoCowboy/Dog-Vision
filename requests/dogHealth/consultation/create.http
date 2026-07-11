@@ -10,7 +10,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwa
   "dogsName": "blablabla",
   "diagnosis": "aids",
   "treatment": "nao ter aids",
-  "date": "2026-07-13"
+  "dateTimeOfConsultation": "2026-07-13T14:30:00"
 }
 
 ###

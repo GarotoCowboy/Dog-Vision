@@ -1,0 +1,6 @@
+### GET busca uma cirurgia por ID
+GET http://localhost:3003/api/v1/doghealth/surgery/{{surgeryId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###

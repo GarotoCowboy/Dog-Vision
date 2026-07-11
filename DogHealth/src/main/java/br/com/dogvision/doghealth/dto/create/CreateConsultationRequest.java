@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Schema(description = "Dados para cadastrar uma consulta veterinaria")
@@ -30,8 +31,8 @@ public record CreateConsultationRequest(
         @Size(max = 256)
         String diagnosis,
 
-        @Schema(description = "Data da consulta", example = "2026-04-08")
-        @NotNull
-        LocalDate date
+        @Schema(description = "Criação da data e hora da consulta", example = "2026-05-17T14:30:00")
+        @NotNull(message = "DateOfConsultation is required")
+        LocalDateTime dateTimeOfConsultation
 ) {
 }

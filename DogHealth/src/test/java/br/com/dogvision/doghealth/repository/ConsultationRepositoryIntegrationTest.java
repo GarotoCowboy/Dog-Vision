@@ -4,6 +4,7 @@ import br.com.dogvision.doghealth.model.Consultation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,9 @@ class ConsultationRepositoryIntegrationTest {
         assertThat(consultationRepository.findAllByDogIdAndCreatedAtBetween(
                 dogId,
                 LocalDateTime.now().minusMinutes(5),
-                LocalDateTime.now().plusMinutes(5)
-        )).singleElement()
+                LocalDateTime.now().plusMinutes(5),
+                PageRequest.of(0, 10)
+        ).getContent()).singleElement()
                 .extracting(Consultation::getDiagnosis)
                 .isEqualTo("Otitis");
     }
@@ -41,6 +43,7 @@ class ConsultationRepositoryIntegrationTest {
         consultation.setDogsBreed("Labrador");
         consultation.setTreatment("Medication");
         consultation.setDiagnosis(diagnosis);
+        consultation.setCreatedAt(LocalDateTime.now());
         return consultation;
     }
 }

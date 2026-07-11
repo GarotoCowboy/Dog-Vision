@@ -1,0 +1,6 @@
+### GET lista cirurgias por periodo
+GET http://localhost:3003/api/v1/doghealth/surgery?startsAt=2026-07-01T00:00:00&endsAt=2026-07-31T23:59:59&pages=0&size=10
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###

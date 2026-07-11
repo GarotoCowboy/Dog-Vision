@@ -1,0 +1,6 @@
+### DELETE remove uma cirurgia por ID
+DELETE http://localhost:3003/api/v1/doghealth/surgery/{{surgeryId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###

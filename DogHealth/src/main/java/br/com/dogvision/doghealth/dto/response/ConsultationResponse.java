@@ -30,6 +30,9 @@ public record ConsultationResponse(
         @Schema(description = "Diagnostico da consulta")
         String diagnosis,
 
+        @Schema(description = "Data da consulta")
+        LocalDateTime dateTimeOfConsultation,
+
         @Schema(description = "Data de criacao do registro")
         LocalDateTime createdAt,
 

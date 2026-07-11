@@ -2,7 +2,6 @@ package br.com.dogvision.doghealth.controller;
 
 import br.com.dogvision.doghealth.dto.create.CreateConsultationRequest;
 import br.com.dogvision.doghealth.dto.response.ConsultationResponse;
-import br.com.dogvision.doghealth.dto.response.DogWeightResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateConsultationRequest;
 import br.com.dogvision.doghealth.infra.exception.error.ErrorResponse;
 import br.com.dogvision.doghealth.infra.security.TokenService;
@@ -19,11 +18,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @ApiResponse(
@@ -58,6 +57,24 @@ public class ConsultationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Buscar todas as consultas por ID do CÃO")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Consulta encontrada", content = @Content(schema = @Schema(implementation = ConsultationResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Consulta nao encontrada", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
+    })
+    @GetMapping("/dog/{dogId}")
+    public ResponseEntity<Page<ConsultationResponse>> getAllByDogId(
+            @Parameter(description = "UUID da consulta", required = true)
+            @PathVariable UUID dogId,
+            @RequestParam(defaultValue = "0") int pages,
+            @Parameter(description = "Quantidade de itens por página", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        Page<ConsultationResponse> response = service.getByDogId(dogId,pages,size);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Buscar consulta por ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Consulta encontrada", content = @Content(schema = @Schema(implementation = ConsultationResponse.class))),
@@ -80,30 +97,36 @@ public class ConsultationController {
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<ConsultationResponse>> list() {
-        List<ConsultationResponse> responses = service.getAll();
+    public ResponseEntity<Page<ConsultationResponse>> list(
+            @Parameter(description = "Quantidade de páginas", example = "2")
+            @RequestParam(defaultValue = "0") int pages,
+            @Parameter(description = "Quantidade de itens por página", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        Page<ConsultationResponse> responses = service.getAll(pages, size);
         return ResponseEntity.ok(responses);
     }
 
 
-
     @Operation(summary = "Listar consultas mensais de um cao")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DogWeightResponse.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ConsultationResponse.class)))),
             @ApiResponse(responseCode = "400", description = "Parametros invalidos", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Sem permissao", content = @Content)
     })
-    @GetMapping("/{id}/month")
-    public ResponseEntity<List<ConsultationResponse>> listWeightByMonth(
+    @GetMapping("/dog/{id}/month")
+    public ResponseEntity<Page<ConsultationResponse>> listWeightByMonth(
             @Parameter(description = "UUID do cao", required = true)
             @PathVariable UUID id,
             @Parameter(description = "Mes da consulta, de 1 a 12", required = true, example = "4")
             @RequestParam int month,
             @Parameter(description = "Ano da consulta", required = true, example = "2026")
-            @RequestParam int year
-    ){
-        List<ConsultationResponse> responses = service.getByMonth(id,month,year);
+            @RequestParam int year,
+            @Parameter(description = "Quantidade de páginas", example = "2")
+            @RequestParam(defaultValue = "0") int pages,
+            @Parameter(description = "Quantidade de itens por página", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        Page<ConsultationResponse> responses = service.getByMonth(id, month, year, pages, size);
         return ResponseEntity.ok(responses);
     }
 

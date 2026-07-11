@@ -163,6 +163,22 @@ http://localhost:3003/api/v1/employees/**
 
 A pasta `requests/` contem exemplos `.http` para testar os endpoints pela IDE.
 
+### Dog Health - Surgery
+
+Os endpoints de cirurgias veterinarias ficam em `/api/v1/doghealth/surgery` e exigem `Authorization: Bearer <token>`.
+
+```text
+POST   /api/v1/doghealth/surgery
+GET    /api/v1/doghealth/surgery/{id}
+GET    /api/v1/doghealth/surgery/dog/{dogId}
+GET    /api/v1/doghealth/surgery?startsAt=2026-07-01T00:00:00&endsAt=2026-07-31T23:59:59&pages=0&size=10
+GET    /api/v1/doghealth/surgery/dog/{dogId}/period?startsAt=2026-07-01T00:00:00&endsAt=2026-07-31T23:59:59&pages=0&size=10
+PATCH  /api/v1/doghealth/surgery/update/{id}
+DELETE /api/v1/doghealth/surgery/{id}
+```
+
+Exemplos prontos estao em `requests/dogHealth/surgery/`.
+
 ## Rodando modulos fora do Docker
 
 O perfil local usa os bancos publicados no host pelas portas do `.env`. Primeiro suba as dependencias com Docker:

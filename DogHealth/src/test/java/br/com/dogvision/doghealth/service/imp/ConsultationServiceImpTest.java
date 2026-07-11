@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +63,14 @@ class ConsultationServiceImpTest {
         LocalDateTime expectedStart = LocalDateTime.of(2026, 4, 1, 0, 0, 0);
         LocalDateTime expectedEnd = LocalDateTime.of(2026, 4, 30, 23, 59, 59);
 
-        when(repository.findAllByDogIdAndCreatedAtBetween(dogId, expectedStart, expectedEnd))
-                .thenReturn(List.of(consultation));
+        PageRequest pageable = PageRequest.of(0, 10);
+        when(repository.findAllByDogIdAndCreatedAtBetween(dogId, expectedStart, expectedEnd, pageable))
+                .thenReturn(new PageImpl<>(List.of(consultation)));
         when(mapper.toResponse(consultation)).thenReturn(response);
 
-        List<ConsultationResponse> result = service.getByMonth(dogId, 4, 2026);
+        var result = service.getByMonth(dogId, 4, 2026, 0, 10);
 
-        assertThat(result).containsExactly(response);
+        assertThat(result.getContent()).containsExactly(response);
     }
 
     @Test
@@ -80,7 +82,7 @@ class ConsultationServiceImpTest {
                 "Thor",
                 "Golden",
                 "Dermatitis",
-                LocalDate.now()
+                LocalDateTime.now()
         );
         Consultation consultation = consultation();
         Consultation saved = consultation();
@@ -155,6 +157,7 @@ class ConsultationServiceImpTest {
                 "Golden",
                 "Antibiotic",
                 "Dermatitis",
+                LocalDateTime.now(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );

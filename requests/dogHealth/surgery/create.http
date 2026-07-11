@@ -1,0 +1,19 @@
+### POST salva uma cirurgia de um cao
+POST http://localhost:3003/api/v1/doghealth/surgery
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dogId": "321956d9-8e0b-4269-9809-cc7e9909fe83",
+  "dogsName": "Thor",
+  "dogsBreed": "Golden Retriever",
+  "title": "Remocao de tumor benigno",
+  "dateTimeOfSurgery": "2026-07-13T14:30:00",
+  "durationExpected": "2 horas",
+  "urgency": "NORMAL",
+  "onFasting": true,
+  "observation": "Jejum de 8 horas antes do procedimento"
+}
+
+###

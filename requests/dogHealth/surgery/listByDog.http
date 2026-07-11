@@ -1,0 +1,6 @@
+### GET lista cirurgias de um cao
+GET http://localhost:3003/api/v1/doghealth/surgery/dog/{{dogId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
