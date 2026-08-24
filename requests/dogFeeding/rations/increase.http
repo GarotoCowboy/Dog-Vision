@@ -1,0 +1,16 @@
+### Increase ration stock by number of bags and weight per bag
+@rationId = 8e205c69-6c5d-4649-b5de-871bbd5a2d37
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JEMDAxIiwiY29sbGFib3JhdG9ySWQiOiI5ZjlmZWE1Yi0zMGIxLTQ2YzEtOTgzZS0yMzQyNjIzMzQwMTgiLCJyb2xlcyI6WyJST0xFX0NPT1JESU5BVE9SIl0sImV4cCI6MTc4MzM3NTM1M30.fNOu7cRfyxXqxhG-n9zFeWjaH93KlxadcLaVTTGrgqA
+
+PATCH http://localhost:3003/api/v1/dogfeeding/rations/{{rationId}}/increase
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bagCount": 3,
+  "weightPerBagKg": 15.0
+}
+
+###
+
