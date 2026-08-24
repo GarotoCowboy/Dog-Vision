@@ -1,0 +1,17 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6IkNPT1JEMDAxIiwiY29sbGFib3JhdG9ySWQiOiI5ZjlmZWE1Yi0zMGIxLTQ2YzEtOTgzZS0yMzQyNjIzMzQwMTgiLCJyb2xlcyI6WyJST0xFX0NPT1JESU5BVE9SIl0sImV4cCI6MTc4MzM3NTM1M30.fNOu7cRfyxXqxhG-n9zFeWjaH93KlxadcLaVTTGrgqA
+@rationId = a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+
+### Obter estimativa de consumo e duração de uma ração específica
+GET http://localhost:3003/api/v1/dogfeeding/rations/{{rationId}}/estimate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Listar estimativas de consumo e duração de todas as rações
+GET http://localhost:3003/api/v1/dogfeeding/rations/estimates
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
