@@ -18,9 +18,6 @@ public record RationResponse(
         @Schema(description = "Ration type")
         RationType rationType,
 
-        @Schema(description = "Total ration quantity in kilograms")
-        Double totalRationQuantity,
-
         @Schema(description = "Current ration quantity in kilograms")
         Double currentRationQuantity,
 

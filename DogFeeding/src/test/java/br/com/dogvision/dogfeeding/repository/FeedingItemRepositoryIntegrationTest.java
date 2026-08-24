@@ -65,7 +65,6 @@ class FeedingItemRepositoryIntegrationTest {
         Ration ration = new Ration();
         ration.setName(name);
         ration.setRationType(rationType);
-        ration.setTotalRationQuantity(15);
         ration.setCurrentRationQuantity(10);
         ration.setRegistrationDate(LocalDate.now());
         return ration;

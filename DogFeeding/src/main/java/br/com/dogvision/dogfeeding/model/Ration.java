@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Ration {
 
-    public static final double LOW_STOCK_RATIO = 0.20d;
+    public static final double LOW_STOCK_THRESHOLD = 5.0d;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,9 +34,6 @@ public class Ration {
     private RationType rationType;
 
     @Column(nullable = false)
-    private double totalRationQuantity;
-
-    @Column(nullable = false)
     private double currentRationQuantity;
 
     @Column(nullable = false)
@@ -46,7 +43,7 @@ public class Ration {
         if (currentRationQuantity <= 0) {
             return RationStockStatus.OUT_OF_STOCK;
         }
-        if (currentRationQuantity <= totalRationQuantity * LOW_STOCK_RATIO) {
+        if (currentRationQuantity <= LOW_STOCK_THRESHOLD) {
             return RationStockStatus.LOW;
         }
         return RationStockStatus.HEALTHY;

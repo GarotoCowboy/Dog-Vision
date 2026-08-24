@@ -18,7 +18,6 @@ public class RationEventPublisher {
         RationQuantityUpdatedEvent event = new RationQuantityUpdatedEvent(
                 ration.getId(),
                 ration.getName(),
-                ration.getTotalRationQuantity(),
                 ration.getCurrentRationQuantity()
         );
 

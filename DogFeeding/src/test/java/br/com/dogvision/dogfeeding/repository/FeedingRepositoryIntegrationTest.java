@@ -71,7 +71,6 @@ class FeedingRepositoryIntegrationTest {
         Ration ration = new Ration();
         ration.setName(name);
         ration.setRationType(rationType);
-        ration.setTotalRationQuantity(20);
         ration.setCurrentRationQuantity(15);
         ration.setRegistrationDate(LocalDate.now());
         return ration;

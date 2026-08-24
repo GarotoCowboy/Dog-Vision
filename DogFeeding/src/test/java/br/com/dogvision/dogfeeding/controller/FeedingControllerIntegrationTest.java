@@ -53,7 +53,6 @@ class FeedingControllerIntegrationTest {
         Ration ration = new Ration();
         ration.setName("Feeding Ration");
         ration.setRationType(RationType.NORMAL);
-        ration.setTotalRationQuantity(10);
         ration.setCurrentRationQuantity(8);
         ration.setRegistrationDate(LocalDate.of(2026, 5, 12));
         Ration savedRation = rationRepository.saveAndFlush(ration);

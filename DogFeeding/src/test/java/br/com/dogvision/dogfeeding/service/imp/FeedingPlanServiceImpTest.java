@@ -130,7 +130,6 @@ class FeedingPlanServiceImpTest {
         ration.setId(id);
         ration.setName(name);
         ration.setRationType(RationType.SPECIAL);
-        ration.setTotalRationQuantity(10.0);
         ration.setCurrentRationQuantity(8.0);
         ration.setRegistrationDate(LocalDate.now().minusDays(5));
         return ration;

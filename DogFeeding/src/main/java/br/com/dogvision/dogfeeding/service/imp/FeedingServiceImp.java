@@ -213,9 +213,6 @@ public class FeedingServiceImp implements FeedingService {
         for (FeedingItem item : items) {
             Ration ration = item.getRation();
             ration.setCurrentRationQuantity(ration.getCurrentRationQuantity() + item.getQuantityUsed());
-            if (ration.getCurrentRationQuantity() > ration.getTotalRationQuantity()) {
-                throw new InvalidRationStateException("Restored stock would exceed total quantity for ration " + ration.getId());
-            }
         }
     }
 

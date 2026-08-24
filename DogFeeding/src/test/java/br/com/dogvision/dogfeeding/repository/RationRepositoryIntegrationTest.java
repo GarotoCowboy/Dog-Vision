@@ -33,7 +33,6 @@ class RationRepositoryIntegrationTest {
         Ration ration = new Ration();
         ration.setName(name);
         ration.setRationType(rationType);
-        ration.setTotalRationQuantity(10);
         ration.setCurrentRationQuantity(8);
         ration.setRegistrationDate(LocalDate.now());
         return ration;

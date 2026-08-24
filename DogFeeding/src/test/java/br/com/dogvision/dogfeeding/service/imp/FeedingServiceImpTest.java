@@ -49,13 +49,13 @@ class FeedingServiceImpTest {
 
     @BeforeEach
     void setUp() {
-        service = new FeedingServiceImp(feedingRepository, feedingItemRepository, rationRepository,feedingMapper);
+        service = new FeedingServiceImp(feedingRepository, feedingItemRepository, rationRepository, feedingMapper);
     }
 
     @Test
     void shouldDiscountStockWhenSavingFeeding() {
         UUID rationId = UUID.randomUUID();
-        Ration ration = ration(rationId, 10.0, 8.0);
+        Ration ration = ration(rationId, 8.0);
 
         when(rationRepository.findById(rationId)).thenReturn(Optional.of(ration));
         when(feedingRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -82,7 +82,7 @@ class FeedingServiceImpTest {
     @Test
     void shouldRejectInsufficientStock() {
         UUID rationId = UUID.randomUUID();
-        Ration ration = ration(rationId, 5.0, 0.5);
+        Ration ration = ration(rationId, 0.5);
 
         when(rationRepository.findById(rationId)).thenReturn(Optional.of(ration));
 
@@ -100,12 +100,11 @@ class FeedingServiceImpTest {
                 .isInstanceOf(InsufficientRationStockException.class);
     }
 
-    private Ration ration(UUID id, double total, double current) {
+    private Ration ration(UUID id, double current) {
         Ration ration = new Ration();
         ration.setId(id);
         ration.setName("Premium");
         ration.setRationType(RationType.NORMAL);
-        ration.setTotalRationQuantity(total);
         ration.setCurrentRationQuantity(current);
         ration.setRegistrationDate(LocalDate.now().minusDays(2));
         return ration;

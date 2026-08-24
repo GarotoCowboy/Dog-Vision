@@ -18,11 +18,6 @@ public record CreateRationRequest(
         @NotNull(message = "Ration type is required")
         RationType rationType,
 
-        @Schema(description = "Total ration quantity in kilograms", example = "15.0")
-        @NotNull(message = "Total ration quantity is required")
-        @Positive(message = "Total ration quantity must be positive")
-        Double totalRationQuantity,
-
         @Schema(description = "Current ration quantity in kilograms", example = "12.5")
         @NotNull(message = "Current ration quantity is required")
         @Positive(message = "Current ration quantity must be positive")

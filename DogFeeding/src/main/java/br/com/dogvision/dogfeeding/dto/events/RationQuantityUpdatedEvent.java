@@ -7,7 +7,6 @@ import java.util.UUID;
 public record RationQuantityUpdatedEvent(
         UUID rationId,
         String name,
-        double totalRationQuantity,
         double currentRationQuantity
 ) implements Serializable {
 
