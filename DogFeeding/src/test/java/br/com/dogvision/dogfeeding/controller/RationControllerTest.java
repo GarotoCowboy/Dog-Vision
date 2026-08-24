@@ -2,6 +2,7 @@ package br.com.dogvision.dogfeeding.controller;
 
 import br.com.dogvision.dogfeeding.dto.create.CreateRationRequest;
 import br.com.dogvision.dogfeeding.dto.response.RationAlertResponse;
+import br.com.dogvision.dogfeeding.dto.response.RationConsumptionEstimateResponse;
 import br.com.dogvision.dogfeeding.dto.response.RationResponse;
 import br.com.dogvision.dogfeeding.infra.security.TokenService;
 import br.com.dogvision.dogfeeding.model.RationStockStatus;
@@ -50,7 +51,6 @@ class RationControllerTest {
         CreateRationRequest request = new CreateRationRequest(
                 "Premium",
                 RationType.NORMAL,
-                10.0,
                 5.0,
                 LocalDate.now()
         );
@@ -86,12 +86,102 @@ class RationControllerTest {
                 .andExpect(jsonPath("$[0].stockStatus").value("LOW"));
     }
 
+    @Test
+    void shouldReturnRationEstimate() throws Exception {
+        UUID rationId = UUID.randomUUID();
+        UUID dogId = UUID.randomUUID();
+        RationConsumptionEstimateResponse estimate = new RationConsumptionEstimateResponse(
+                rationId,
+                "Premium",
+                RationType.NORMAL,
+                10.0,
+                2.0,
+                5.0,
+                LocalDate.now().plusDays(5),
+                RationStockStatus.HEALTHY,
+                List.of(new br.com.dogvision.dogfeeding.dto.response.DogRationConsumptionResponse(
+                        dogId,
+                        UUID.randomUUID(),
+                        "Plano Thor",
+                        2.0
+                ))
+        );
+
+        when(service.getEstimate(rationId)).thenReturn(estimate);
+
+        mockMvc.perform(get("/api/v1/dogfeeding/rations/{id}/estimate", rationId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rationName").value("Premium"))
+                .andExpect(jsonPath("$.totalDailyConsumptionKg").value(2.0))
+                .andExpect(jsonPath("$.estimatedDaysRemaining").value(5.0))
+                .andExpect(jsonPath("$.dogConsumptions[0].dogId").value(dogId.toString()));
+    }
+
+    @Test
+    void shouldReturnAllRationEstimates() throws Exception {
+        UUID rationId = UUID.randomUUID();
+        RationConsumptionEstimateResponse estimate = new RationConsumptionEstimateResponse(
+                rationId,
+                "Premium",
+                RationType.NORMAL,
+                10.0,
+                2.0,
+                5.0,
+                LocalDate.now().plusDays(5),
+                RationStockStatus.HEALTHY,
+                List.of()
+        );
+
+        when(service.getAllEstimates()).thenReturn(List.of(estimate));
+
+        mockMvc.perform(get("/api/v1/dogfeeding/rations/estimates"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].rationName").value("Premium"))
+                .andExpect(jsonPath("$[0].totalDailyConsumptionKg").value(2.0))
+                .andExpect(jsonPath("$[0].estimatedDaysRemaining").value(5.0));
+    }
+
+    @Test
+    void shouldIncreaseRationStock() throws Exception {
+        UUID loggedUserId = UUID.randomUUID();
+        UUID rationId = UUID.randomUUID();
+        var request = new br.com.dogvision.dogfeeding.dto.update.IncreaseRationStockRequest(3, 15.0);
+
+        when(tokenService.getIdFromToken("token")).thenReturn(loggedUserId.toString());
+        when(service.increaseRation(eq(rationId), any(br.com.dogvision.dogfeeding.dto.update.IncreaseRationStockRequest.class), eq(loggedUserId)))
+                .thenReturn(new RationResponse(rationId, "Premium", RationType.NORMAL, 50.0, LocalDate.now(), RationStockStatus.HEALTHY));
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch("/api/v1/dogfeeding/rations/{id}/increase", rationId)
+                        .header("Authorization", "Bearer token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentRationQuantity").value(50.0));
+    }
+
+    @Test
+    void shouldDecreaseRationStock() throws Exception {
+        UUID loggedUserId = UUID.randomUUID();
+        UUID rationId = UUID.randomUUID();
+        var request = new br.com.dogvision.dogfeeding.dto.update.DecreaseRationStockRequest(5.0);
+
+        when(tokenService.getIdFromToken("token")).thenReturn(loggedUserId.toString());
+        when(service.decreaseRation(eq(rationId), any(br.com.dogvision.dogfeeding.dto.update.DecreaseRationStockRequest.class), eq(loggedUserId)))
+                .thenReturn(new RationResponse(rationId, "Premium", RationType.NORMAL, 10.0, LocalDate.now(), RationStockStatus.HEALTHY));
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch("/api/v1/dogfeeding/rations/{id}/decrease", rationId)
+                        .header("Authorization", "Bearer token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentRationQuantity").value(10.0));
+    }
+
     private RationResponse response() {
         return new RationResponse(
                 UUID.randomUUID(),
                 "Premium",
                 RationType.NORMAL,
-                10.0,
                 5.0,
                 LocalDate.now(),
                 RationStockStatus.HEALTHY

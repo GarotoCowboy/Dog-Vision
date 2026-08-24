@@ -2,7 +2,10 @@ package br.com.dogvision.dogfeeding.controller;
 
 import br.com.dogvision.dogfeeding.dto.create.CreateRationRequest;
 import br.com.dogvision.dogfeeding.dto.response.RationAlertResponse;
+import br.com.dogvision.dogfeeding.dto.response.RationConsumptionEstimateResponse;
 import br.com.dogvision.dogfeeding.dto.response.RationResponse;
+import br.com.dogvision.dogfeeding.dto.update.DecreaseRationStockRequest;
+import br.com.dogvision.dogfeeding.dto.update.IncreaseRationStockRequest;
 import br.com.dogvision.dogfeeding.dto.update.UpdateRationRequest;
 import br.com.dogvision.dogfeeding.infra.exception.error.ErrorResponse;
 import br.com.dogvision.dogfeeding.infra.security.TokenService;
@@ -50,7 +53,7 @@ public class RationController {
     @PostMapping
     @Transactional
     public ResponseEntity<RationResponse> save(@RequestBody @Valid CreateRationRequest dto,
-                                               @RequestHeader("Authorization") String authHeader) {
+                                                @RequestHeader("Authorization") String authHeader) {
         UUID loggedUserId = extractUserId(authHeader);
         RationResponse response = service.save(dto, loggedUserId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -62,10 +65,29 @@ public class RationController {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @Operation(summary = "List consumption estimates and stock duration for all rations")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ration estimates listed successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = RationConsumptionEstimateResponse.class))))
+    })
+    @GetMapping("/estimates")
+    public ResponseEntity<List<RationConsumptionEstimateResponse>> getAllEstimates() {
+        return ResponseEntity.ok(service.getAllEstimates());
+    }
+
     @Operation(summary = "Find ration by ID")
     @GetMapping("/{id}")
     public ResponseEntity<RationResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @Operation(summary = "Get consumption estimate and stock duration for a ration")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ration estimate retrieved successfully", content = @Content(schema = @Schema(implementation = RationConsumptionEstimateResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Ration not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/{id}/estimate")
+    public ResponseEntity<RationConsumptionEstimateResponse> getEstimate(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getEstimate(id));
     }
 
     @Operation(summary = "Search rations by type or stock status")
@@ -92,6 +114,38 @@ public class RationController {
                                                  @RequestHeader("Authorization") String authHeader) {
         UUID loggedUserId = extractUserId(authHeader);
         return ResponseEntity.ok(service.update(id, dto, loggedUserId));
+    }
+
+    @Operation(summary = "Increase ration stock by number of bags and weight per bag")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ration stock increased successfully", content = @Content(schema = @Schema(implementation = RationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Ration not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/{id}/increase")
+    @Transactional
+    public ResponseEntity<RationResponse> increaseRation(
+            @PathVariable UUID id,
+            @RequestBody @Valid IncreaseRationStockRequest dto,
+            @RequestHeader("Authorization") String authHeader) {
+        UUID loggedUserId = extractUserId(authHeader);
+        return ResponseEntity.ok(service.increaseRation(id, dto, loggedUserId));
+    }
+
+    @Operation(summary = "Decrease ration stock quantity in kilograms")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ration stock decreased successfully", content = @Content(schema = @Schema(implementation = RationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Ration not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/{id}/decrease")
+    @Transactional
+    public ResponseEntity<RationResponse> decreaseRation(
+            @PathVariable UUID id,
+            @RequestBody @Valid DecreaseRationStockRequest dto,
+            @RequestHeader("Authorization") String authHeader) {
+        UUID loggedUserId = extractUserId(authHeader);
+        return ResponseEntity.ok(service.decreaseRation(id, dto, loggedUserId));
     }
 
     @Operation(summary = "Delete a ration")
