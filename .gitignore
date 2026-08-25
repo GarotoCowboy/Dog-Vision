@@ -18,3 +18,5 @@ target/
 
 .xml
 
+Query.sql
+.vscode/settings.json
