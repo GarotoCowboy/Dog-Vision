@@ -1,0 +1,19 @@
+### PATCH Atualiza dados de um parto
+PATCH http://localhost:3003/api/v1/doghealth/birth/update/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "dogsName": "Luna",
+  "dogsBreed": "Border Collie",
+  "date": "2026-04-08T10:30:00",
+  "numberOfPuppies": 5,
+  "observations": "Observação atualizada: 5 filhotes ao total",
+  "startTime": "2026-04-08T09:45:00",
+  "endTime": "2026-04-08T11:45:00"
+}
+
+###
+

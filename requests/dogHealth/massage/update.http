@@ -1,0 +1,14 @@
+### PATCH Atualiza uma massagem por ID
+PATCH http://localhost:3003/api/v1/doghealth/massage/update/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "date": "2026-04-08T11:00:00",
+  "observations": "Massagem finalizada com melhora de mobilidade"
+}
+
+###
+

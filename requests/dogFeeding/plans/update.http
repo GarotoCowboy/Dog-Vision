@@ -1,0 +1,23 @@
+### PATCH Atualiza um plano alimentar
+PATCH http://localhost:3003/api/v1/dogfeeding/plans/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Controle de peso ajustado",
+  "goal": "Ajuste de dosagem para ganho de massa",
+  "dailyQuantity": 0.80,
+  "unit": "KILOGRAM",
+  "mealTypes": [
+    "BREAKFAST",
+    "LUNCH",
+    "DINNER"
+  ],
+  "notes": "Dividir em 3 porções diárias",
+  "startDate": "2026-05-01",
+  "endDate": "2026-07-01"
+}
+
+###
+

@@ -1,0 +1,7 @@
+### GET Lista massagens mensais de um cão
+GET http://localhost:3003/api/v1/doghealth/massage/550e8400-e29b-41d4-a716-446655440000/month?month=4&year=2026
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

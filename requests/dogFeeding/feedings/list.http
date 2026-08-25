@@ -1,0 +1,7 @@
+### GET Lista todas as alimentações
+GET http://localhost:3003/api/v1/dogfeeding/feedings
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

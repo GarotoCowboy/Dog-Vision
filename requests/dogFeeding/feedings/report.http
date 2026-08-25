@@ -1,0 +1,7 @@
+### GET Relatório de consumo por ração e período
+GET http://localhost:3003/api/v1/dogfeeding/feedings/reports/consumption?dogId=550e8400-e29b-41d4-a716-446655440000&startDate=2026-04-01&endDate=2026-04-30
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

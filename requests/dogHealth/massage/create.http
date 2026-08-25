@@ -1,0 +1,14 @@
+### POST Cadastra uma nova massagem
+POST http://localhost:3003/api/v1/doghealth/massage
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "date": "2026-04-08T10:30:00",
+  "observations": "Cão relaxou durante a massagem muscular"
+}
+
+###
+

@@ -1,0 +1,7 @@
+### GET Busca a última massagem de um cão
+GET http://localhost:3003/api/v1/doghealth/massage/550e8400-e29b-41d4-a716-446655440000/lastWeight
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

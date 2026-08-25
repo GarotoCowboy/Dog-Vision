@@ -1,0 +1,24 @@
+### POST Cria um novo plano alimentar para o cão
+POST http://localhost:3003/api/v1/dogfeeding/plans
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "rationId": "550e8400-e29b-41d4-a716-446655440001",
+  "name": "Controle de peso adulto",
+  "goal": "Manutenção do peso com maior saciedade",
+  "dailyQuantity": 0.70,
+  "unit": "KILOGRAM",
+  "mealTypes": [
+    "BREAKFAST",
+    "DINNER"
+  ],
+  "notes": "Dividir as refeições igualmente",
+  "startDate": "2026-04-30",
+  "endDate": "2026-06-30"
+}
+
+###
+

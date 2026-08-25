@@ -1,0 +1,7 @@
+### GET Lista as notificações paginadas
+GET http://localhost:3003/api/v1/dogNotification/notifications?page=0&size=10
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

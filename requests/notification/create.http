@@ -1,0 +1,16 @@
+### POST Cria uma nova notificação / tarefa de saúde
+POST http://localhost:3003/api/v1/dogNotification/notifications
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Medicação - Thor",
+  "message": "Cão Thor precisa tomar 1 comprimido de Amoxicilina após a refeição",
+  "messageType": "MEDICATION",
+  "audienceType": "ALL",
+  "limitDate": "2026-08-26T18:00:00"
+}
+
+###
+

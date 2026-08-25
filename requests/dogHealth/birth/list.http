@@ -1,0 +1,7 @@
+### GET Lista todos os partos
+GET http://localhost:3003/api/v1/doghealth/birth
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

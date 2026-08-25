@@ -1,0 +1,25 @@
+### POST Registra uma nova alimentação de cão
+POST http://localhost:3003/api/v1/dogfeeding/feedings
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "date": "2026-04-30",
+  "feedingTime": "08:30:00",
+  "mealType": "BREAKFAST",
+  "items": [
+    {
+      "rationId": "550e8400-e29b-41d4-a716-446655440001",
+      "quantityServed": 0.35,
+      "quantityLeft": 0.0,
+      "unit": "KILOGRAM"
+    }
+  ],
+  "notes": "Cão calmo e consumiu tudo",
+  "dogResponse": "Comeu bem"
+}
+
+###
+

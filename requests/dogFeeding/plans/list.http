@@ -1,0 +1,7 @@
+### GET Lista todos os planos alimentares
+GET http://localhost:3003/api/v1/dogfeeding/plans
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+

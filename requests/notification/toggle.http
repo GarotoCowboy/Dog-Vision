@@ -1,0 +1,14 @@
+### PATCH Marca a tarefa da notificação como concluída
+PATCH http://localhost:3003/api/v1/dogNotification/notifications/toggle
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "isCompleted": true,
+  "completedByName": "João Silva"
+}
+
+###
+
