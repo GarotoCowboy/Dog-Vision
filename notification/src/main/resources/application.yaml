@@ -1,6 +1,9 @@
 spring:
   application:
     name: notification
+  profiles:
+    active:
+    - local
 
   jackson:
     time-zone: America/Sao_Paulo
@@ -41,9 +44,9 @@ api:
 # PROFILE LOCAL PARA RODAR VIA INTELLIJ
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:${BD_NOTIFICATION_PORT:5432}/${BD_NOTIFICATION_NAME:notification}
-    password: ${BD_NOTIFICATION_PASSWORD:postgres}
-    username: ${BD_NOTIFICATION_USER:postgres}
+    url: jdbc:postgresql://localhost:${BD_NOTIFICATION_PORT}/${BD_NOTIFICATION_NAME:notification}
+    password: ${BD_NOTIFICATION_PASSWORD}
+    username: ${BD_NOTIFICATION_USER}
     driver-class-name: org.postgresql.Driver
   config:
     activate:
@@ -51,8 +54,8 @@ spring:
   rabbitmq:
     host: localhost
     port: ${RABBIT_AMQP_PORT:5672}
-    password: ${RABBIT_PASSWORD:guest}
-    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD}
+    username: ${RABBIT_USER}
 
 eureka:
   client:
