@@ -165,6 +165,24 @@ services:
       timeout: 5s
       retries: 10
 
+  notification_db:
+    image: postgres:16
+    container_name: ${BD_NOTIFICATION_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_NOTIFICATION_USER}
+      POSTGRES_PASSWORD: ${BD_NOTIFICATION_PASSWORD}
+      POSTGRES_DB: ${BD_NOTIFICATION_NAME}
+    ports:
+      - "${BD_NOTIFICATION_PORT}:5432"
+    volumes:
+      - postgres_data_notification:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${BD_NOTIFICATION_USER} -d ${BD_NOTIFICATION_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   ms_user_management:
     build:
       context: ./user
@@ -267,3 +285,4 @@ volumes:
   postgres_data_dog_health:
   postgres_data_dog_feeding:
   postgres_data_auditory:
+  postgres_data_notification:
