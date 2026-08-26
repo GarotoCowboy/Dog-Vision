@@ -67,7 +67,7 @@ class CoordinatorServiceImplTest {
         Coordinator coordinator = coordinator();
         CoordinatorResponse response = coordinatorResponse();
 
-        when(coordinatorRepository.findById(coordinator.getId())).thenReturn(Optional.of(coordinator));
+        when(coordinatorRepository.findByIdWithUser(coordinator.getId())).thenReturn(Optional.of(coordinator));
         when(coordinatorMapper.toResponse(coordinator)).thenReturn(response);
 
         CoordinatorResponse result = service.getById(coordinator.getId());
@@ -145,7 +145,7 @@ class CoordinatorServiceImplTest {
     void shouldDeleteCoordinatorUser() {
         Coordinator coordinator = coordinator();
 
-        when(coordinatorRepository.findById(coordinator.getId())).thenReturn(Optional.of(coordinator));
+        when(coordinatorRepository.findByIdWithUser(coordinator.getId())).thenReturn(Optional.of(coordinator));
 
         service.delete(coordinator.getId());
 
@@ -155,7 +155,7 @@ class CoordinatorServiceImplTest {
     @Test
     void shouldThrowWhenCoordinatorIsMissing() {
         UUID id = UUID.randomUUID();
-        when(coordinatorRepository.findById(id)).thenReturn(Optional.empty());
+        when(coordinatorRepository.findByIdWithUser(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -188,7 +188,8 @@ class CoordinatorServiceImplTest {
                 "Ana Silva",
                 "11987654321",
                 "MORNING",
-                EmployeeType.COORDINATOR
+                EmployeeType.COORDINATOR,
+                true
         );
     }
 }

@@ -189,7 +189,8 @@ class EmployeeServiceImplTest {
                 "Maria Oliveira",
                 "11987654321",
                 "NIGHT",
-                EmployeeType.VETERINARIAN
+                EmployeeType.VETERINARIAN,
+                true
         );
     }
 }

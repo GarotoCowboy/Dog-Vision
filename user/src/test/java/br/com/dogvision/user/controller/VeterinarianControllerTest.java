@@ -82,7 +82,8 @@ class VeterinarianControllerTest {
                 "MORNING",
                 EmployeeType.VETERINARIAN,
                 "SP-12345",
-                "General practice"
+                "General practice",
+                true
         );
     }
 }

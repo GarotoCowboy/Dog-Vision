@@ -18,7 +18,7 @@ public interface CoordinatorMapper {
     @Mapping(target = "employeeId", source = "id")
     @Mapping(target = "userId", source = "user.userId")
     @Mapping(target = "registration", source = "user.registration")
-
+    @Mapping(target = "active", source = "user.active")
     CoordinatorResponse toResponse(Coordinator coordinator);
 
 

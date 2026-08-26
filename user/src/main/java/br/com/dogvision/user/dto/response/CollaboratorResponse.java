@@ -21,6 +21,8 @@ public record CollaboratorResponse(
         @Schema(description = "Employee type", example = "COLLABORATOR")
         EmployeeType type,
         @Schema(description = "Collaborator work shift", example = "MORNING")
-        String shift
+        String shift,
+        @Schema(description = "Whether the user is active", example = "true")
+        Boolean active
 ) {}
 

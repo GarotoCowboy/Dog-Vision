@@ -80,7 +80,8 @@ class TrainerControllerTest {
                 "11987654321",
                 "AFTERNOON",
                 EmployeeType.TRAINER,
-                "Behavior"
+                "Behavior",
+                true
         );
     }
 }

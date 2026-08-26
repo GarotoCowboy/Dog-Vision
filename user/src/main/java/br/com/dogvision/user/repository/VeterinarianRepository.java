@@ -17,6 +17,7 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID
            select v
            from Veterinarian v
            join fetch v.user u
+           where u.active = true
            """)
     List<Veterinarian> findAllWithUser();
 
@@ -24,7 +25,7 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID
            select v
            from Veterinarian v
            join fetch v.user u
-           where v.id = :id
+           where v.id = :id and u.active = true
            """)
     Optional<Veterinarian> findByIdWithUser(UUID id);
 
@@ -32,7 +33,7 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID
             select v
             from Veterinarian v
             join fetch v.user u
-            where u.registration = :registration
+            where u.registration = :registration and u.active = true
             """)
     Optional<Veterinarian> findByRegistration(@Param("registration") String registration);
 }

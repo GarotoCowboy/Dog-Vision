@@ -21,7 +21,9 @@ public record EmployeeResponse(
         @Schema(description = "Employee work shift", example = "MORNING")
         String shift,
         @Schema(description = "Employee type", example = "VETERINARIAN")
-        EmployeeType type
+        EmployeeType type,
+        @Schema(description = "Whether the user is active", example = "true")
+        Boolean active
 ) {}
 
 

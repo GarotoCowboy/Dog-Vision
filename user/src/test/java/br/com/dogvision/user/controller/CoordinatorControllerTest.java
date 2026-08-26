@@ -78,7 +78,8 @@ class CoordinatorControllerTest {
                 "Ana Silva",
                 "11987654321",
                 "MORNING",
-                EmployeeType.COORDINATOR
+                EmployeeType.COORDINATOR,
+                true
         );
     }
 }

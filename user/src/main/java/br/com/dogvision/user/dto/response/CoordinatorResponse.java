@@ -21,7 +21,9 @@ public record CoordinatorResponse(
         @Schema(description = "Coordinator work shift", example = "MORNING")
         String shift,
         @Schema(description = "Employee type", example = "COORDINATOR")
-        EmployeeType type
+        EmployeeType type,
+        @Schema(description = "Whether the user is active", example = "true")
+        Boolean active
 ) {}
 
 

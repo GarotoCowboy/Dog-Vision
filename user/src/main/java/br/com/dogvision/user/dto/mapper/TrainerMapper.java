@@ -13,6 +13,7 @@ public interface TrainerMapper {
   @Mapping(target = "employeeId", source = "id")
   @Mapping(target = "userId", source = "user.userId")
   @Mapping(target = "registration", source = "user.registration")
+  @Mapping(target = "active", source = "user.active")
   TrainerResponse toResponse(Trainer trainer);
 
   @Mapping(target = "user.registration", source = "registration")

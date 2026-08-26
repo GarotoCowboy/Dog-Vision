@@ -25,7 +25,9 @@ public record VeterinarianResponse(
         @Schema(description = "Veterinarian CRMV number", example = "SP-12345")
         String crmv,
         @Schema(description = "Veterinarian area of expertise", example = "General practice")
-        String areaOfExpertise
+        String areaOfExpertise,
+        @Schema(description = "Whether the user is active", example = "true")
+        Boolean active
 ) {}
 
 

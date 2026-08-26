@@ -13,6 +13,7 @@ public interface EmployeeMapper {
     @Mapping(source = "id", target = "employeeId")
     @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "user.registration", target = "registration")
+    @Mapping(source = "user.active", target = "active")
     EmployeeResponse toResponse(Employee entity);
 
     Employee toEntity(CreateEmployeeRequest dto);

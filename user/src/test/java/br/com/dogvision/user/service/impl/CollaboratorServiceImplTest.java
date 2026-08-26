@@ -151,7 +151,8 @@ class CollaboratorServiceImplTest {
                 "Carlos Souza",
                 "11987654321",
                 EmployeeType.COLLABORATOR,
-                "MORNING"
+                "MORNING",
+                true
         );
     }
 }

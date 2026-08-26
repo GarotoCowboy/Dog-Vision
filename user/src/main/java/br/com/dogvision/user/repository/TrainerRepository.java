@@ -15,6 +15,7 @@ public interface TrainerRepository extends JpaRepository<Trainer, UUID> {
            select t
            from Trainer t
            join fetch t.user u
+           where u.active = true
            """)
     List<Trainer> findAllWithUser();
 
@@ -22,7 +23,7 @@ public interface TrainerRepository extends JpaRepository<Trainer, UUID> {
            select t
            from Trainer t
            join fetch t.user u
-           where t.id = :id
+           where t.id = :id and u.active = true
            """)
     Optional<Trainer> findByIdWithUser(UUID id);
 
@@ -30,7 +31,7 @@ public interface TrainerRepository extends JpaRepository<Trainer, UUID> {
             select t
             from Trainer t
             join fetch t.user u
-            where u.registration = :registration
+            where u.registration = :registration and u.active = true
             """)
     Optional<Trainer> findByRegistration(@Param("registration") String registration);
 }

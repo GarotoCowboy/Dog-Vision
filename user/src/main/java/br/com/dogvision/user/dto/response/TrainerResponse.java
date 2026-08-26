@@ -23,7 +23,9 @@ public record TrainerResponse(
         @Schema(description = "Employee type", example = "TRAINER")
         EmployeeType type,
         @Schema(description = "Trainer area of expertise", example = "Behavioral training")
-        String areaOfExpertise
+        String areaOfExpertise,
+        @Schema(description = "Whether the user is active", example = "true")
+        Boolean active
 ) {}
 
 

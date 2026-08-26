@@ -51,7 +51,7 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     @Override
     public CoordinatorResponse getById(UUID id) {
 
-        Coordinator coordinator = coordinatorRepository.findById(id)
+        Coordinator coordinator = coordinatorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Coordinator", id));
 
         return coordinatorMapper.toResponse(coordinator);
@@ -67,7 +67,7 @@ public class CoordinatorServiceImpl implements CoordinatorService {
 
     @Override
     public List<CoordinatorResponse> getAll() {
-        return coordinatorRepository.findAll()
+        return coordinatorRepository.findAllWithUser()
                 .stream()
                 .map(coordinatorMapper::toResponse)
                 .toList();
@@ -94,7 +94,7 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     @Override
     @Transactional
     public void delete(UUID id) {
-        Coordinator coordinator = coordinatorRepository.findById(id)
+        Coordinator coordinator = coordinatorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Coordinator", id));
 
         userRepository.delete(coordinator.getUser());

@@ -25,5 +25,6 @@ public interface CollaboratorMapper {
             expression = "java(collaborator instanceof br.com.dogvision.user.model.Employee employee ? employee.getType() : null)"
     )
     @Mapping(target = "shift", source = "shift")
+    @Mapping(target = "active", source = "user.active")
     CollaboratorResponse toResponse(Collaborator collaborator);
 }

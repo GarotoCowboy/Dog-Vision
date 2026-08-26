@@ -15,6 +15,7 @@ public interface CollaboratorRepository extends JpaRepository<Collaborator, UUID
            select m
            from Collaborator m
            join fetch m.user u
+           where u.active = true
            """)
     List<Collaborator> findAllWithUser();
 
@@ -22,7 +23,7 @@ public interface CollaboratorRepository extends JpaRepository<Collaborator, UUID
            select m
            from Collaborator m
            join fetch m.user u
-           where m.id = :id
+           where m.id = :id and u.active = true
            """)
     Optional<Collaborator> findByIdWithUser(UUID id);
 
@@ -30,7 +31,7 @@ public interface CollaboratorRepository extends JpaRepository<Collaborator, UUID
             select m 
             from Collaborator m 
             join fetch m.user u
-            where u.registration = :registration            
+            where u.registration = :registration and u.active = true           
             """)
     Optional<Collaborator> findByRegistration(@Param("registration") String registration);
 }
