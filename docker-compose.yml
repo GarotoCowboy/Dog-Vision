@@ -279,6 +279,37 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
     restart: always
 
+  ms_notification:
+    build:
+      context: ./notification
+      dockerfile: Dockerfile
+    container_name: ms_notification
+    depends_on:
+      notification_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "${PORT_NOTIFICATION}:3007"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BD_NOTIFICATION_HOST: notification_db
+      BD_NOTIFICATION_PORT: 5432
+      BD_NOTIFICATION_NAME: ${BD_NOTIFICATION_NAME}
+      BD_NOTIFICATION_USER: ${BD_NOTIFICATION_USER}
+      BD_NOTIFICATION_PASSWORD: ${BD_NOTIFICATION_PASSWORD}
+      RABBIT_AMQP_PORT: ${RABBIT_AMQP_PORT}
+      RABBIT_USER: ${RABBIT_USER}
+      RABBIT_PASSWORD: ${RABBIT_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: ${RABBIT_AMQP_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBIT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always
+
 volumes:
   postgres_data_dog_management:
   postgres_data_user_management:
