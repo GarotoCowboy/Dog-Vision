@@ -1,0 +1,14 @@
+### POST Cadastra um novo medicamento
+POST http://localhost:3004/api/v1/doghealth/medication
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogsName": "Thor",
+  "prescription": "Amoxicilina 250mg a cada 12 horas",
+  "limitDate": "2026-06-30"
+}
+
+###
+

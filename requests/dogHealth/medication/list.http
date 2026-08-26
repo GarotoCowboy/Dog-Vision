@@ -1,0 +1,7 @@
+### GET Lista todos os medicamentos
+GET http://localhost:3004/api/v1/doghealth/medication
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
