@@ -9,6 +9,7 @@ Authorization: Bearer {{authToken}}
   "message": "Cão Thor precisa tomar 1 comprimido de Amoxicilina após a refeição",
   "messageType": "MEDICATION",
   "audienceType": "ALL",
+  "eventDate": "2026-08-26T14:00:00",
   "limitDate": "2026-08-26T18:00:00"
 }
 

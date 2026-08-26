@@ -61,7 +61,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "List all notifications paginated")
+    @Operation(summary = "List all notifications paginated with optional isCompleted filter, ordered by newest")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Notifications listed successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -69,9 +69,38 @@ public class NotificationController {
     })
     @GetMapping
     public ResponseEntity<Page<NotificationResponse>> list(
+            @RequestParam(required = false) Boolean isCompleted,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<NotificationResponse> notifications = service.listNotifications(page, size);
+        Page<NotificationResponse> notifications = service.listNotifications(isCompleted, page, size);
+        return ResponseEntity.ok(notifications);
+    }
+
+    @Operation(summary = "List only pending (not completed) notifications paginated, ordered by newest")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pending notifications listed successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @GetMapping("/pending")
+    public ResponseEntity<Page<NotificationResponse>> listPending(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<NotificationResponse> notifications = service.listPendingNotifications(page, size);
+        return ResponseEntity.ok(notifications);
+    }
+
+    @Operation(summary = "List only completed notifications paginated, ordered by newest")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Completed notifications listed successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @GetMapping("/completed")
+    public ResponseEntity<Page<NotificationResponse>> listCompleted(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<NotificationResponse> notifications = service.listCompletedNotifications(page, size);
         return ResponseEntity.ok(notifications);
     }
 

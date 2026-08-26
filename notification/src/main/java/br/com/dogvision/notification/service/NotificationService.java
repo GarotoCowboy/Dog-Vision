@@ -14,5 +14,9 @@ public interface NotificationService {
 
     NotificationResponse  toggleTaskCompleted(NotificationTaskCompletedUpdate notificationTaskCompletedUpdate, UUID loggedUserId);
     
-    Page<NotificationResponse> listNotifications(int page, int size);
+    Page<NotificationResponse> listNotifications(Boolean isCompleted, int page, int size);
+    
+    Page<NotificationResponse> listPendingNotifications(int page, int size);
+
+    Page<NotificationResponse> listCompletedNotifications(int page, int size);
 }

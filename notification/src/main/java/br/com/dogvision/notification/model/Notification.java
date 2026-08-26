@@ -46,6 +46,7 @@ public class Notification {
     private String completedByName;
     private LocalDateTime completedAt;
 
+    private LocalDateTime eventDate;
     private LocalDateTime limitDate;
     
     private LocalDateTime createdAt;

@@ -1,5 +1,19 @@
-### GET Lista as notificações paginadas
+### GET Lista todas as notificações paginadas ordenadas pelas mais novas
 GET http://localhost:3003/api/v1/dogNotification/notifications?page=0&size=10
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+### GET Lista apenas as notificações PENDENTES (não concluídas)
+GET http://localhost:3003/api/v1/dogNotification/notifications/pending?page=0&size=10
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+### GET Lista apenas as notificações CONCLUÍDAS (histórico)
+GET http://localhost:3003/api/v1/dogNotification/notifications/completed?page=0&size=10
 Accept: application/json
 Authorization: Bearer {{authToken}}
 

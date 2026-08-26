@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import br.com.dogvision.notification.dto.create.NotificationCreateRequest;
@@ -74,13 +75,28 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     @Override
-    public Page<NotificationResponse> listNotifications(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<NotificationResponse> listNotifications(Boolean isCompleted, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<NotificationResponse> notificationPage = notificationRepository.findAll(pageable)
-                .map(mapper::toResponse);
+        Page<Notification> notificationPage;
+        if (isCompleted != null) {
+            notificationPage = notificationRepository.findByIsCompleted(isCompleted, pageable);
+        } else {
+            notificationPage = notificationRepository.findAll(pageable);
+        }
 
-        return notificationPage;
+        return notificationPage.map(mapper::toResponse);
+    }
+
+    @Override
+    public Page<NotificationResponse> listPendingNotifications(int page, int size) {
+        return listNotifications(false, page, size);
+    }
+
+    @Override
+    public Page<NotificationResponse> listCompletedNotifications(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "completedAt", "createdAt"));
+        return notificationRepository.findByIsCompleted(true, pageable).map(mapper::toResponse);
     }
 
     @Override

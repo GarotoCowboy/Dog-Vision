@@ -20,6 +20,8 @@ public record NotificationCreateRequest(
     @NotNull(message = "Audience type is required")
     AudienceType audienceType,
 
+    LocalDateTime eventDate,
+
     LocalDateTime limitDate
 ) {
 }

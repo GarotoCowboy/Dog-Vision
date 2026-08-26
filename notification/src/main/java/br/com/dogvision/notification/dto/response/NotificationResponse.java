@@ -25,6 +25,7 @@ public record NotificationResponse(
      String completedByName,
      LocalDateTime completedAt,
 
+     LocalDateTime eventDate,
      LocalDateTime limitDate,
      LocalDateTime createdAt
 ) {
