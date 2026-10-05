@@ -12,14 +12,15 @@ public class NotificationRabbitConfig {
 
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
-
     public static final String NOTIFICATION_CREATED_QUEUE = "notification.created.queue";
     public static final String NOTIFICATION_COMPLETED_QUEUE = "notification.completed.queue";
-
 
     public static final String NOTIFICATION_CREATED_ROUTING_KEY = "notification.created";
     public static final String NOTIFICATION_COMPLETED_ROUTING_KEY = "notification.completed";
 
+    public static final String USER_EXCHANGE = "user.exchange";
+    public static final String USER_CREATED_NOTIFICATION_QUEUE = "user.created.notification.queue";
+    public static final String USER_CREATED_ROUTING_KEY = "user.created";
 
     @Bean
     public TopicExchange notificationExchange() {
@@ -27,28 +28,46 @@ public class NotificationRabbitConfig {
     }
 
     @Bean
+    public TopicExchange userExchange() {
+        return new TopicExchange(USER_EXCHANGE);
+    }
+
+    @Bean
     public Queue notificationCreatedQueue() {
-        return new Queue(NOTIFICATION_CREATED_QUEUE,true);
+        return new Queue(NOTIFICATION_CREATED_QUEUE, true);
     }
 
     @Bean
     public Queue notificationCompletedQueue() {
-        return new Queue(NOTIFICATION_COMPLETED_QUEUE,true);
+        return new Queue(NOTIFICATION_COMPLETED_QUEUE, true);
     }
 
     @Bean
-    public Binding notificationCreatedBinding(){
-        return BindingBuilder
-        .bind(notificationCreatedQueue())
-        .to(notificationExchange())
-        .with(NOTIFICATION_CREATED_ROUTING_KEY);
+    public Queue userCreatedNotificationQueue() {
+        return new Queue(USER_CREATED_NOTIFICATION_QUEUE, true);
     }
 
     @Bean
-    public Binding notificationCompletedBinding(){
+    public Binding notificationCreatedBinding() {
         return BindingBuilder
-        .bind(notificationCompletedQueue())
-        .to(notificationExchange())
-        .with(NOTIFICATION_COMPLETED_ROUTING_KEY);
+                .bind(notificationCreatedQueue())
+                .to(notificationExchange())
+                .with(NOTIFICATION_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding notificationCompletedBinding() {
+        return BindingBuilder
+                .bind(notificationCompletedQueue())
+                .to(notificationExchange())
+                .with(NOTIFICATION_COMPLETED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding userCreatedBinding() {
+        return BindingBuilder
+                .bind(userCreatedNotificationQueue())
+                .to(userExchange())
+                .with(USER_CREATED_ROUTING_KEY);
     }
 }
