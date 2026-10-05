@@ -1,6 +1,7 @@
 package br.com.dogvision.user.service;
 
 import br.com.dogvision.user.dto.create.CreateCoordinatorRequest;
+import br.com.dogvision.user.dto.create.CreateFirstCoordinatorRequest;
 import br.com.dogvision.user.dto.response.CoordinatorResponse;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface CoordinatorService {
     CoordinatorResponse getByRegistration(String registration);
 
     CoordinatorResponse save(CreateCoordinatorRequest dto);
+
+    CoordinatorResponse createFirstCoordinator(CreateFirstCoordinatorRequest dto);
 
     void delete(UUID id);
 }

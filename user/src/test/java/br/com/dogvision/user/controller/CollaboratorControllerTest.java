@@ -57,7 +57,6 @@ class CollaboratorControllerTest {
                 "Carlos Souza",
                 "11987654321",
                 "COL001",
-                "password@123",
                 ShiftEnum.MORNING
         );
         when(service.save(any(CreateCollaboratorRequest.class))).thenReturn(response());

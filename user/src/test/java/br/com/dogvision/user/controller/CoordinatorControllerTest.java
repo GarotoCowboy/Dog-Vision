@@ -57,7 +57,6 @@ class CoordinatorControllerTest {
                 "Ana Silva",
                 "11987654321",
                 "COORD001",
-                "password@123",
                 ShiftEnum.MORNING
         );
         when(service.save(any(CreateCoordinatorRequest.class))).thenReturn(response());

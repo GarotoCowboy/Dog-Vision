@@ -10,11 +10,11 @@ public record CreateUserRequest(
 
         @Schema(description = "System access registration", example = "USER001")
         @NotNull @NotBlank
-        String registration,
+        String registration
 
-        @Schema(description = "Access password (minimum 8, maximum 12 characters)", example = "password@123")
-        @NotNull @NotBlank @Size(min = 8, max = 12)
-        String password
+        // @Schema(description = "Access password (minimum 8, maximum 12 characters)", example = "password@123")
+        // @NotNull @NotBlank @Size(min = 8, max = 12)
+        // String password
 
 ) {}
 

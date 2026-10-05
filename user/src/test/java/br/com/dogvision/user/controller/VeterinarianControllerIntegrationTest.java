@@ -2,11 +2,13 @@ package br.com.dogvision.user.controller;
 
 import br.com.dogvision.user.repository.VeterinarianRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +28,9 @@ class VeterinarianControllerIntegrationTest {
     @Autowired
     private VeterinarianRepository veterinarianRepository;
 
+    @MockitoBean
+    private RabbitTemplate rabbitTemplate;
+
     @Test
     void shouldCreateAndFetchVeterinarianByRegistration() throws Exception {
         mockMvc.perform(post("/api/v1/employees/veterinarians")
@@ -36,7 +41,6 @@ class VeterinarianControllerIntegrationTest {
                                   "name": "Vet Integration",
                                   "phone": "11999999995",
                                   "registration": "VET-INT-001",
-                                  "password": "password@123",
                                   "shift": "MORNING",
                                   "crmv": "CRMV-INT-001",
                                   "areaOfExpertise": "Cardiology"

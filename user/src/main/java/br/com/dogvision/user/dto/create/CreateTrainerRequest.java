@@ -19,9 +19,6 @@ public record CreateTrainerRequest(
         @Schema(description = "System access registration", example = "TRAIN001")
         @NotBlank String registration,
 
-        @Schema(description = "Access password (minimum 8, maximum 60 characters)", example = "password@123")
-        @NotBlank @Size(min = 8, max = 60) String password,
-
         @Schema(description = "Trainer work shift", example = "MORNING")
         @NotNull ShiftEnum shift,
 
@@ -29,5 +26,3 @@ public record CreateTrainerRequest(
         @NotBlank String areaOfExpertise
 
 ) {}
-
-

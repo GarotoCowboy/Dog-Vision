@@ -16,8 +16,7 @@ public interface VeterinarianMapper {
     @Mapping(target = "active", source = "user.active")
     VeterinarianResponse toResponse(Veterinarian vet);
 
-    @Mapping(target = "user.registration", source = "registration")
-    @Mapping(target = "user.passwordHash", source = "password")
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "type", constant = "VETERINARIAN")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

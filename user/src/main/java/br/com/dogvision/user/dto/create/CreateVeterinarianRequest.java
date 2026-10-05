@@ -19,9 +19,6 @@ public record CreateVeterinarianRequest(
         @Schema(description = "System access registration", example = "VET001")
         @NotBlank String registration,
 
-        @Schema(description = "Access password (minimum 8, maximum 60 characters)", example = "password@123")
-        @NotBlank @Size(min = 8, max = 60) String password,
-
         @Schema(description = "Veterinarian work shift", example = "MORNING")
         @NotNull ShiftEnum shift,
 
@@ -32,5 +29,3 @@ public record CreateVeterinarianRequest(
         @NotBlank String areaOfExpertise
 
 ) {}
-
-

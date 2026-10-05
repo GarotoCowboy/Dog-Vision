@@ -9,7 +9,6 @@ public interface EmployeeCreationService {
 
     Employee createEmployee(
             String registration,
-            String rawPassword,
             String email,
             String name,
             String phone,

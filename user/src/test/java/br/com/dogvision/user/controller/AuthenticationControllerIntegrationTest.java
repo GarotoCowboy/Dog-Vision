@@ -5,6 +5,7 @@ import br.com.dogvision.user.model.Role;
 import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -38,6 +39,9 @@ class AuthenticationControllerIntegrationTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private RabbitTemplate rabbitTemplate;
 
     @Test
     void shouldAuthenticatePersistedUser() throws Exception {

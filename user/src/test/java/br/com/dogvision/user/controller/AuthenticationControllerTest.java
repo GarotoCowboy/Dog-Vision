@@ -1,10 +1,16 @@
 package br.com.dogvision.user.controller;
 
 import br.com.dogvision.user.dto.AuthenticationDto;
+import br.com.dogvision.user.dto.create.CreateFirstCoordinatorRequest;
+import br.com.dogvision.user.dto.response.CoordinatorResponse;
+import br.com.dogvision.user.infra.exception.FirstCoordinatorAlreadyExistsException;
 import br.com.dogvision.user.infra.security.SecurityFilter;
 import br.com.dogvision.user.infra.security.TokenService;
+import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.Role;
+import br.com.dogvision.user.model.ShiftEnum;
 import br.com.dogvision.user.model.User;
+import br.com.dogvision.user.service.CoordinatorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -44,6 +51,9 @@ class AuthenticationControllerTest {
     @MockitoBean
     private AuthenticationManager authenticationManager;
 
+    @MockitoBean
+    private CoordinatorService coordinatorService;
+
     @Test
     void shouldLoginAndReturnToken() throws Exception {
         AuthenticationDto request = new AuthenticationDto("COORD001", "password@123");
@@ -61,5 +71,57 @@ class AuthenticationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("jwt-token"));
+    }
+
+    @Test
+    void shouldCreateFirstCoordinator() throws Exception {
+        CreateFirstCoordinatorRequest request = new CreateFirstCoordinatorRequest(
+                "coord@dogvision.com",
+                "Coord Name",
+                "11987654321",
+                "COORD001",
+                "secretPassword@123",
+                ShiftEnum.MORNING
+        );
+        CoordinatorResponse response = new CoordinatorResponse(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "COORD001",
+                "coord@dogvision.com",
+                "Coord Name",
+                "11987654321",
+                "MORNING",
+                EmployeeType.COORDINATOR,
+                true
+        );
+
+        when(coordinatorService.createFirstCoordinator(any(CreateFirstCoordinatorRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/auth/first-coordinator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.registration").value("COORD001"))
+                .andExpect(jsonPath("$.email").value("coord@dogvision.com"));
+    }
+
+    @Test
+    void shouldReturnConflictWhenFirstCoordinatorAlreadyExists() throws Exception {
+        CreateFirstCoordinatorRequest request = new CreateFirstCoordinatorRequest(
+                "coord@dogvision.com",
+                "Coord Name",
+                "11987654321",
+                "COORD001",
+                "secretPassword@123",
+                ShiftEnum.MORNING
+        );
+
+        when(coordinatorService.createFirstCoordinator(any(CreateFirstCoordinatorRequest.class)))
+                .thenThrow(new FirstCoordinatorAlreadyExistsException());
+
+        mockMvc.perform(post("/api/v1/auth/first-coordinator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict());
     }
 }

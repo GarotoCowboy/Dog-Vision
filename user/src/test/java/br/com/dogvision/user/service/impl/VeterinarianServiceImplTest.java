@@ -3,10 +3,7 @@ package br.com.dogvision.user.service.impl;
 import br.com.dogvision.user.dto.create.CreateVeterinarianRequest;
 import br.com.dogvision.user.dto.mapper.VeterinarianMapper;
 import br.com.dogvision.user.dto.response.VeterinarianResponse;
-import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
-import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
-import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
-import br.com.dogvision.user.infra.exception.VeterinarianCrmvAlreadyExistsException;
+import br.com.dogvision.user.infra.exception.*;
 import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.Role;
 import br.com.dogvision.user.model.ShiftEnum;
@@ -15,13 +12,14 @@ import br.com.dogvision.user.model.Veterinarian;
 import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.repository.VeterinarianRepository;
+import br.com.dogvision.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -44,10 +42,10 @@ class VeterinarianServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private VeterinarianMapper veterinarianMapper;
+    private UserService userService;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private VeterinarianMapper veterinarianMapper;
 
     private VeterinarianServiceImpl service;
 
@@ -57,8 +55,8 @@ class VeterinarianServiceImplTest {
                 veterinarianRepository,
                 employeeRepository,
                 userRepository,
-                veterinarianMapper,
-                passwordEncoder
+                userService,
+                veterinarianMapper
         );
     }
 
@@ -76,54 +74,46 @@ class VeterinarianServiceImplTest {
     }
 
     @Test
-    void shouldSaveVeterinarianWithEncodedPasswordAndRole() {
+    void shouldReturnVeterinarianByRegistration() {
+        Veterinarian veterinarian = veterinarian();
+        VeterinarianResponse response = veterinarianResponse();
+
+        when(veterinarianRepository.findByRegistration("VET001")).thenReturn(Optional.of(veterinarian));
+        when(veterinarianMapper.toResponse(veterinarian)).thenReturn(response);
+
+        VeterinarianResponse result = service.getByRegistration("VET001");
+
+        assertThat(result).isEqualTo(response);
+    }
+
+    @Test
+    void shouldSaveVeterinarianUsingUserService() {
         CreateVeterinarianRequest request = new CreateVeterinarianRequest(
                 "vet@dogvision.com",
                 "Anna Costa",
                 "11987654321",
                 "VET001",
-                "password@123",
                 ShiftEnum.MORNING,
                 "SP-12345",
                 "General practice"
         );
         Veterinarian veterinarian = veterinarian();
         VeterinarianResponse response = veterinarianResponse();
+        User user = new User();
+        user.setRegistration("VET001");
+        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
 
-        veterinarian.getUser().setPasswordHash("password@123");
-
-        when(userRepository.existsByRegistration("VET001")).thenReturn(false);
         when(employeeRepository.existsByEmail("vet@dogvision.com")).thenReturn(false);
         when(veterinarianRepository.existsByCrmv("SP-12345")).thenReturn(false);
+        when(userService.createAccount("VET001", "vet@dogvision.com", "Anna Costa", Role.ROLE_VETERINARIAN)).thenReturn(user);
         when(veterinarianMapper.toEntity(request)).thenReturn(veterinarian);
-        when(passwordEncoder.encode("password@123")).thenReturn("encoded-password");
         when(veterinarianRepository.save(veterinarian)).thenReturn(veterinarian);
         when(veterinarianMapper.toResponse(veterinarian)).thenReturn(response);
 
         VeterinarianResponse result = service.save(request);
 
         assertThat(result).isEqualTo(response);
-        assertThat(veterinarian.getUser().getRoles()).containsExactly(Role.ROLE_VETERINARIAN);
-        assertThat(veterinarian.getUser().getPasswordHash()).isEqualTo("encoded-password");
-    }
-
-    @Test
-    void shouldRejectVeterinarianWhenRegistrationAlreadyExists() {
-        CreateVeterinarianRequest request = new CreateVeterinarianRequest(
-                "vet@dogvision.com",
-                "Anna Costa",
-                "11987654321",
-                "VET001",
-                "password@123",
-                ShiftEnum.MORNING,
-                "SP-12345",
-                "General practice"
-        );
-
-        when(userRepository.existsByRegistration("VET001")).thenReturn(true);
-
-        assertThatThrownBy(() -> service.save(request))
-                .isInstanceOf(UserAlreadyExistsException.class);
+        assertThat(veterinarian.getUser()).isEqualTo(user);
     }
 
     @Test
@@ -133,13 +123,11 @@ class VeterinarianServiceImplTest {
                 "Anna Costa",
                 "11987654321",
                 "VET001",
-                "password@123",
                 ShiftEnum.MORNING,
                 "SP-12345",
                 "General practice"
         );
 
-        when(userRepository.existsByRegistration("VET001")).thenReturn(false);
         when(employeeRepository.existsByEmail("vet@dogvision.com")).thenReturn(true);
 
         assertThatThrownBy(() -> service.save(request))
@@ -153,13 +141,11 @@ class VeterinarianServiceImplTest {
                 "Anna Costa",
                 "11987654321",
                 "VET001",
-                "password@123",
                 ShiftEnum.MORNING,
                 "SP-12345",
                 "General practice"
         );
 
-        when(userRepository.existsByRegistration("VET001")).thenReturn(false);
         when(employeeRepository.existsByEmail("vet@dogvision.com")).thenReturn(false);
         when(veterinarianRepository.existsByCrmv("SP-12345")).thenReturn(true);
 
@@ -170,7 +156,6 @@ class VeterinarianServiceImplTest {
     @Test
     void shouldDeleteVeterinarianUser() {
         Veterinarian veterinarian = veterinarian();
-
         when(veterinarianRepository.findByIdWithUser(veterinarian.getId())).thenReturn(Optional.of(veterinarian));
 
         service.delete(veterinarian.getId());
@@ -179,31 +164,53 @@ class VeterinarianServiceImplTest {
     }
 
     @Test
-    void shouldThrowWhenVeterinarianIdDoesNotExist() {
+    void shouldThrowWhenVeterinarianNotFound() {
         UUID id = UUID.randomUUID();
         when(veterinarianRepository.findByIdWithUser(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.delete(id))
+        assertThatThrownBy(() -> service.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
-    private Veterinarian veterinarian() {
-        User user = new User();
-        user.setUserId(UUID.randomUUID());
-        user.setRegistration("VET001");
-        user.setPasswordHash("password@123");
-        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+    @Test
+    void shouldThrowWhenVeterinarianRegistrationNotFound() {
+        when(veterinarianRepository.findByRegistration("missing")).thenReturn(Optional.empty());
 
+        assertThatThrownBy(() -> service.getByRegistration("missing"))
+                .isInstanceOf(VeterinarianNotFoundException.class);
+    }
+
+    @Test
+    void shouldListAllVeterinarians() {
+        Veterinarian veterinarian = veterinarian();
+        VeterinarianResponse response = veterinarianResponse();
+
+        when(veterinarianRepository.findAllWithUser()).thenReturn(List.of(veterinarian));
+        when(veterinarianMapper.toResponse(veterinarian)).thenReturn(response);
+
+        List<VeterinarianResponse> result = service.getAll();
+
+        assertThat(result).containsExactly(response);
+    }
+
+    private Veterinarian veterinarian() {
         Veterinarian veterinarian = new Veterinarian();
         veterinarian.setId(UUID.randomUUID());
-        veterinarian.setUser(user);
         veterinarian.setName("Anna Costa");
         veterinarian.setEmail("vet@dogvision.com");
         veterinarian.setPhone("11987654321");
         veterinarian.setShift(ShiftEnum.MORNING);
-        veterinarian.setType(EmployeeType.VETERINARIAN);
         veterinarian.setCrmv("SP-12345");
         veterinarian.setAreaOfExpertise("General practice");
+
+        User user = new User();
+        user.setUserId(UUID.randomUUID());
+        user.setRegistration("VET001");
+        user.setPasswordHash("hashed-password");
+        user.setActive(true);
+        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+        veterinarian.setUser(user);
+
         return veterinarian;
     }
 

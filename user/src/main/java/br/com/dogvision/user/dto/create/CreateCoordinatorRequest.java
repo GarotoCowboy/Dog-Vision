@@ -19,12 +19,7 @@ public record CreateCoordinatorRequest(
         @Schema(description = "System access registration", example = "COORD001")
         @NotBlank String registration,
 
-        @Schema(description = "Access password (minimum 8, maximum 60 characters)", example = "password@123")
-        @NotBlank @Size(min = 8, max = 60) String password,
-
         @Schema(description = "Coordinator work shift", example = "MORNING")
         @NotNull ShiftEnum shift
 
 ) {}
-
-

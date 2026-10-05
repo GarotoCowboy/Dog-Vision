@@ -6,7 +6,6 @@ import br.com.dogvision.user.dto.response.EmployeeResponse;
 import br.com.dogvision.user.dto.update.UpdateEmployeeRequest;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
-import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
 import br.com.dogvision.user.model.Employee;
 import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.Role;
@@ -14,13 +13,12 @@ import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.service.EmployeeService;
+import br.com.dogvision.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -29,7 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
     private final EmployeeMapper mapper;
 
     @Override
@@ -51,21 +49,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse save(CreateEmployeeRequest dto) {
-
-        if (userRepository.existsByRegistration(dto.registration()))
-            throw new UserAlreadyExistsException(dto.registration());
-
         if (employeeRepository.existsByEmail(dto.email()))
             throw new EmailAlreadyExistsException(dto.email());
 
-        User user = new User();
-        user.setRegistration(dto.registration());
-        user.setPasswordHash(passwordEncoder.encode(dto.password()));
-        user.setRoles(Set.of(resolveRole(dto.type())));
-        User savedUser = userRepository.save(user);
+        Role role = resolveRole(dto.type());
+        User user = userService.createAccount(dto.registration(), dto.email(), dto.name(), role);
 
         Employee employee = mapper.toEntity(dto);
-        employee.setUser(savedUser);
+        employee.setUser(user);
 
         return mapper.toResponse(employeeRepository.save(employee));
     }
@@ -73,7 +64,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeResponse update(UUID id, UpdateEmployeeRequest dto) {
-
         Employee employee = employeeRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", id));
 
@@ -95,7 +85,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         userRepository.delete(employee.getUser());
     }
-
 
     private Role resolveRole(EmployeeType type) {
         return switch (type) {

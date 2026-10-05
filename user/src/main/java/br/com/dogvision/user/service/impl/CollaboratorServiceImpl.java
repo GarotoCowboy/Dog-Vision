@@ -4,12 +4,14 @@ import br.com.dogvision.user.dto.create.CreateCollaboratorRequest;
 import br.com.dogvision.user.dto.mapper.CollaboratorMapper;
 import br.com.dogvision.user.dto.response.CollaboratorResponse;
 import br.com.dogvision.user.infra.exception.CollaboratorNotFoundException;
+import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.model.*;
 import br.com.dogvision.user.repository.CollaboratorRepository;
+import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
-import br.com.dogvision.user.service.EmployeeCreationService;
 import br.com.dogvision.user.service.CollaboratorService;
+import br.com.dogvision.user.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,19 +24,22 @@ import java.util.UUID;
 public class CollaboratorServiceImpl implements CollaboratorService {
 
     private final CollaboratorRepository collaboratorRepository;
+    private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
-    private final EmployeeCreationService employeeCreationService;
+    private final UserService userService;
     private final CollaboratorMapper collaboratorMapper;
 
     public CollaboratorServiceImpl(
             CollaboratorRepository collaboratorRepository,
+            EmployeeRepository employeeRepository,
             UserRepository userRepository,
-            EmployeeCreationService employeeCreationService,
+            UserService userService,
             CollaboratorMapper collaboratorMapper
     ) {
         this.collaboratorRepository = collaboratorRepository;
+        this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
-        this.employeeCreationService = employeeCreationService;
+        this.userService = userService;
         this.collaboratorMapper = collaboratorMapper;
     }
 
@@ -42,7 +47,7 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     public CollaboratorResponse getById(UUID id) {
         Collaborator collaborator = collaboratorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Collaborator",id
+                        "Collaborator", id
                 ));
 
         return collaboratorMapper.toResponse(collaborator);
@@ -67,33 +72,36 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     @Override
     @Transactional
     public CollaboratorResponse save(CreateCollaboratorRequest dto) {
+        if (employeeRepository.existsByEmail(dto.email())) {
+            throw new EmailAlreadyExistsException(dto.email());
+        }
 
-        // 1) Create User + Employee
-        Employee employee = employeeCreationService.createEmployee(
+        User user = userService.createAccount(
                 dto.registration(),
-                dto.password(),
                 dto.email(),
                 dto.name(),
-                dto.phone(),
-                dto.shift(),
-                EmployeeType.COLLABORATOR,
                 Role.ROLE_COLLABORATOR
         );
 
-        return collaboratorMapper.toResponse(employee);
+        Employee employee = new Employee();
+        employee.setUser(user);
+        employee.setEmail(dto.email());
+        employee.setName(dto.name());
+        employee.setPhone(dto.phone());
+        employee.setShift(dto.shift());
+        employee.setType(EmployeeType.COLLABORATOR);
+
+        return collaboratorMapper.toResponse(employeeRepository.save(employee));
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
-
         Collaborator collaborator = collaboratorRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Collaborator not found"
                 ));
 
-        // Soft delete the account
         userRepository.delete(collaborator.getUser());
     }
 }
-

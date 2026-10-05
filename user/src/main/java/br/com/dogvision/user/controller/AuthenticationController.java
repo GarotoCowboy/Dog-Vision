@@ -1,10 +1,13 @@
 package br.com.dogvision.user.controller;
 
 import br.com.dogvision.user.dto.AuthenticationDto;
+import br.com.dogvision.user.dto.create.CreateFirstCoordinatorRequest;
+import br.com.dogvision.user.dto.response.CoordinatorResponse;
 import br.com.dogvision.user.dto.response.LoginResponse;
 import br.com.dogvision.user.infra.exception.error.ErrorResponse;
 import br.com.dogvision.user.infra.security.TokenService;
 import br.com.dogvision.user.model.User;
+import br.com.dogvision.user.service.CoordinatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +38,7 @@ public class AuthenticationController {
 
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
+    private final CoordinatorService coordinatorService;
 
     @Operation(
             summary = "Realizar login",
@@ -63,5 +68,30 @@ public class AuthenticationController {
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return ResponseEntity.ok(new LoginResponse(token));
     }
-}
 
+    @Operation(
+            summary = "Cadastrar o primeiro coordenador (Uso único)",
+            description = "Endpoint público para inicialização do sistema. Permite cadastrar o primeiro coordenador apenas quando nenhum coordenador ainda existe."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Primeiro coordenador cadastrado com sucesso",
+                    content = @Content(schema = @Schema(implementation = CoordinatorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos ou faltando",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Primeiro coordenador já cadastrado no sistema",
+                    content = @Content
+            )
+    })
+    @PostMapping("/first-coordinator")
+    public ResponseEntity<CoordinatorResponse> createFirstCoordinator(@RequestBody @Valid CreateFirstCoordinatorRequest data) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(coordinatorService.createFirstCoordinator(data));
+    }
+}

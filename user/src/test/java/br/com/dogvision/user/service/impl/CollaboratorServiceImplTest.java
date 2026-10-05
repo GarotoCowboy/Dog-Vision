@@ -4,6 +4,7 @@ import br.com.dogvision.user.dto.create.CreateCollaboratorRequest;
 import br.com.dogvision.user.dto.mapper.CollaboratorMapper;
 import br.com.dogvision.user.dto.response.CollaboratorResponse;
 import br.com.dogvision.user.infra.exception.CollaboratorNotFoundException;
+import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.model.Collaborator;
 import br.com.dogvision.user.model.Employee;
 import br.com.dogvision.user.model.EmployeeType;
@@ -11,8 +12,9 @@ import br.com.dogvision.user.model.Role;
 import br.com.dogvision.user.model.ShiftEnum;
 import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.CollaboratorRepository;
+import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
-import br.com.dogvision.user.service.EmployeeCreationService;
+import br.com.dogvision.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +28,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,10 +39,13 @@ class CollaboratorServiceImplTest {
     private CollaboratorRepository collaboratorRepository;
 
     @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
-    private EmployeeCreationService employeeCreationService;
+    private UserService userService;
 
     @Mock
     private CollaboratorMapper collaboratorMapper;
@@ -52,8 +56,9 @@ class CollaboratorServiceImplTest {
     void setUp() {
         service = new CollaboratorServiceImpl(
                 collaboratorRepository,
+                employeeRepository,
                 userRepository,
-                employeeCreationService,
+                userService,
                 collaboratorMapper
         );
     }
@@ -72,33 +77,43 @@ class CollaboratorServiceImplTest {
     }
 
     @Test
-    void shouldCreateCollaboratorUsingEmployeeCreationService() {
+    void shouldCreateCollaboratorUsingUserService() {
         CreateCollaboratorRequest request = new CreateCollaboratorRequest(
                 "collaborator@dogvision.com",
                 "Carlos Souza",
                 "11987654321",
                 "COL001",
-                "password@123",
                 ShiftEnum.MORNING
         );
+        User user = new User();
+        user.setRegistration("COL001");
         Employee employee = new Employee();
         CollaboratorResponse response = collaboratorResponse();
 
-        when(employeeCreationService.createEmployee(
-                eq("COL001"),
-                eq("password@123"),
-                eq("collaborator@dogvision.com"),
-                eq("Carlos Souza"),
-                eq("11987654321"),
-                eq(ShiftEnum.MORNING),
-                eq(EmployeeType.COLLABORATOR),
-                eq(Role.ROLE_COLLABORATOR)
-        )).thenReturn(employee);
+        when(employeeRepository.existsByEmail("collaborator@dogvision.com")).thenReturn(false);
+        when(userService.createAccount("COL001", "collaborator@dogvision.com", "Carlos Souza", Role.ROLE_COLLABORATOR)).thenReturn(user);
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
         when(collaboratorMapper.toResponse(employee)).thenReturn(response);
 
         CollaboratorResponse result = service.save(request);
 
         assertThat(result).isEqualTo(response);
+    }
+
+    @Test
+    void shouldThrowWhenCollaboratorEmailAlreadyExists() {
+        CreateCollaboratorRequest request = new CreateCollaboratorRequest(
+                "collaborator@dogvision.com",
+                "Carlos Souza",
+                "11987654321",
+                "COL001",
+                ShiftEnum.MORNING
+        );
+
+        when(employeeRepository.existsByEmail("collaborator@dogvision.com")).thenReturn(true);
+
+        assertThatThrownBy(() -> service.save(request))
+                .isInstanceOf(EmailAlreadyExistsException.class);
     }
 
     @Test
@@ -130,16 +145,12 @@ class CollaboratorServiceImplTest {
     }
 
     private Collaborator collaborator() {
-        User user = new User();
-        user.setUserId(UUID.randomUUID());
-        user.setRegistration("COL001");
-
-        Collaborator collaborator = new Collaborator();
-        collaborator.setId(UUID.randomUUID());
-        collaborator.setUser(user);
-        collaborator.setName("Carlos Souza");
-        collaborator.setShift(ShiftEnum.MORNING);
-        return collaborator;
+        Collaborator c = new Collaborator();
+        c.setId(UUID.randomUUID());
+        User u = new User();
+        u.setRegistration("COL001");
+        c.setUser(u);
+        return c;
     }
 
     private CollaboratorResponse collaboratorResponse() {

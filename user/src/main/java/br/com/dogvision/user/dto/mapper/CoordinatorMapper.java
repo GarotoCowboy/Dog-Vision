@@ -13,17 +13,13 @@ import org.mapstruct.ReportingPolicy;
         uses = EmployeeMapper.class)
 public interface CoordinatorMapper {
 
-
-
     @Mapping(target = "employeeId", source = "id")
     @Mapping(target = "userId", source = "user.userId")
     @Mapping(target = "registration", source = "user.registration")
     @Mapping(target = "active", source = "user.active")
     CoordinatorResponse toResponse(Coordinator coordinator);
 
-
-    @Mapping(target = "user.registration", source = "registration")
-    @Mapping(target = "user.passwordHash", source = "password")
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "type", constant = "COORDINATOR")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

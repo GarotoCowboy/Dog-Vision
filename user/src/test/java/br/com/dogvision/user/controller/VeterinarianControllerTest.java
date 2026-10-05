@@ -57,7 +57,6 @@ class VeterinarianControllerTest {
                 "Anna Costa",
                 "11987654321",
                 "VET001",
-                "password@123",
                 ShiftEnum.MORNING,
                 "SP-12345",
                 "General practice"

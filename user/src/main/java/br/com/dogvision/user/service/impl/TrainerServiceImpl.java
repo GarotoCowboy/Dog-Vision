@@ -6,7 +6,6 @@ import br.com.dogvision.user.dto.response.TrainerResponse;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.user.infra.exception.TrainerNotFoundException;
-import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
 import br.com.dogvision.user.model.Role;
 import br.com.dogvision.user.model.Trainer;
 import br.com.dogvision.user.model.User;
@@ -14,42 +13,29 @@ import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.TrainerRepository;
 import br.com.dogvision.user.repository.UserRepository;
 import br.com.dogvision.user.service.TrainerService;
+import br.com.dogvision.user.service.UserService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final TrainerMapper trainerMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    public TrainerServiceImpl(
-            TrainerRepository trainerRepository,
-            EmployeeRepository employeeRepository,
-            UserRepository userRepository,
-            TrainerMapper trainerMapper,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.trainerRepository = trainerRepository;
-        this.employeeRepository = employeeRepository;
-        this.userRepository = userRepository;
-        this.trainerMapper = trainerMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public TrainerResponse getById(UUID id) {
         Trainer trainer = trainerRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Trainer",id
+                        "Trainer", id
                 ));
 
         return trainerMapper.toResponse(trainer);
@@ -74,12 +60,14 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public TrainerResponse save(CreateTrainerRequest dto) {
-        validateEmployeeConflicts(dto.registration(), dto.email());
+        if (employeeRepository.existsByEmail(dto.email())) {
+            throw new EmailAlreadyExistsException(dto.email());
+        }
+
+        User user = userService.createAccount(dto.registration(), dto.email(), dto.name(), Role.ROLE_TRAINER);
 
         Trainer trainer = trainerMapper.toEntity(dto);
-        User user = trainer.getUser();
-        user.setRoles(Set.of(Role.ROLE_TRAINER));
-        user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        trainer.setUser(user);
 
         return trainerMapper.toResponse(trainerRepository.save(trainer));
     }
@@ -87,20 +75,9 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public void delete(UUID id) {
-
         Trainer trainer = trainerRepository.findByIdWithUser(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Trainer", id));
 
         userRepository.delete(trainer.getUser());
-    }
-
-    private void validateEmployeeConflicts(String registration, String email) {
-        if (userRepository.existsByRegistration(registration)) {
-            throw new UserAlreadyExistsException(registration);
-        }
-
-        if (employeeRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException(email);
-        }
     }
 }

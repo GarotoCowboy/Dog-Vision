@@ -16,8 +16,7 @@ public interface TrainerMapper {
   @Mapping(target = "active", source = "user.active")
   TrainerResponse toResponse(Trainer trainer);
 
-  @Mapping(target = "user.registration", source = "registration")
-  @Mapping(target = "user.passwordHash", source = "password")
+  @Mapping(target = "user", ignore = true)
   @Mapping(target = "type", constant = "TRAINER")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createdAt", ignore = true)

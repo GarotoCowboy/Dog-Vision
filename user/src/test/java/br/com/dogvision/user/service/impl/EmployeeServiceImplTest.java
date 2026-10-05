@@ -6,7 +6,6 @@ import br.com.dogvision.user.dto.response.EmployeeResponse;
 import br.com.dogvision.user.dto.update.UpdateEmployeeRequest;
 import br.com.dogvision.user.infra.exception.EmailAlreadyExistsException;
 import br.com.dogvision.user.infra.exception.ResourceNotFoundException;
-import br.com.dogvision.user.infra.exception.UserAlreadyExistsException;
 import br.com.dogvision.user.model.Employee;
 import br.com.dogvision.user.model.EmployeeType;
 import br.com.dogvision.user.model.Role;
@@ -14,12 +13,12 @@ import br.com.dogvision.user.model.ShiftEnum;
 import br.com.dogvision.user.model.User;
 import br.com.dogvision.user.repository.EmployeeRepository;
 import br.com.dogvision.user.repository.UserRepository;
+import br.com.dogvision.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,7 @@ class EmployeeServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
 
     @Mock
     private EmployeeMapper mapper;
@@ -50,7 +49,7 @@ class EmployeeServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        service = new EmployeeServiceImpl(employeeRepository, userRepository, passwordEncoder, mapper);
+        service = new EmployeeServiceImpl(employeeRepository, userRepository, userService, mapper);
     }
 
     @Test
@@ -73,18 +72,20 @@ class EmployeeServiceImplTest {
                 "Maria Oliveira",
                 "11987654321",
                 "EMP001",
-                "password@123",
                 ShiftEnum.NIGHT,
                 EmployeeType.VETERINARIAN
         );
+        User user = new User();
+        user.setRegistration("EMP001");
+        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+
         Employee employee = employee();
         Employee saved = employee();
         EmployeeResponse response = employeeResponse();
 
-        when(userRepository.existsByRegistration("EMP001")).thenReturn(false);
         when(employeeRepository.existsByEmail("employee@dogvision.com")).thenReturn(false);
-        when(passwordEncoder.encode("password@123")).thenReturn("encoded-password");
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userService.createAccount("EMP001", "employee@dogvision.com", "Maria Oliveira", Role.ROLE_VETERINARIAN))
+                .thenReturn(user);
         when(mapper.toEntity(request)).thenReturn(employee);
         when(employeeRepository.save(employee)).thenReturn(saved);
         when(mapper.toResponse(saved)).thenReturn(response);
@@ -92,26 +93,24 @@ class EmployeeServiceImplTest {
         EmployeeResponse result = service.save(request);
 
         assertThat(result).isEqualTo(response);
-        assertThat(employee.getUser().getRoles()).containsExactly(Role.ROLE_VETERINARIAN);
-        assertThat(employee.getUser().getPasswordHash()).isEqualTo("encoded-password");
+        assertThat(employee.getUser()).isEqualTo(user);
     }
 
     @Test
-    void shouldRejectSaveWhenRegistrationAlreadyExists() {
+    void shouldRejectSaveWhenEmailAlreadyExists() {
         CreateEmployeeRequest request = new CreateEmployeeRequest(
                 "employee@dogvision.com",
                 "Maria Oliveira",
                 "11987654321",
                 "EMP001",
-                "password@123",
                 ShiftEnum.NIGHT,
                 EmployeeType.VETERINARIAN
         );
 
-        when(userRepository.existsByRegistration("EMP001")).thenReturn(true);
+        when(employeeRepository.existsByEmail("employee@dogvision.com")).thenReturn(true);
 
         assertThatThrownBy(() -> service.save(request))
-                .isInstanceOf(UserAlreadyExistsException.class);
+                .isInstanceOf(EmailAlreadyExistsException.class);
     }
 
     @Test
@@ -143,18 +142,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldDeleteEmployeeUser() {
-        Employee employee = employee();
-
-        when(employeeRepository.findByIdWithUser(employee.getId())).thenReturn(Optional.of(employee));
-
-        service.delete(employee.getId());
-
-        verify(userRepository).delete(employee.getUser());
-    }
-
-    @Test
-    void shouldThrowWhenEmployeeDoesNotExist() {
+    void shouldThrowWhenEmployeeNotFound() {
         UUID id = UUID.randomUUID();
         when(employeeRepository.findByIdWithUser(id)).thenReturn(Optional.empty());
 
@@ -162,21 +150,33 @@ class EmployeeServiceImplTest {
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
-    private Employee employee() {
-        User user = new User();
-        user.setUserId(UUID.randomUUID());
-        user.setRegistration("EMP001");
-        user.setPasswordHash("encoded");
-        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+    @Test
+    void shouldDeleteEmployeeUser() {
+        Employee employee = employee();
+        when(employeeRepository.findByIdWithUser(employee.getId())).thenReturn(Optional.of(employee));
 
+        service.delete(employee.getId());
+
+        verify(userRepository).delete(employee.getUser());
+    }
+
+    private Employee employee() {
         Employee employee = new Employee();
         employee.setId(UUID.randomUUID());
-        employee.setUser(user);
-        employee.setName("Maria Oliveira");
         employee.setEmail("employee@dogvision.com");
+        employee.setName("Maria Oliveira");
         employee.setPhone("11987654321");
         employee.setShift(ShiftEnum.NIGHT);
         employee.setType(EmployeeType.VETERINARIAN);
+
+        User user = new User();
+        user.setUserId(UUID.randomUUID());
+        user.setRegistration("EMP001");
+        user.setPasswordHash("hashed-password");
+        user.setActive(true);
+        user.setRoles(Set.of(Role.ROLE_VETERINARIAN));
+        employee.setUser(user);
+
         return employee;
     }
 

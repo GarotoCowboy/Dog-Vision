@@ -60,7 +60,6 @@ class EmployeeControllerTest {
                 "Maria Oliveira",
                 "11987654321",
                 "EMP001",
-                "password@123",
                 ShiftEnum.NIGHT,
                 EmployeeType.VETERINARIAN
         );

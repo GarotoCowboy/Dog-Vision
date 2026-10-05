@@ -32,17 +32,21 @@ public class SpringSecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/login", "/api/v1/auth/first-coordinator").permitAll()
                         .requestMatchers(HttpMethod.POST,
+                                "/api/v1/employees",
                                 "/api/v1/employees/trainers",
                                 "/api/v1/employees/coordinators",
                                 "/api/v1/employees/collaborators",
                                 "/api/v1/employees/veterinarians").hasAuthority("ROLE_COORDINATOR")
                         .requestMatchers(HttpMethod.DELETE,
+                                "/api/v1/employees/*",
                                 "/api/v1/employees/trainers/*",
                                 "/api/v1/employees/coordinators/*",
                                 "/api/v1/employees/collaborators/*",
                                 "/api/v1/employees/veterinarians/*").hasAuthority("ROLE_COORDINATOR")
+                        .requestMatchers(HttpMethod.PATCH,
+                                "/api/v1/employees/*").hasAuthority("ROLE_COORDINATOR")
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/v1/employees/trainers/*",
                                 "/api/v1/employees/coordinators/*",

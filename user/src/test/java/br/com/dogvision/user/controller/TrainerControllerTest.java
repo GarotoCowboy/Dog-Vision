@@ -57,7 +57,6 @@ class TrainerControllerTest {
                 "Pedro Almeida",
                 "11987654321",
                 "TRAIN001",
-                "password@123",
                 ShiftEnum.AFTERNOON,
                 "Behavior"
         );
