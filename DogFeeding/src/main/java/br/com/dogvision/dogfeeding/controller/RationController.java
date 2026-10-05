@@ -148,6 +148,25 @@ public class RationController {
         return ResponseEntity.ok(service.decreaseRation(id, dto, loggedUserId));
     }
 
+    @Operation(summary = "Apply daily consumption to decrease ration stock")
+    @PostMapping("/{id}/apply-daily-consumption")
+    @Transactional
+    public ResponseEntity<RationResponse> applyDailyConsumption(
+            @PathVariable UUID id,
+            @RequestHeader("Authorization") String authHeader) {
+        UUID loggedUserId = extractUserId(authHeader);
+        return ResponseEntity.ok(service.applyDailyConsumption(id, loggedUserId));
+    }
+
+    @Operation(summary = "Apply daily consumption to decrease all rations stock")
+    @PostMapping("/apply-daily-consumption")
+    @Transactional
+    public ResponseEntity<List<RationResponse>> applyDailyConsumptionAll(
+            @RequestHeader("Authorization") String authHeader) {
+        UUID loggedUserId = extractUserId(authHeader);
+        return ResponseEntity.ok(service.applyDailyConsumptionAll(loggedUserId));
+    }
+
     @Operation(summary = "Delete a ration")
     @DeleteMapping("/{id}")
     @Transactional

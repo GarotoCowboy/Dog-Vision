@@ -33,14 +33,17 @@ public record FeedingPlanResponse(
         @Schema(description = "Plan goal")
         String goal,
 
-        @Schema(description = "Daily quantity")
-        Double dailyQuantity,
+        @Schema(description = "Quantity per meal in grams")
+        Double mealQuantityInGrams,
 
         @Schema(description = "Measurement unit")
         MeasurementUnit unit,
 
         @Schema(description = "Meal types")
         List<MealType> mealTypes,
+
+        @Schema(description = "Dietary restrictions")
+        String dietaryRestriction,
 
         @Schema(description = "Plan notes")
         String notes,

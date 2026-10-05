@@ -3,6 +3,7 @@ package br.com.dogvision.dogfeeding.controller;
 import br.com.dogvision.dogfeeding.infra.security.TokenService;
 import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationQuantityConsumer;
 import br.com.dogvision.dogfeeding.model.FeedingPlan;
+import br.com.dogvision.dogfeeding.model.MealType;
 import br.com.dogvision.dogfeeding.model.MeasurementUnit;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.model.RationType;
@@ -18,6 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -142,8 +144,9 @@ class RationControllerIntegrationTest {
         plan.setRationId(ration.getId());
         plan.setName("Plano Dog");
         plan.setGoal("Crescimento");
-        plan.setDailyQuantity(2.0);
-        plan.setUnit(MeasurementUnit.KILOGRAM);
+        plan.setMealQuantityInGrams(1000.0);
+        plan.setUnit(MeasurementUnit.GRAM);
+        plan.setMealTypes(List.of(MealType.BREAKFAST, MealType.DINNER));
         plan.setStartDate(LocalDate.now().minusDays(1));
         plan.setActive(true);
         feedingPlanRepository.saveAndFlush(plan);

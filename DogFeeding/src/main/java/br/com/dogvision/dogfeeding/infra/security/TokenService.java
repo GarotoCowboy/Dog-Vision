@@ -44,11 +44,15 @@ public class TokenService {
     public String getIdFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
+            var jwt = JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()
-                    .verify(token)
-                    .getClaim("collaboratorId").asString();
+                    .verify(token);
+            var claim = jwt.getClaim("collaboratorId");
+            if (claim != null && !claim.isNull() && claim.asString() != null) {
+                return claim.asString();
+            }
+            return jwt.getSubject() != null ? jwt.getSubject() : "";
         } catch (JWTVerificationException exception) {
             return "";
         }

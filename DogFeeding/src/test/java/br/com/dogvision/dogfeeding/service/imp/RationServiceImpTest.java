@@ -6,6 +6,7 @@ import br.com.dogvision.dogfeeding.dto.response.RationConsumptionEstimateRespons
 import br.com.dogvision.dogfeeding.infra.exception.InvalidRationStateException;
 import br.com.dogvision.dogfeeding.infra.rabbit.ration.RationEventPublisher;
 import br.com.dogvision.dogfeeding.model.FeedingPlan;
+import br.com.dogvision.dogfeeding.model.MealType;
 import br.com.dogvision.dogfeeding.model.MeasurementUnit;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.model.RationStockStatus;
@@ -129,8 +130,9 @@ class RationServiceImpTest {
         plan1.setDogId(dog1);
         plan1.setRationId(rationId);
         plan1.setName("Plan Dog 1");
-        plan1.setDailyQuantity(1.0);
-        plan1.setUnit(MeasurementUnit.KILOGRAM);
+        plan1.setMealQuantityInGrams(500.0);
+        plan1.setUnit(MeasurementUnit.GRAM);
+        plan1.setMealTypes(List.of(MealType.BREAKFAST, MealType.DINNER));
         plan1.setActive(true);
         plan1.setStartDate(LocalDate.now().minusDays(10));
 
@@ -139,8 +141,9 @@ class RationServiceImpTest {
         plan2.setDogId(dog2);
         plan2.setRationId(rationId);
         plan2.setName("Plan Dog 2");
-        plan2.setDailyQuantity(0.5);
-        plan2.setUnit(MeasurementUnit.KILOGRAM);
+        plan2.setMealQuantityInGrams(250.0);
+        plan2.setUnit(MeasurementUnit.GRAM);
+        plan2.setMealTypes(List.of(MealType.BREAKFAST, MealType.DINNER));
         plan2.setActive(true);
         plan2.setStartDate(LocalDate.now().minusDays(5));
 

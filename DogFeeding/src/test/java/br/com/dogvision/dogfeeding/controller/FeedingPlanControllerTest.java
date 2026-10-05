@@ -53,9 +53,10 @@ class FeedingPlanControllerTest {
                 UUID.randomUUID(),
                 "Plano Senior",
                 "Controle de peso",
-                0.45,
-                MeasurementUnit.KILOGRAM,
+                250.0,
+                MeasurementUnit.GRAM,
                 List.of(MealType.BREAKFAST, MealType.DINNER),
+                "Sem frango",
                 "Dividir em duas porcoes",
                 LocalDate.now(),
                 LocalDate.now().plusDays(30)
@@ -68,7 +69,9 @@ class FeedingPlanControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Plano Senior"));
+                .andExpect(jsonPath("$.name").value("Plano Senior"))
+                .andExpect(jsonPath("$.mealQuantityInGrams").value(250.0))
+                .andExpect(jsonPath("$.dietaryRestriction").value("Sem frango"));
     }
 
     @Test
@@ -78,7 +81,9 @@ class FeedingPlanControllerTest {
 
         mockMvc.perform(get("/api/v1/dogfeeding/plans/dog/{dogId}", dogId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].rationName").value("Premium Senior"));
+                .andExpect(jsonPath("$[0].rationName").value("Premium Senior"))
+                .andExpect(jsonPath("$[0].mealQuantityInGrams").value(250.0))
+                .andExpect(jsonPath("$[0].dietaryRestriction").value("Sem frango"));
     }
 
     private FeedingPlanResponse response() {
@@ -90,9 +95,10 @@ class FeedingPlanControllerTest {
                 RationType.SPECIAL,
                 "Plano Senior",
                 "Controle de peso",
-                0.45,
-                MeasurementUnit.KILOGRAM,
+                250.0,
+                MeasurementUnit.GRAM,
                 List.of(MealType.BREAKFAST, MealType.DINNER),
+                "Sem frango",
                 "Dividir em duas porcoes",
                 LocalDate.now(),
                 LocalDate.now().plusDays(30),

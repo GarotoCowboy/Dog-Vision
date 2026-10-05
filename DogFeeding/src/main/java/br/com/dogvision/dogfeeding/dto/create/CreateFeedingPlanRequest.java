@@ -2,11 +2,13 @@ package br.com.dogvision.dogfeeding.dto.create;
 
 import br.com.dogvision.dogfeeding.model.MealType;
 import br.com.dogvision.dogfeeding.model.MeasurementUnit;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,20 +32,27 @@ public record CreateFeedingPlanRequest(
         @NotBlank(message = "Goal is required")
         String goal,
 
-        @Schema(description = "Daily recommended quantity", example = "0.70")
-        @NotNull(message = "Daily quantity is required")
-        @Positive(message = "Daily quantity must be positive")
-        Double dailyQuantity,
+        @Schema(description = "Recommended quantity per meal in grams", example = "250.0")
+        @NotNull(message = "Meal quantity in grams is required")
+        @Positive(message = "Meal quantity in grams must be positive")
+        @JsonAlias({"mealQuantityGrams", "quantityPerMeal", "quantityPerMealInGrams", "mealQuantity"})
+        Double mealQuantityInGrams,
 
-        @Schema(description = "Measurement unit", example = "KILOGRAM")
-        @NotNull(message = "Measurement unit is required")
+        @Schema(description = "Measurement unit", example = "GRAM")
         MeasurementUnit unit,
 
         @Schema(description = "Meal types planned for the dog")
         @NotEmpty(message = "At least one meal type is required")
         List<MealType> mealTypes,
 
+        @Schema(description = "Dietary restrictions", example = "Chicken allergy")
+        @Size(max = 500, message = "Dietary restriction must have at most 500 characters")
+        @JsonAlias({"dietaryRestrictions", "foodRestriction", "restricaoAlimentar"})
+        String dietaryRestriction,
+
         @Schema(description = "Plan notes", example = "Split meals evenly and avoid training before feeding")
+        @Size(max = 500, message = "Notes must have at most 500 characters")
+        @JsonAlias({"observacoes", "observation", "observations"})
         String notes,
 
         @Schema(description = "Plan start date", example = "2026-04-30")

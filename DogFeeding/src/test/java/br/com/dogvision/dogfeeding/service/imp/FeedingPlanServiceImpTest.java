@@ -54,9 +54,10 @@ class FeedingPlanServiceImpTest {
                 rationId,
                 "Plano Senior",
                 "Controle de peso",
-                0.45,
-                MeasurementUnit.KILOGRAM,
+                250.0,
+                MeasurementUnit.GRAM,
                 List.of(MealType.BREAKFAST, MealType.DINNER),
+                "Sem frango",
                 "Dividir em duas porcoes",
                 LocalDate.now(),
                 LocalDate.now().plusDays(30)
@@ -65,6 +66,8 @@ class FeedingPlanServiceImpTest {
         assertThat(response.rationId()).isEqualTo(rationId);
         assertThat(response.rationName()).isEqualTo("Premium Senior");
         assertThat(response.rationType()).isEqualTo(RationType.SPECIAL);
+        assertThat(response.mealQuantityInGrams()).isEqualTo(250.0);
+        assertThat(response.dietaryRestriction()).isEqualTo("Sem frango");
     }
 
     @Test
@@ -77,9 +80,10 @@ class FeedingPlanServiceImpTest {
                 rationId,
                 "Plano",
                 "Meta",
-                0.30,
-                MeasurementUnit.KILOGRAM,
+                150.0,
+                MeasurementUnit.GRAM,
                 List.of(MealType.LUNCH),
+                null,
                 null,
                 LocalDate.now(),
                 null
@@ -98,9 +102,10 @@ class FeedingPlanServiceImpTest {
         entity.setRationId(currentRationId);
         entity.setName("Plano");
         entity.setGoal("Meta");
-        entity.setDailyQuantity(0.4);
-        entity.setUnit(MeasurementUnit.KILOGRAM);
+        entity.setMealQuantityInGrams(200.0);
+        entity.setUnit(MeasurementUnit.GRAM);
         entity.setMealTypes(List.of(MealType.BREAKFAST));
+        entity.setDietaryRestriction("Sem lactose");
         entity.setStartDate(LocalDate.now());
         entity.setActive(true);
 
@@ -118,11 +123,40 @@ class FeedingPlanServiceImpTest {
                 null,
                 null,
                 null,
+                null,
                 null
         ), UUID.randomUUID());
 
         assertThat(response.rationId()).isEqualTo(newRationId);
         assertThat(response.rationName()).isEqualTo("Premium Light");
+    }
+
+    @Test
+    void shouldCreatePlanWithOptionalDietaryRestrictionAndNotesNull() {
+        UUID rationId = UUID.randomUUID();
+        Ration ration = ration(rationId, "Premium Senior");
+
+        when(rationRepository.findById(rationId)).thenReturn(Optional.of(ration));
+        when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = service.save(new CreateFeedingPlanRequest(
+                UUID.randomUUID(),
+                rationId,
+                "Plano Basico",
+                "Manutencao",
+                300.0,
+                null,
+                List.of(MealType.BREAKFAST),
+                null,
+                null,
+                LocalDate.now(),
+                null
+        ), UUID.randomUUID());
+
+        assertThat(response.mealQuantityInGrams()).isEqualTo(300.0);
+        assertThat(response.unit()).isEqualTo(MeasurementUnit.GRAM);
+        assertThat(response.dietaryRestriction()).isNull();
+        assertThat(response.notes()).isNull();
     }
 
     private Ration ration(UUID id, String name) {

@@ -35,5 +35,9 @@ public interface RationService {
 
     RationResponse decreaseRation(UUID id, DecreaseRationStockRequest dto, UUID loggedUserId);
 
+    RationResponse applyDailyConsumption(UUID id, UUID loggedUserId);
+
+    List<RationResponse> applyDailyConsumptionAll(UUID loggedUserId);
+
     void delete(UUID id, UUID loggedUserId);
 }

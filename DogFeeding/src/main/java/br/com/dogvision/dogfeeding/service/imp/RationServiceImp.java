@@ -23,10 +23,12 @@ import br.com.dogvision.dogfeeding.repository.RationRepository;
 import br.com.dogvision.dogfeeding.service.RationService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -127,7 +129,7 @@ public class RationServiceImp implements RationService {
         }
 
         double totalAdded = dto.totalAddedWeightKg();
-        ration.setCurrentRationQuantity(ration.getCurrentRationQuantity() + totalAdded);
+        ration.setCurrentRationQuantity(round2(ration.getCurrentRationQuantity() + totalAdded));
         validateRationState(ration);
 
         Ration saved = repository.save(ration);
@@ -144,7 +146,7 @@ public class RationServiceImp implements RationService {
             throw new InvalidRationStateException("Quantity to decrease must be positive");
         }
 
-        double newQuantity = Math.max(0.0, ration.getCurrentRationQuantity() - dto.quantityKg());
+        double newQuantity = round2(Math.max(0.0, ration.getCurrentRationQuantity() - dto.quantityKg()));
         ration.setCurrentRationQuantity(newQuantity);
         validateRationState(ration);
 
@@ -152,6 +154,75 @@ public class RationServiceImp implements RationService {
         rationEventPublisher.publishQuantityUpdated(saved);
 
         return toResponse(saved);
+    }
+
+    @Transactional
+    @Override
+    public RationResponse applyDailyConsumption(UUID id, UUID loggedUserId) {
+        Ration ration = findEntity(id);
+        LocalDate today = LocalDate.now();
+        if (ration.getLastDailyDeductionDate() != null && ration.getLastDailyDeductionDate().isEqual(today)) {
+            throw new InvalidRationStateException("A baixa diária para a ração " + ration.getName() + " já foi realizada hoje");
+        }
+
+        RationConsumptionEstimateResponse estimate = getEstimate(id);
+        if (estimate.totalDailyConsumptionKg() != null && estimate.totalDailyConsumptionKg() > 0) {
+            double newQuantity = round2(Math.max(0.0, ration.getCurrentRationQuantity() - estimate.totalDailyConsumptionKg()));
+            ration.setCurrentRationQuantity(newQuantity);
+            ration.setLastDailyDeductionDate(today);
+            validateRationState(ration);
+
+            Ration saved = repository.save(ration);
+            rationEventPublisher.publishQuantityUpdated(saved);
+            return toResponse(saved);
+        }
+        return toResponse(ration);
+    }
+
+    @Transactional
+    @Override
+    public List<RationResponse> applyDailyConsumptionAll(UUID loggedUserId) {
+        LocalDate today = LocalDate.now();
+        List<Ration> all = repository.findAll();
+        List<RationResponse> updated = new ArrayList<>();
+        for (Ration ration : all) {
+            if (ration.getLastDailyDeductionDate() != null && ration.getLastDailyDeductionDate().isEqual(today)) {
+                continue;
+            }
+            RationConsumptionEstimateResponse est = getEstimate(ration.getId());
+            if (est.totalDailyConsumptionKg() != null && est.totalDailyConsumptionKg() > 0) {
+                double newQuantity = round2(Math.max(0.0, ration.getCurrentRationQuantity() - est.totalDailyConsumptionKg()));
+                ration.setCurrentRationQuantity(newQuantity);
+                ration.setLastDailyDeductionDate(today);
+                validateRationState(ration);
+
+                Ration saved = repository.save(ration);
+                rationEventPublisher.publishQuantityUpdated(saved);
+                updated.add(toResponse(saved));
+            }
+        }
+        return updated;
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void scheduledDailyConsumption() {
+        LocalDate today = LocalDate.now();
+        List<Ration> all = repository.findAll();
+        for (Ration r : all) {
+            if (r.getLastDailyDeductionDate() != null && r.getLastDailyDeductionDate().isEqual(today)) {
+                continue;
+            }
+            List<FeedingPlan> activePlans = feedingPlanRepository.findActivePlansByRationId(r.getId(), today);
+            double dailyTotal = activePlans.stream().mapToDouble(FeedingPlan::getDailyQuantityKg).sum();
+            if (dailyTotal > 0) {
+                double newQuantity = round2(Math.max(0.0, r.getCurrentRationQuantity() - dailyTotal));
+                r.setCurrentRationQuantity(newQuantity);
+                r.setLastDailyDeductionDate(today);
+                Ration saved = repository.save(r);
+                rationEventPublisher.publishQuantityUpdated(saved);
+            }
+        }
     }
 
     @Override
@@ -173,15 +244,20 @@ public class RationServiceImp implements RationService {
         }
     }
 
+    private double round2(double value) {
+        return Math.round(value * 100.0) / 100.0;
+    }
+
     private RationResponse toResponse(Ration ration) {
         LocalDate today = LocalDate.now();
         return new RationResponse(
                 ration.getId(),
                 ration.getName(),
                 ration.getRationType(),
-                ration.getCurrentRationQuantity(),
+                round2(ration.getCurrentRationQuantity()),
                 ration.getRegistrationDate(),
-                ration.getStockStatus(today)
+                ration.getStockStatus(today),
+                ration.getLastDailyDeductionDate()
         );
     }
 
@@ -193,12 +269,12 @@ public class RationServiceImp implements RationService {
                         plan.getDogId(),
                         plan.getId(),
                         plan.getName(),
-                        plan.getDailyQuantity()
+                        round2(plan.getDailyQuantityKg())
                 ))
                 .toList();
 
         double totalDailyConsumption = activePlans.stream()
-                .mapToDouble(FeedingPlan::getDailyQuantity)
+                .mapToDouble(FeedingPlan::getDailyQuantityKg)
                 .sum();
 
         Double estimatedDaysRemaining = null;
@@ -208,21 +284,26 @@ public class RationServiceImp implements RationService {
             estimatedDaysRemaining = 0.0;
             estimatedDepletionDate = referenceDate;
         } else if (totalDailyConsumption > 0) {
-            estimatedDaysRemaining = ration.getCurrentRationQuantity() / totalDailyConsumption;
+            estimatedDaysRemaining = round2(ration.getCurrentRationQuantity() / totalDailyConsumption);
             long wholeDays = (long) Math.floor(estimatedDaysRemaining);
             estimatedDepletionDate = referenceDate.plusDays(wholeDays);
         }
+
+        boolean dailyDeductionAppliedToday = ration.getLastDailyDeductionDate() != null
+                && ration.getLastDailyDeductionDate().isEqual(referenceDate);
 
         return new RationConsumptionEstimateResponse(
                 ration.getId(),
                 ration.getName(),
                 ration.getRationType(),
-                ration.getCurrentRationQuantity(),
-                totalDailyConsumption,
+                round2(ration.getCurrentRationQuantity()),
+                round2(totalDailyConsumption),
                 estimatedDaysRemaining,
                 estimatedDepletionDate,
                 ration.getStockStatus(referenceDate),
-                dogConsumptions
+                dogConsumptions,
+                ration.getLastDailyDeductionDate(),
+                dailyDeductionAppliedToday
         );
     }
 }

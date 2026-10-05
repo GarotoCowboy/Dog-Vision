@@ -9,12 +9,13 @@ Authorization: Bearer {{authToken}}
   "rationId": "550e8400-e29b-41d4-a716-446655440001",
   "name": "Controle de peso adulto",
   "goal": "Manutenção do peso com maior saciedade",
-  "dailyQuantity": 0.70,
-  "unit": "KILOGRAM",
+  "mealQuantityInGrams": 350.0,
+  "unit": "GRAM",
   "mealTypes": [
     "BREAKFAST",
     "DINNER"
   ],
+  "dietaryRestriction": "Sem restrições conhecidas",
   "notes": "Dividir as refeições igualmente",
   "startDate": "2026-04-30",
   "endDate": "2026-06-30"

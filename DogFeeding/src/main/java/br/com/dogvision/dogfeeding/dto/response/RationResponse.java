@@ -25,6 +25,12 @@ public record RationResponse(
         LocalDate registrationDate,
 
         @Schema(description = "Current stock status")
-        RationStockStatus stockStatus
+        RationStockStatus stockStatus,
+
+        @Schema(description = "Date of last daily deduction")
+        LocalDate lastDailyDeductionDate
 ) {
+    public RationResponse(UUID id, String name, RationType rationType, Double currentRationQuantity, LocalDate registrationDate, RationStockStatus stockStatus) {
+        this(id, name, rationType, currentRationQuantity, registrationDate, stockStatus, null);
+    }
 }

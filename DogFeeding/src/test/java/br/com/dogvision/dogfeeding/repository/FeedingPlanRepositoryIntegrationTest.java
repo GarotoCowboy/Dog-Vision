@@ -89,9 +89,10 @@ class FeedingPlanRepositoryIntegrationTest {
         plan.setRationId(UUID.randomUUID());
         plan.setName(name);
         plan.setGoal("Maintenance");
-        plan.setDailyQuantity(1.5);
-        plan.setUnit(MeasurementUnit.KILOGRAM);
+        plan.setMealQuantityInGrams(750.0);
+        plan.setUnit(MeasurementUnit.GRAM);
         plan.setMealTypes(List.of(MealType.BREAKFAST, MealType.DINNER));
+        plan.setDietaryRestriction("Nenhuma");
         plan.setStartDate(LocalDate.now());
         plan.setNotes("Observacao");
         return plan;

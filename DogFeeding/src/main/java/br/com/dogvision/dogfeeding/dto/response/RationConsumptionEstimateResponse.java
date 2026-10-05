@@ -35,7 +35,30 @@ public record RationConsumptionEstimateResponse(
         RationStockStatus stockStatus,
 
         @Schema(description = "List of dog consumption estimates for this ration")
-        List<DogRationConsumptionResponse> dogConsumptions
+        List<DogRationConsumptionResponse> dogConsumptions,
+
+        @Schema(description = "Date of last daily deduction")
+        LocalDate lastDailyDeductionDate,
+
+        @Schema(description = "Whether daily deduction was already applied today")
+        Boolean dailyDeductionAppliedToday
 ) {
+    public RationConsumptionEstimateResponse(
+            UUID rationId,
+            String rationName,
+            RationType rationType,
+            Double currentRationQuantityKg,
+            Double totalDailyConsumptionKg,
+            Double estimatedDaysRemaining,
+            LocalDate estimatedDepletionDate,
+            RationStockStatus stockStatus,
+            List<DogRationConsumptionResponse> dogConsumptions
+    ) {
+        this(rationId, rationName, rationType, currentRationQuantityKg, totalDailyConsumptionKg, estimatedDaysRemaining, estimatedDepletionDate, stockStatus, dogConsumptions, null, false);
+    }
+
+    public Double dailyConsumptionKg() {
+        return totalDailyConsumptionKg;
+    }
 }
 

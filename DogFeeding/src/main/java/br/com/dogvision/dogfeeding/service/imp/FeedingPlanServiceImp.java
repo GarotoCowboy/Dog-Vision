@@ -6,6 +6,7 @@ import br.com.dogvision.dogfeeding.dto.update.UpdateFeedingPlanRequest;
 import br.com.dogvision.dogfeeding.infra.exception.FeedingPlanNotFoundException;
 import br.com.dogvision.dogfeeding.infra.exception.InvalidRationStateException;
 import br.com.dogvision.dogfeeding.model.FeedingPlan;
+import br.com.dogvision.dogfeeding.model.MeasurementUnit;
 import br.com.dogvision.dogfeeding.model.Ration;
 import br.com.dogvision.dogfeeding.repository.FeedingPlanRepository;
 import br.com.dogvision.dogfeeding.repository.RationRepository;
@@ -47,9 +48,10 @@ public class FeedingPlanServiceImp implements FeedingPlanService {
         entity.setRationId(ration.getId());
         entity.setName(dto.name());
         entity.setGoal(dto.goal());
-        entity.setDailyQuantity(dto.dailyQuantity());
-        entity.setUnit(dto.unit());
+        entity.setMealQuantityInGrams(dto.mealQuantityInGrams());
+        entity.setUnit(dto.unit() != null ? dto.unit() : MeasurementUnit.GRAM);
         entity.setMealTypes(dto.mealTypes());
+        entity.setDietaryRestriction(dto.dietaryRestriction());
         entity.setNotes(dto.notes());
         entity.setStartDate(dto.startDate());
         entity.setEndDate(dto.endDate());
@@ -69,14 +71,17 @@ public class FeedingPlanServiceImp implements FeedingPlanService {
         if (dto.goal() != null) {
             entity.setGoal(dto.goal());
         }
-        if (dto.dailyQuantity() != null) {
-            entity.setDailyQuantity(dto.dailyQuantity());
+        if (dto.mealQuantityInGrams() != null) {
+            entity.setMealQuantityInGrams(dto.mealQuantityInGrams());
         }
         if (dto.unit() != null) {
             entity.setUnit(dto.unit());
         }
         if (dto.mealTypes() != null) {
             entity.setMealTypes(dto.mealTypes());
+        }
+        if (dto.dietaryRestriction() != null) {
+            entity.setDietaryRestriction(dto.dietaryRestriction());
         }
         if (dto.notes() != null) {
             entity.setNotes(dto.notes());
@@ -124,9 +129,10 @@ public class FeedingPlanServiceImp implements FeedingPlanService {
                 ration.getRationType(),
                 entity.getName(),
                 entity.getGoal(),
-                entity.getDailyQuantity(),
+                entity.getMealQuantityInGrams(),
                 entity.getUnit(),
                 entity.getMealTypes(),
+                entity.getDietaryRestriction(),
                 entity.getNotes(),
                 entity.getStartDate(),
                 entity.getEndDate(),

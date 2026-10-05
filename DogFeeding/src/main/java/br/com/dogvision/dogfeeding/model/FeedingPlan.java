@@ -45,11 +45,11 @@ public class FeedingPlan {
     private String goal;
 
     @Column(nullable = false)
-    private double dailyQuantity;
+    private double mealQuantityInGrams;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MeasurementUnit unit;
+    private MeasurementUnit unit = MeasurementUnit.GRAM;
 
     @ElementCollection(targetClass = MealType.class)
     @CollectionTable(name = "feeding_plan_meal_types", joinColumns = @JoinColumn(name = "feeding_plan_id"))
@@ -58,7 +58,15 @@ public class FeedingPlan {
     private List<MealType> mealTypes = new ArrayList<>();
 
     @Column(length = 500)
+    private String dietaryRestriction;
+
+    @Column(length = 500)
     private String notes;
+
+    public double getDailyQuantityKg() {
+        int mealsPerDay = (mealTypes != null && !mealTypes.isEmpty()) ? mealTypes.size() : 1;
+        return (mealQuantityInGrams * mealsPerDay) / 1000.0;
+    }
 
     @Column(nullable = false)
     private LocalDate startDate;

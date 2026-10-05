@@ -66,21 +66,26 @@ class FeedingPlanControllerIntegrationTest {
                                   "rationId": "%s",
                                   "name": "Plan Integration",
                                   "goal": "Weight maintenance",
-                                  "dailyQuantity": 1.2,
-                                  "unit": "KILOGRAM",
+                                  "mealQuantityInGrams": 600.0,
+                                  "unit": "GRAM",
                                   "mealTypes": ["BREAKFAST", "DINNER"],
+                                  "dietaryRestriction": "Sem corantes",
                                   "notes": "Split meals evenly",
                                   "startDate": "2026-05-12"
                                 }
                                 """.formatted(dogId, savedRation.getId())))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.rationName").value("Plan Ration"))
-                .andExpect(jsonPath("$.name").value("Plan Integration"));
+                .andExpect(jsonPath("$.name").value("Plan Integration"))
+                .andExpect(jsonPath("$.mealQuantityInGrams").value(600.0))
+                .andExpect(jsonPath("$.dietaryRestriction").value("Sem corantes"));
 
         assertThat(feedingPlanRepository.findAllByDogId(dogId)).hasSize(1);
 
         mockMvc.perform(get("/api/v1/dogfeeding/plans/dog/" + dogId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].mealTypes[0]").value("BREAKFAST"));
+                .andExpect(jsonPath("$[0].mealTypes[0]").value("BREAKFAST"))
+                .andExpect(jsonPath("$[0].mealQuantityInGrams").value(600.0))
+                .andExpect(jsonPath("$[0].dietaryRestriction").value("Sem corantes"));
     }
 }

@@ -39,6 +39,9 @@ public class Ration {
     @Column(nullable = false)
     private LocalDate registrationDate;
 
+    @Column
+    private LocalDate lastDailyDeductionDate;
+
     public RationStockStatus getStockStatus(LocalDate referenceDate) {
         if (currentRationQuantity <= 0) {
             return RationStockStatus.OUT_OF_STOCK;
