@@ -4,8 +4,10 @@ import br.com.dogvision.dogmanagement.dto.CreateDogRequest;
 import br.com.dogvision.dogmanagement.dto.DogResponse;
 import br.com.dogvision.dogmanagement.dto.UpdateDogRequest;
 import br.com.dogvision.dogmanagement.dto.mapper.DogMapper;
+import br.com.dogvision.dogmanagement.infra.exceptions.BusinessException;
 import br.com.dogvision.dogmanagement.infra.exceptions.DogNotFoundException;
 import br.com.dogvision.dogmanagement.model.Dog;
+import br.com.dogvision.dogmanagement.model.enums.DogStatus;
 import br.com.dogvision.dogmanagement.repository.DogRepository;
 import br.com.dogvision.dogmanagement.service.DogService;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,25 +49,45 @@ public class DogServiceImp implements DogService {
 
     @Override
     public DogResponse save(CreateDogRequest dto) {
+        if (dto.status() == DogStatus.DOADO || dto.status() == DogStatus.FALECIDO) {
+            if (Boolean.TRUE.equals(dto.onKennel())) {
+                throw new BusinessException("Cães com status DOADO ou FALECIDO não podem estar no canil.", HttpStatus.BAD_REQUEST);
+            }
+        }
 
         Dog dog = mapper.toEntity(dto);
 
-        Dog savedDog =dogRepository.save(dog);
+        if (dog.getStatus() == DogStatus.DOADO || dog.getStatus() == DogStatus.FALECIDO) {
+            dog.setOnKennel(false);
+        } else if (dog.getOnKennel() == null) {
+            dog.setOnKennel(true);
+        }
 
+        Dog savedDog = dogRepository.save(dog);
         return mapper.toResponse(savedDog);
     }
 
     @Override
     @Transactional
     public DogResponse update(UUID id, UpdateDogRequest updateDogRequest) {
-
         Dog dog = findById(id);
 
+        DogStatus targetStatus = updateDogRequest.status() != null ? updateDogRequest.status() : dog.getStatus();
 
-    mapper.updateFromDto(updateDogRequest,dog);
-    dogRepository.save(dog);
+        if (targetStatus == DogStatus.DOADO || targetStatus == DogStatus.FALECIDO) {
+            if (Boolean.TRUE.equals(updateDogRequest.onKennel())) {
+                throw new BusinessException("Cães com status DOADO ou FALECIDO não podem estar no canil.", HttpStatus.BAD_REQUEST);
+            }
+        }
 
-    return mapper.toResponse(dog);
+        mapper.updateFromDto(updateDogRequest, dog);
+
+        if (dog.getStatus() == DogStatus.DOADO || dog.getStatus() == DogStatus.FALECIDO) {
+            dog.setOnKennel(false);
+        }
+
+        dogRepository.save(dog);
+        return mapper.toResponse(dog);
     }
 
     @Override

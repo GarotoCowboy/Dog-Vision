@@ -27,7 +27,11 @@ public record DogResponse(
                           @Schema(description = "Data de criação do registro")
                           Timestamp createdAt,
                           @Schema(description = "Data da última atualização do registro")
-                          Timestamp updatedAt){
+                          Timestamp updatedAt,
+                          @Schema(description = "Indica se o cão está atualmente no canil", example = "true")
+                          Boolean onKennel){
 
-
+    public DogResponse(UUID ID, String name, DogRace race, DogStatus status, Character sex, String avatarKey, Timestamp dateOfBirth, Timestamp createdAt, Timestamp updatedAt) {
+        this(ID, name, race, status, sex, avatarKey, dateOfBirth, createdAt, updatedAt, status != DogStatus.DOADO && status != DogStatus.FALECIDO);
+    }
 }

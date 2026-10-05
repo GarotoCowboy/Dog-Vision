@@ -36,6 +36,7 @@ class DogControllerIntegrationTest {
                                   "race": "LABRADOR",
                                   "status": "SOCIALIZACAO",
                                   "sex": "F",
+                                  "avatarKey": "cao-01",
                                   "dateOfBirth": "2024-01-10T08:30:00Z"
                                 }
                                 """))

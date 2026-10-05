@@ -5,6 +5,8 @@ public enum DogStatus {
     SOCIALIZACAO,
     TREINAMENTO,
     ADAPTACAO,
-    DOACAO,
-    CEDIDO
+    REPRODUCAO,
+    AGUARDANDO_APOSENTADORIA,
+    DOADO,
+    FALECIDO
 }

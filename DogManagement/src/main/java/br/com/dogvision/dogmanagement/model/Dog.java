@@ -50,4 +50,7 @@ public class Dog {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Column
     private Timestamp updatedAt;
+
+    @Column(name = "on_kennel")
+    private Boolean onKennel;
 }

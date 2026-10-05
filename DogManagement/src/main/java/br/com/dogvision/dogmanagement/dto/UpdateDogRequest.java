@@ -15,6 +15,12 @@ public record UpdateDogRequest(
         UUID ID,
 
         @Schema(description = "Status atual do cão no programa", example = "TREINAMENTO")
-        DogStatus status
+        DogStatus status,
+
+        @Schema(description = "Indica se o cão está no canil", example = "true")
+        Boolean onKennel
 ) {
+    public UpdateDogRequest(UUID ID, DogStatus status) {
+        this(ID, status, null);
+    }
 }

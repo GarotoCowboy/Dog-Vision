@@ -38,8 +38,13 @@ public record CreateDogRequest(
         String avatarKey,
 
         @Schema(description = "Data de nascimento do cão", example = "21/04/2026")
-       @NotNull(message = "The dog DateOfBirth is mandatory")
-        Timestamp dateOfBirth){
+        @NotNull(message = "The dog DateOfBirth is mandatory")
+        Timestamp dateOfBirth,
 
+        @Schema(description = "Indica se o cão está no canil", example = "true")
+        Boolean onKennel){
+
+    public CreateDogRequest(String name, DogRace race, DogStatus status, Character sex, String avatarKey, Timestamp dateOfBirth) {
+        this(name, race, status, sex, avatarKey, dateOfBirth, status != DogStatus.DOADO && status != DogStatus.FALECIDO);
     }
-
+}
