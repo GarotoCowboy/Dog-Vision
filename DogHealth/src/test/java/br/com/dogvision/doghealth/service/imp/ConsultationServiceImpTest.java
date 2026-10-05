@@ -1,12 +1,7 @@
 package br.com.dogvision.doghealth.service.imp;
 
-import br.com.dogvision.doghealth.dto.create.CreateConsultationRequest;
-import br.com.dogvision.doghealth.dto.mapper.ConsultationMapper;
 import br.com.dogvision.doghealth.dto.response.ConsultationResponse;
-import br.com.dogvision.doghealth.dto.update.UpdateConsultationRequest;
 import br.com.dogvision.doghealth.infra.exception.ConsultationNotFoundException;
-import br.com.dogvision.doghealth.model.Consultation;
-import br.com.dogvision.doghealth.repository.ConsultationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

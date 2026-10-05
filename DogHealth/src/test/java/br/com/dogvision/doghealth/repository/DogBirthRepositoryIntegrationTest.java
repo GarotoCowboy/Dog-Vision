@@ -1,6 +1,5 @@
 package br.com.dogvision.doghealth.repository;
 
-import br.com.dogvision.doghealth.model.DogBirth;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;

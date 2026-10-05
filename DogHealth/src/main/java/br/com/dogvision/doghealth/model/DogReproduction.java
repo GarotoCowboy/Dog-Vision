@@ -1,6 +1,5 @@
 package br.com.dogvision.doghealth.model;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,41 +12,42 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "dog_reproduction")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Consultation {
+public class DogReproduction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
-    private UUID veterinarianId;
-
-    @Column(nullable = false)
     private UUID dogId;
 
-    //DOG`S SNAPSHOT
+    // DOG'S SNAPSHOT
     @Column(nullable = false)
     private String dogsName;
 
     @Column(nullable = false)
     private String dogsBreed;
-    //-------------------------------------
+
+    private UUID veterinarianId;
 
     @Column(nullable = false)
-    private String treatment;
+    private LocalDate date;
 
     @Column(nullable = false)
-    private String diagnosis;
+    private LocalDate expectedNextHeatDate;
 
-    private LocalDateTime dateTimeOfConsultation;
+    private Integer cycleIntervalInMonths;
+
+    private String observations;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }

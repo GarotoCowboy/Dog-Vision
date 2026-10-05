@@ -1,10 +1,7 @@
 package br.com.dogvision.doghealth.controller;
 
-import br.com.dogvision.doghealth.dto.create.CreateConsultationRequest;
 import br.com.dogvision.doghealth.dto.response.ConsultationResponse;
-import br.com.dogvision.doghealth.dto.update.UpdateConsultationRequest;
 import br.com.dogvision.doghealth.infra.security.TokenService;
-import br.com.dogvision.doghealth.service.ConsultationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,7 @@
 package br.com.dogvision.doghealth.service.imp;
 
-import br.com.dogvision.doghealth.dto.create.CreateDogSurgeryRequest;
-import br.com.dogvision.doghealth.dto.mapper.DogSurgeryMapper;
 import br.com.dogvision.doghealth.dto.response.DogSurgeryResponse;
-import br.com.dogvision.doghealth.dto.update.UpdateDogSurgeryRequest;
 import br.com.dogvision.doghealth.infra.exception.SurgeryNotFoundException;
-import br.com.dogvision.doghealth.model.DogSurgery;
-import br.com.dogvision.doghealth.model.EnumUrgency;
-import br.com.dogvision.doghealth.repository.DogSurgeryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

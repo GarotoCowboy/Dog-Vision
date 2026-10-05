@@ -1,0 +1,48 @@
+### 1. Criar novo registro de controle reprodutivo (apenas VETERINARIAN)
+POST http://localhost:3003/api/v1/doghealth/reproduction
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dogId": "550e8400-e29b-41d4-a716-446655440000",
+  "dogsName": "Mel",
+  "dogsBreed": "Golden Retriever",
+  "date": "2026-04-01",
+  "cycleIntervalInMonths": 6,
+  "observations": "Início do primeiro cio acompanhado, sinais comportamentais normais."
+}
+
+### 2. Buscar registro por ID (todos autenticados)
+GET http://localhost:3003/api/v1/doghealth/reproduction/{{reproductionId}}
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### 3. Listar todos os registros de reprodução (todos autenticados)
+GET http://localhost:3003/api/v1/doghealth/reproduction
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### 4. Listar histórico de reprodução por cadela (todos autenticados)
+GET http://localhost:3003/api/v1/doghealth/reproduction/dog/550e8400-e29b-41d4-a716-446655440000
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### 5. Buscar último cio e previsão do próximo por cadela (todos autenticados)
+GET http://localhost:3003/api/v1/doghealth/reproduction/dog/550e8400-e29b-41d4-a716-446655440000/last
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### 6. Atualizar registro de reprodução (apenas VETERINARIAN)
+PATCH http://localhost:3003/api/v1/doghealth/reproduction/update/{{reproductionId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "observations": "Cio concluído sem intercorrências após 18 dias."
+}
+
+### 7. Deletar registro de reprodução (apenas VETERINARIAN)
+DELETE http://localhost:3003/api/v1/doghealth/reproduction/{{reproductionId}}
+Authorization: Bearer {{authToken}}

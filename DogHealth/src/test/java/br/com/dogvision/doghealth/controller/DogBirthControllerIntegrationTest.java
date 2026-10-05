@@ -1,7 +1,6 @@
 package br.com.dogvision.doghealth.controller;
 
 import br.com.dogvision.doghealth.infra.security.TokenService;
-import br.com.dogvision.doghealth.repository.DogBirthRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

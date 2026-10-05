@@ -4,16 +4,12 @@ import br.com.dogvision.doghealth.dto.create.CreateDogWeightRequest;
 import br.com.dogvision.doghealth.dto.mapper.DogWeightMapper;
 import br.com.dogvision.doghealth.dto.response.DogWeightResponse;
 import br.com.dogvision.doghealth.dto.update.UpdateDogWeightRequest;
-import br.com.dogvision.doghealth.infra.exception.ResourceNotFoundException;
 import br.com.dogvision.doghealth.infra.exception.WeightNotFoundException;
-import br.com.dogvision.doghealth.model.DogBirth;
 import br.com.dogvision.doghealth.model.DogWeight;
 import br.com.dogvision.doghealth.repository.DogWeightRepository;
 import br.com.dogvision.doghealth.service.DogWeightService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

@@ -1,12 +1,7 @@
 package br.com.dogvision.doghealth.service.imp;
 
-import br.com.dogvision.doghealth.dto.create.CreateDogBirthRequest;
-import br.com.dogvision.doghealth.dto.mapper.DogBirthMapper;
 import br.com.dogvision.doghealth.dto.response.DogBirthResponse;
-import br.com.dogvision.doghealth.dto.update.UpdateDogBirthRequest;
 import br.com.dogvision.doghealth.infra.exception.BirthNotFoundException;
-import br.com.dogvision.doghealth.model.DogBirth;
-import br.com.dogvision.doghealth.repository.DogBirthRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
