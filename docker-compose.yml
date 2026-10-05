@@ -183,6 +183,24 @@ services:
       timeout: 5s
       retries: 10
 
+  dog_training_db:
+    image: postgres:16
+    container_name: ${BD_DOG_TRAINING_HOST}
+    restart: always
+    environment:
+      POSTGRES_USER: ${BD_DOG_TRAINING_USER}
+      POSTGRES_PASSWORD: ${BD_DOG_TRAINING_PASSWORD}
+      POSTGRES_DB: ${BD_DOG_TRAINING_NAME}
+    ports:
+      - "${BD_DOG_TRAINING_PORT}:5432"
+    volumes:
+      - postgres_data_dog_training:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${BD_DOG_TRAINING_USER} -d ${BD_DOG_TRAINING_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   ms_user_management:
     build:
       context: ./user
@@ -190,6 +208,8 @@ services:
     container_name: ms_user_management
     depends_on:
       user_management_db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     ports:
       - ${SERVICE_PORT_USER_MANAGEMENT}:${SERVICE_PORT_USER_MANAGEMENT}
@@ -200,6 +220,10 @@ services:
       BD_USER_MANAGEMENT_PORT: 5432
       BD_USER_MANAGEMENT_USER: ${BD_USER_MANAGEMENT_USER}
       BD_USER_MANAGEMENT_PASSWORD: ${BD_USER_MANAGEMENT_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: ${RABBIT_AMQP_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBIT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
     restart: always
 
@@ -262,7 +286,7 @@ services:
       rabbitmq:
         condition: service_healthy
     ports:
-      - "${AUDITORY_PORT}:3005"
+      - "${AUDITORY_PORT}"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 3005
@@ -292,7 +316,7 @@ services:
       eureka-server:
         condition: service_started
     ports:
-      - "${PORT_NOTIFICATION}:3007"
+      - "${PORT_NOTIFICATION}"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       BD_NOTIFICATION_HOST: notification_db
@@ -308,6 +332,34 @@ services:
       SPRING_RABBITMQ_USERNAME: ${RABBIT_USER}
       SPRING_RABBITMQ_PASSWORD: ${RABBIT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM: ${MAIL_FROM}
+    restart: always
+
+  ms_dog_training:
+    build:
+      context: ./DogTraining
+      dockerfile: Dockerfile
+    container_name: ms_dog_training
+    depends_on:
+      dog_training_db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "${PORT_DOG_TRAINING}:${PORT_DOG_TRAINING}"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BD_DOG_TRAINING_HOST: dog_training_db
+      BD_DOG_TRAINING_PORT: 5432
+      BD_DOG_TRAINING_NAME: ${BD_DOG_TRAINING_NAME}
+      BD_DOG_TRAINING_USER: ${BD_DOG_TRAINING_USER}
+      BD_DOG_TRAINING_PASSWORD: ${BD_DOG_TRAINING_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT_DOG_TRAINING: ${PORT_DOG_TRAINING}
     restart: always
 
 volumes:
@@ -317,3 +369,4 @@ volumes:
   postgres_data_dog_feeding:
   postgres_data_auditory:
   postgres_data_notification:
+  postgres_data_dog_training:

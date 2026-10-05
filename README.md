@@ -11,8 +11,11 @@ O projeto e organizado em microservicos Java/Spring Boot, com descoberta de serv
 - `user`: autenticacao e gerenciamento de usuarios/funcionarios.
 - `DogManagement`: gerenciamento dos caes.
 - `DogHealth`: consultas, partos e pesagens dos caes.
+- `DogFeeding`: controle de planos alimentares e consumo de racao.
+- `DogTraining`: gerenciamento de treinos e etapas de treinamento dos caes-guia.
+- `notification`: envio e historico de notificacoes por e-mail.
 - `audit`: consumo e persistencia dos eventos de auditoria enviados pelo gateway.
-- `rabbitmq`: broker usado no fluxo de auditoria.
+- `rabbitmq`: broker usado no fluxo de auditoria e mensageria.
 - Bancos PostgreSQL: um banco/container para cada dominio principal.
 
 ## Pre-requisitos
@@ -64,6 +67,27 @@ BD_AUDITORY_HOST=ms_postgres_auditory
 BD_AUDITORY_NAME=auditory_db
 BD_AUDITORY_PORT=5436
 
+# DB DOG FEEDING
+BD_DOG_FEEDING_PORT=5437
+BD_DOG_FEEDING_NAME=dog_feeding_db
+BD_DOG_FEEDING_HOST=db_postgres_feeding
+BD_DOG_FEEDING_PASSWORD=password
+BD_DOG_FEEDING_USER=postgres
+
+# DB NOTIFICATION
+BD_NOTIFICATION_PORT=5438
+BD_NOTIFICATION_NAME=dog_notification_db
+BD_NOTIFICATION_HOST=db_postgres_notification
+BD_NOTIFICATION_PASSWORD=password
+BD_NOTIFICATION_USER=postgres
+
+# DB DOG TRAINING
+BD_DOG_TRAINING_PORT=5439
+BD_DOG_TRAINING_NAME=dog_training_db
+BD_DOG_TRAINING_HOST=db_postgres_training
+BD_DOG_TRAINING_PASSWORD=password
+BD_DOG_TRAINING_USER=postgres
+
 # RABBITMQ
 RABBIT_USER=guest
 RABBIT_PASSWORD=guest
@@ -77,6 +101,9 @@ EUREKA_SERVER_PORT=3002
 CLOUD_GATEWAY_SERVER_PORT=3003
 PORT_DOG_HEALTH=3004
 AUDITORY_PORT=3005
+PORT_DOG_FEEDING=3006
+PORT_NOTIFICATION=3007
+PORT_DOG_TRAINING=3008
 ```
 
 Use valores fortes para `JWT_SECRET` e senhas quando sair do ambiente local.
@@ -132,10 +159,13 @@ Use `down -v` com cuidado, porque apaga os dados persistidos nos volumes Postgre
 - Cloud Gateway: `http://localhost:3003`
 - Eureka Server: `http://localhost:3002`
 - RabbitMQ Management: `http://localhost:15672`
-- User Management: `http://localhost:3001`
 - Dog Management: `http://localhost:3000`
+- User Management: `http://localhost:3001`
 - Dog Health: `http://localhost:3004`
 - Auditory: `http://localhost:3005`
+- Dog Feeding: `http://localhost:3006`
+- Notification: `http://localhost:3007`
+- Dog Training: `http://localhost:3008`
 
 Swagger:
 
@@ -156,9 +186,13 @@ Authorization: Bearer <seu-token>
 4. Chame os endpoints pelos caminhos do gateway:
 
 ```text
+http://localhost:3003/api/v1/auth/**
+http://localhost:3003/api/v1/employees/**
 http://localhost:3003/api/v1/dogs/**
 http://localhost:3003/api/v1/doghealth/**
-http://localhost:3003/api/v1/employees/**
+http://localhost:3003/api/v1/dogfeeding/**
+http://localhost:3003/api/v1/dogNotification/**
+http://localhost:3003/api/v1/dogtraining/**
 ```
 
 A pasta `requests/` contem exemplos `.http` para testar os endpoints pela IDE.
@@ -178,6 +212,24 @@ DELETE /api/v1/doghealth/surgery/{id}
 ```
 
 Exemplos prontos estao em `requests/dogHealth/surgery/`.
+
+### Dog Health - Reproduction (Controle Reprodutivo)
+
+Os endpoints de controle reprodutivo (cio) da cadela ficam em `/api/v1/doghealth/reproduction` e exigem `Authorization: Bearer <token>`.
+- **Criação, edição e deleção:** Apenas veterinários (`ROLE_VETERINARIAN`).
+- **Buscas e consultas:** Qualquer usuário autenticado.
+
+```text
+POST   /api/v1/doghealth/reproduction
+GET    /api/v1/doghealth/reproduction/{id}
+GET    /api/v1/doghealth/reproduction
+GET    /api/v1/doghealth/reproduction/dog/{dogId}
+GET    /api/v1/doghealth/reproduction/dog/{dogId}/last
+PATCH  /api/v1/doghealth/reproduction/update/{id}
+DELETE /api/v1/doghealth/reproduction/{id}
+```
+
+Exemplos prontos estao em `requests/dogHealth/reproduction/`.
 
 ## Rodando modulos fora do Docker
 
